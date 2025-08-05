@@ -29,6 +29,9 @@ public class Book extends BaseEntity {
     @Column(name = "category", length = 50)
     private String category;
     
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+    
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Jokbo> jokbos;
 } 
