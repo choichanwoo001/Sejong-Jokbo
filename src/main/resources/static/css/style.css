@@ -6,9 +6,9 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     min-height: 100vh;
-    color: #1e293b;
+    color: #000000;
 }
 
 .container {
@@ -19,21 +19,35 @@ body {
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
 }
 
+.site-title {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+
+.site-title h1 {
+    color: #000000;
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .header {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .header-title {
     background: white;
-    color: #1e293b;
+    color: #000000;
     padding: 20px 40px;
     margin: 20px 0 20px 40px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
     font-size: 1.5rem;
     font-weight: 600;
@@ -47,8 +61,8 @@ body {
 
 .auth-button {
     background: white;
-    color: #475569;
-    border: 1px solid #cbd5e1;
+    color: #000000;
+    border: 1px solid #e5e7eb;
     padding: 12px 24px;
     font-size: 14px;
     font-weight: 500;
@@ -74,8 +88,8 @@ body {
 }
 
 .auth-button:hover {
-    background: #f8fafc;
-    color: #1e293b;
+    background: #f9fafb;
+    color: #374151;
 }
 
 .main-content {
@@ -90,9 +104,9 @@ body {
 }
 
 .sidebar-button {
-    background: #f1f5f9;
-    color: #475569;
-    border: 2px solid #e2e8f0;
+    background: #f9fafb;
+    color: #000000;
+    border: 2px solid #e5e7eb;
     padding: 20px 30px;
     border-radius: 8px;
     font-size: 16px;
@@ -104,8 +118,8 @@ body {
 }
 
 .sidebar-button:hover {
-    background: #e2e8f0;
-    border-color: #cbd5e1;
+    background: #f3f4f6;
+    border-color: #d1d5db;
     transform: translateY(-1px);
 }
 
@@ -116,22 +130,22 @@ body {
 .search-input {
     width: 100%;
     padding: 20px 25px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
     font-size: 16px;
     background: white;
     transition: all 0.2s ease;
-    color: #1e293b;
+    color: #000000;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #6b7280;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
 }
 
 .search-input::placeholder {
-    color: #94a3b8;
+    color: #9ca3af;
 }
 
 .category-section {
@@ -141,7 +155,7 @@ body {
     background: white;
     z-index: 100;
     padding: 20px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .category-tabs {
@@ -149,7 +163,7 @@ body {
     gap: 0;
     justify-content: center;
     margin-bottom: 30px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
     width: fit-content;
@@ -159,14 +173,14 @@ body {
 
 .category-tab {
     background: white;
-    color: #64748b;
+    color: #000000;
     border: none;
     padding: 15px 30px;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid #e5e7eb;
 }
 
 .category-tab:last-child {
@@ -174,18 +188,18 @@ body {
 }
 
 .category-tab:hover {
-    background: #f8fafc;
-    color: #1e293b;
+    background: #fef2f2;
+    color: #dc2626;
 }
 
 .category-tab.active {
-    background: #1e293b;
+    background: #dc2626;
     color: white;
 }
 
 .book-display {
     background: #fefefe;
-    border: 2px solid #f1f5f9;
+    border: 2px solid #f9fafb;
     border-radius: 12px;
     padding: 10px 40px;
     text-align: center;
@@ -199,41 +213,44 @@ body {
 
 .book-display h2 {
     font-size: 1.8rem;
-    color: #475569;
+    color: #000000;
     font-weight: 400;
     margin-bottom: 15px;
     letter-spacing: -0.5px;
 }
 
 .book-display p {
-    color: #94a3b8;
+    color: #6b7280;
     font-size: 1rem;
     line-height: 1.6;
 }
 
 .subtle-shadow {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .books-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
+    gap: 32px;
     margin-top: 30px;
 }
 
 .book-item {
-    background: white;
+    background: #fafbfc;
     border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     cursor: pointer;
+    border: 1px solid #f0f2f5;
 }
 
 .book-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: #e2e8f0;
+    background: #ffffff;
 }
 
 .book-cover {
@@ -243,24 +260,26 @@ body {
     border-radius: 8px;
     overflow: hidden;
     background: #f8fafc;
+    border: 1px solid #f1f5f9;
 }
 
 .book-cover img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 6px;
 }
 
 .book-title {
     font-size: 16px;
     font-weight: 600;
-    color: #1e293b;
+    color: #000000;
     margin-bottom: 6px;
 }
 
 .book-author, .book-publisher {
     font-size: 14px;
-    color: #64748b;
+    color: #000000;
     margin-bottom: 4px;
 }
 
