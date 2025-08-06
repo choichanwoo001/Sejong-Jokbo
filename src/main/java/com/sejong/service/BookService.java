@@ -47,4 +47,14 @@ public class BookService {
     public List<Book> searchBooksByAuthor(String author) {
         return bookRepository.findByAuthorContaining(author);
     }
+    
+    /**
+     * ID로 도서를 조회합니다.
+     * @param bookId 도서 ID
+     * @return 해당 ID의 도서
+     */
+    public Book getBookById(Integer bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다"));
+    }
 } 
