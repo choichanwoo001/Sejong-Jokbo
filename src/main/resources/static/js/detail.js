@@ -39,7 +39,7 @@ function sendVerificationCode() {
         return;
     }
     
-    // 실제로는 서버에 인증번호 발송 요청
+    // 서버에 인증번호 발송 요청
     fetch('/api/send-verification', {
         method: 'POST',
         headers: {
@@ -50,7 +50,6 @@ function sendVerificationCode() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            verificationCode = data.code; // 실제로는 서버에서 생성된 코드
             alert('인증번호가 발송되었습니다.');
             event.target.disabled = true;
             event.target.textContent = '재발송';
@@ -59,40 +58,57 @@ function sendVerificationCode() {
                 event.target.textContent = '인증번호 발송';
             }, 60000); // 1분 후 재발송 가능
         } else {
-            alert('인증번호 발송에 실패했습니다.');
+            alert('인증번호 발송에 실패했습니다: ' + data.message);
         }
     })
     .catch(error => {
-        // 개발용 임시 코드 (실제 서버 없을 때)
-        verificationCode = '123456';
-        alert('인증번호가 발송되었습니다. (개발용: 123456)');
-        event.target.disabled = true;
-        event.target.textContent = '재발송';
-        setTimeout(() => {
-            event.target.disabled = false;
-            event.target.textContent = '인증번호 발송';
-        }, 60000);
+        console.error('Error:', error);
+        alert('인증번호 발송 중 오류가 발생했습니다.');
     });
 }
 
 // 인증번호 확인
 function verifyCode() {
+    const email = event.target.parentElement.parentElement.querySelector('input[type="email"]').value;
     const inputCode = event.target.parentElement.querySelector('input[name="verificationCode"]').value;
     const statusDiv = document.getElementById('verificationStatus');
     
-    if (inputCode === verificationCode) {
-        isEmailVerified = true;
-        statusDiv.className = 'verification-status verification-success';
-        statusDiv.textContent = '이메일 인증이 완료되었습니다.';
-        statusDiv.style.display = 'block';
-        event.target.disabled = true;
-        event.target.textContent = '인증완료';
-    } else {
-        isEmailVerified = false;
-        statusDiv.className = 'verification-status verification-error';
-        statusDiv.textContent = '인증번호가 일치하지 않습니다.';
-        statusDiv.style.display = 'block';
+    if (!email || !inputCode) {
+        alert('이메일과 인증번호를 모두 입력해주세요.');
+        return;
     }
+    
+    // 서버에 인증번호 확인 요청
+    fetch('/api/verify-code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            email: email,
+            code: inputCode 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            isEmailVerified = true;
+            statusDiv.className = 'verification-status verification-success';
+            statusDiv.textContent = '이메일 인증이 완료되었습니다.';
+            statusDiv.style.display = 'block';
+            event.target.disabled = true;
+            event.target.textContent = '인증완료';
+        } else {
+            isEmailVerified = false;
+            statusDiv.className = 'verification-status verification-error';
+            statusDiv.textContent = '인증번호가 일치하지 않습니다.';
+            statusDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('인증번호 확인 중 오류가 발생했습니다.');
+    });
 }
 
 // 파일 업로드 초기화

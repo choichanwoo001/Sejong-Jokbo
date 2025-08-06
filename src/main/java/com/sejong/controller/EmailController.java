@@ -1,0 +1,72 @@
+package com.sejong.controller;
+
+import com.sejong.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api")
+public class EmailController {
+    
+    @Autowired
+    private EmailService emailService;
+    
+    /**
+     * 인증번호 발송
+     */
+    @PostMapping("/send-verification")
+    public ResponseEntity<Map<String, Object>> sendVerificationCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Map<String, Object> response = new HashMap<>();
+        
+        if (email == null || email.trim().isEmpty()) {
+            response.put("success", false);
+            response.put("message", "이메일 주소를 입력해주세요.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        boolean sent = emailService.sendVerificationEmail(email);
+        
+        if (sent) {
+            response.put("success", true);
+            response.put("message", "인증번호가 발송되었습니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "인증번호 발송에 실패했습니다.");
+        }
+        
+        return ResponseEntity.ok(response);
+    }
+    
+    /**
+     * 인증번호 확인
+     */
+    @PostMapping("/verify-code")
+    public ResponseEntity<Map<String, Object>> verifyCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String code = request.get("code");
+        Map<String, Object> response = new HashMap<>();
+        
+        if (email == null || code == null) {
+            response.put("success", false);
+            response.put("message", "이메일과 인증번호를 입력해주세요.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        boolean verified = emailService.verifyCode(email, code);
+        
+        if (verified) {
+            response.put("success", true);
+            response.put("message", "이메일 인증이 완료되었습니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "인증번호가 일치하지 않습니다.");
+        }
+        
+        return ResponseEntity.ok(response);
+    }
+} 
