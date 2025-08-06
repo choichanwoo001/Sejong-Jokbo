@@ -2,12 +2,12 @@ package com.sejong.controller;
 
 import com.sejong.entity.Book;
 import com.sejong.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 /**
@@ -15,10 +15,10 @@ import java.util.List;
  * 홈 페이지 및 기타 정적 페이지들을 처리합니다.
  */
 @Controller
+@RequiredArgsConstructor
 public class PageController {
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
     /**
      * 홈 페이지를 반환합니다.
