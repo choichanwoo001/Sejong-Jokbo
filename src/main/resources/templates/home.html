@@ -31,7 +31,7 @@
         <!-- 서양 카테고리 -->
         <div class="book-display subtle-shadow" id="category-western" style="display: block;">
             <div class="books-grid">
-                <div class="book-item" th:each="book : ${westernBooks}">
+                <div class="book-item" th:each="book : ${westernBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
                     <div class="book-cover">
                         <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                     </div>
@@ -47,7 +47,7 @@
         <!-- 동서양 카테고리 -->
         <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
             <div class="books-grid">
-                <div class="book-item" th:each="book : ${eastWestBooks}">
+                <div class="book-item" th:each="book : ${eastWestBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
                     <div class="book-cover">
                         <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                     </div>
@@ -63,7 +63,7 @@
         <!-- 동양 카테고리 -->
         <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
             <div class="books-grid">
-                <div class="book-item" th:each="book : ${easternBooks}">
+                <div class="book-item" th:each="book : ${easternBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
                     <div class="book-cover">
                         <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                     </div>
@@ -79,7 +79,7 @@
         <!-- 과학사 카테고리 -->
         <div class="book-display subtle-shadow" id="category-science" style="display: none;">
             <div class="books-grid">
-                <div class="book-item" th:each="book : ${scienceBooks}">
+                <div class="book-item" th:each="book : ${scienceBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
                     <div class="book-cover">
                         <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                     </div>

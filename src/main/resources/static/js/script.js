@@ -46,8 +46,8 @@ searchInput.addEventListener('blur', function() {
     this.style.transform = 'scale(1)';
 });
 
-// 버튼 클릭 효과
-document.querySelectorAll('button, .auth-button').forEach(button => {
+// 카테고리 탭 클릭 효과
+document.querySelectorAll('.category-tab').forEach(button => {
     button.addEventListener('click', function(e) {
         this.style.transform = 'scale(0.98)';
         setTimeout(() => {
