@@ -5,136 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="'족보 관리 - ' + ${book.title}">족보 관리 - 세종족보</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .book-info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .book-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .jokbo-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .jokbo-table th,
-        .jokbo-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .jokbo-table th {
-            background: #f8f9fa;
-            font-weight: bold;
-        }
-        
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        
-        .status-waiting {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn-approve, .btn-reject, .btn-view, .btn-download {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-approve {
-            background: #28a745;
-            color: white;
-        }
-        
-        .btn-reject {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .btn-view {
-            background: #17a2b8;
-            color: white;
-        }
-        
-        .btn-download {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .btn-approve:hover, .btn-reject:hover, .btn-view:hover, .btn-download:hover {
-            opacity: 0.8;
-        }
-        
-        .content-preview {
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .no-jokbo {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        .back-button {
-            display: inline-block;
-            margin-bottom: 20px;
-            background: #dc2626;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-        
-        .back-button:hover {
-            background: #b91c1c;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
 </head>
 <body>
     <div class="admin-container">
@@ -215,76 +86,14 @@
     </div>
     
     <!-- 텍스트 족보 내용 보기 모달 -->
-    <div id="textModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; max-width: 600px; max-height: 80%; overflow-y: auto;">
+    <div id="textModal" class="modal">
+        <div class="modal-content">
             <h3>족보 내용</h3>
-            <div id="textContent" style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; white-space: pre-wrap;"></div>
-            <button onclick="closeTextModal()" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">닫기</button>
+            <div id="textContent" class="text-content"></div>
+            <button onclick="closeTextModal()" class="modal-close">닫기</button>
         </div>
     </div>
     
-    <script th:inline="javascript">
-        const bookId = [[${book.bookId}]];
-        
-        // 족보 승인
-        function approveJokbo(jokboId) {
-            if (confirm('이 족보를 승인하시겠습니까?')) {
-                fetch(`/admin/jokbo/${jokboId}/approve`, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'success') {
-                        alert('족보가 승인되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('승인에 실패했습니다: ' + result);
-                    }
-                })
-                .catch(error => {
-                    alert('오류가 발생했습니다: ' + error);
-                });
-            }
-        }
-        
-        // 족보 반려
-        function rejectJokbo(jokboId) {
-            if (confirm('이 족보를 반려하시겠습니까?')) {
-                fetch(`/admin/jokbo/${jokboId}/reject`, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'success') {
-                        alert('족보가 반려되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('반려에 실패했습니다: ' + result);
-                    }
-                })
-                .catch(error => {
-                    alert('오류가 발생했습니다: ' + error);
-                });
-            }
-        }
-        
-        // 텍스트 족보 내용 보기
-        function viewTextJokbo(content) {
-            document.getElementById('textContent').textContent = content;
-            document.getElementById('textModal').style.display = 'block';
-        }
-        
-        // 텍스트 모달 닫기
-        function closeTextModal() {
-            document.getElementById('textModal').style.display = 'none';
-        }
-        
-        // 모달 외부 클릭 시 닫기
-        document.getElementById('textModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeTextModal();
-            }
-        });
-    </script>
+    <script th:src="@{/js/jokbo-management.js}"></script>
 </body>
 </html> 

@@ -1,0 +1,328 @@
+.book-detail {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-layout {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.book-info {
+    flex: 1;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    height: fit-content;
+}
+
+.book-image {
+    width: 200px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.book-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.book-author, .book-publisher, .book-category {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.jokbo-section {
+    flex: 2;
+}
+
+.jokbo-tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 30px;
+}
+
+.jokbo-tab {
+    padding: 15px 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.jokbo-tab.active {
+    color: #dc2626;
+    border-bottom-color: #dc2626;
+}
+
+.jokbo-content {
+    display: none;
+}
+
+.jokbo-content.active {
+    display: block;
+}
+
+.register-tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.register-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.register-tab.active {
+    color: #dc2626;
+    border-bottom-color: #dc2626;
+}
+
+.register-content {
+    display: none;
+}
+
+.register-content.active {
+    display: block;
+}
+
+.jokbo-form {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.form-textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.email-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.email-input {
+    flex: 1;
+}
+
+.verify-button {
+    background: #dc2626;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.verify-button:hover {
+    background: #b91c1c;
+}
+
+.verify-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.verification-code-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-top: 10px;
+}
+
+.verification-code-input {
+    flex: 1;
+}
+
+.form-button {
+    background: #dc2626;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.form-button:hover {
+    background: #b91c1c;
+}
+
+.jokbo-list {
+    display: grid;
+    gap: 20px;
+}
+
+.jokbo-item {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.jokbo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.jokbo-uploader {
+    font-weight: bold;
+    color: #333;
+}
+
+.jokbo-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.jokbo-content-text {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+.jokbo-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-view, .btn-download {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.btn-view {
+    background: #28a745;
+    color: white;
+}
+
+.btn-download {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-view:hover, .btn-download:hover {
+    opacity: 0.8;
+}
+
+.no-jokbo {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.file-upload {
+    border: 2px dashed #ddd;
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.file-upload.dragover {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #dc2626;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: #b91c1c;
+}
+
+.verification-status {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.verification-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.verification-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+    .main-layout {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .book-info {
+        order: 1;
+    }
+    
+    .jokbo-section {
+        order: 2;
+    }
+    
+    .email-group, .verification-code-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+} 

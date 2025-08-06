@@ -2,16 +2,16 @@ package com.sejong.service;
 
 import com.sejong.entity.Book;
 import com.sejong.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
     
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
     
     /**
      * 모든 도서를 조회합니다.

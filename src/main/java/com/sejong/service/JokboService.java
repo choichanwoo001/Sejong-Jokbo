@@ -4,7 +4,6 @@ import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
 import com.sejong.repository.BookRepository;
 import com.sejong.repository.JokboRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,15 +13,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class JokboService {
 
-    @Autowired
-    private JokboRepository jokboRepository;
-    
-    @Autowired
-    private BookRepository bookRepository;
+    private final JokboRepository jokboRepository;
+    private final BookRepository bookRepository;
     
     private static final String UPLOAD_DIR = "uploads/jokbo/";
     
