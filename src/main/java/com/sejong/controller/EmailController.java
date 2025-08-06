@@ -29,14 +29,19 @@ public class EmailController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        boolean sent = emailService.sendVerificationEmail(email);
-        
-        if (sent) {
-            response.put("success", true);
-            response.put("message", "인증번호가 발송되었습니다.");
-        } else {
+        try {
+            boolean sent = emailService.sendVerificationEmail(email);
+            
+            if (sent) {
+                response.put("success", true);
+                response.put("message", "인증번호가 발송되었습니다.");
+            } else {
+                response.put("success", false);
+                response.put("message", "인증번호 발송에 실패했습니다.");
+            }
+        } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "인증번호 발송에 실패했습니다.");
+            response.put("message", "이메일 발송 중 오류가 발생했습니다: " + e.getMessage());
         }
         
         return ResponseEntity.ok(response);
@@ -57,14 +62,19 @@ public class EmailController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        boolean verified = emailService.verifyCode(email, code);
-        
-        if (verified) {
-            response.put("success", true);
-            response.put("message", "이메일 인증이 완료되었습니다.");
-        } else {
+        try {
+            boolean verified = emailService.verifyCode(email, code);
+            
+            if (verified) {
+                response.put("success", true);
+                response.put("message", "이메일 인증이 완료되었습니다.");
+            } else {
+                response.put("success", false);
+                response.put("message", "인증번호가 일치하지 않습니다.");
+            }
+        } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "인증번호가 일치하지 않습니다.");
+            response.put("message", "인증번호 확인 중 오류가 발생했습니다: " + e.getMessage());
         }
         
         return ResponseEntity.ok(response);

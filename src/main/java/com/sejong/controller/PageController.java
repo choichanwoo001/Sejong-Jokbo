@@ -5,7 +5,6 @@ import com.sejong.service.BookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -40,24 +39,5 @@ public class PageController {
         model.addAttribute("scienceBooks", scienceBooks);
         
         return "home";
-    }
-    
-    /**
-     * 도서 검색을 처리합니다.
-     * @param query 검색어
-     * @param model 뷰에 전달할 데이터 모델
-     * @return 검색 결과 페이지
-     */
-    @GetMapping("/search")
-    public String search(@RequestParam String query, Model model) {
-        List<Book> searchResults = bookService.searchBooksByTitle(query);
-        if (searchResults.isEmpty()) {
-            searchResults = bookService.searchBooksByAuthor(query);
-        }
-        
-        model.addAttribute("searchResults", searchResults);
-        model.addAttribute("query", query);
-        
-        return "search";
     }
 } 

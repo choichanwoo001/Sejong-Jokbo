@@ -7,6 +7,7 @@ import com.sejong.service.JokboService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,33 @@ public class BookController {
 
     private final BookService bookService;
     private final JokboService jokboService;
+    
+    /**
+     * 통합 검색을 수행합니다
+     */
+    @GetMapping("/search")
+    public String searchBooks(@RequestParam(required = false) String keyword, Model model) {
+        List<Book> searchResults = bookService.searchBooks(keyword);
+        model.addAttribute("books", searchResults);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("isSearch", true);
+        return "home";
+    }
+    
+    /**
+     * 카테고리별 검색을 수행합니다
+     */
+    @GetMapping("/search/category")
+    public String searchBooksByCategory(@RequestParam String category, 
+                                      @RequestParam(required = false) String keyword, 
+                                      Model model) {
+        List<Book> searchResults = bookService.searchBooksByCategoryAndKeyword(category, keyword);
+        model.addAttribute("books", searchResults);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+        model.addAttribute("isSearch", true);
+        return "home";
+    }
     
     /**
      * 책 상세 페이지를 보여줍니다
@@ -49,12 +77,8 @@ public class BookController {
                                    @RequestParam String uploaderName,
                                    @RequestParam String content,
                                    @RequestParam(required = false) String comment) {
-        try {
-            jokboService.registerTextJokbo(bookId, uploaderName, content, comment);
-            return "success";
-        } catch (Exception e) {
-            return "error: " + e.getMessage();
-        }
+        jokboService.registerTextJokbo(bookId, uploaderName, content, comment);
+        return "success";
     }
     
     /**
@@ -69,8 +93,10 @@ public class BookController {
         try {
             jokboService.registerFileJokbo(bookId, uploaderName, file, comment);
             return "success";
+        } catch (java.io.IOException e) {
+            return "error: 파일 처리 중 오류가 발생했습니다. - " + e.getMessage();
         } catch (Exception e) {
-            return "error: " + e.getMessage();
+            return "error: 족보 등록 중 오류가 발생했습니다. - " + e.getMessage();
         }
     }
     
@@ -92,6 +118,8 @@ public class BookController {
             }
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
@@ -114,6 +142,8 @@ public class BookController {
             }
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
@@ -163,7 +193,7 @@ public class BookController {
             jokboService.approveJokbo(jokboId);
             return "success";
         } catch (Exception e) {
-            return "error: " + e.getMessage();
+            return "error: 족보 승인 중 오류가 발생했습니다. - " + e.getMessage();
         }
     }
     
@@ -177,7 +207,7 @@ public class BookController {
             jokboService.rejectJokbo(jokboId);
             return "success";
         } catch (Exception e) {
-            return "error: " + e.getMessage();
+            return "error: 족보 반려 중 오류가 발생했습니다. - " + e.getMessage();
         }
     }
 } 
