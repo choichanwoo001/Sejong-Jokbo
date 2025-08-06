@@ -128,6 +128,28 @@ body {
     color: #9ca3af;
 }
 
+/* 검색 결과 스타일 */
+.search-results {
+    margin-bottom: 40px;
+}
+
+.search-results h2 {
+    font-size: 1.5rem;
+    color: #000000;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search-results .books-grid {
+    margin-top: 0;
+}
+
+/* 검색 폼 스타일 */
+#searchForm {
+    width: 100%;
+}
+
 .category-section {
     margin-bottom: 40px;
     position: sticky;

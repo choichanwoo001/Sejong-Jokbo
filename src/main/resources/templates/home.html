@@ -15,23 +15,17 @@
         
         <div class="search-section">
             <div class="search-container">
-                <input type="text" class="search-input subtle-shadow" placeholder="검색">
+                <form id="searchForm" method="get" action="/search">
+                    <input type="text" name="keyword" class="search-input subtle-shadow" placeholder="도서명, 저자, 출판사로 검색" th:value="${keyword}">
+                </form>
             </div>
         </div>
 
-        <div class="category-section">
-            <div class="category-tabs subtle-shadow">
-                <button class="category-tab active">서양</button>
-                <button class="category-tab">동서양</button>
-                <button class="category-tab">동양</button>
-                <button class="category-tab">과학사</button>
-            </div>
-        </div>
-
-        <!-- 서양 카테고리 -->
-        <div class="book-display subtle-shadow" id="category-western" style="display: block;">
+        <!-- 검색 결과 표시 -->
+        <div th:if="${isSearch}" class="search-results">
+            <h2 th:if="${keyword}" th:text="'검색 결과: ' + ${keyword}">검색 결과</h2>
             <div class="books-grid">
-                <div class="book-item" th:each="book : ${westernBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                <div class="book-item" th:each="book : ${books}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
                     <div class="book-cover">
                         <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                     </div>
@@ -44,49 +38,77 @@
             </div>
         </div>
 
-        <!-- 동서양 카테고리 -->
-        <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
-            <div class="books-grid">
-                <div class="book-item" th:each="book : ${eastWestBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
-                    <div class="book-cover">
-                        <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                    </div>
-                    <div class="book-info">
-                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                        <p class="book-author" th:text="${book.author}">저자</p>
-                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+        <!-- 카테고리별 도서 표시 (검색 결과가 없을 때만) -->
+        <div th:unless="${isSearch}">
+            <div class="category-section">
+                <div class="category-tabs subtle-shadow">
+                    <button class="category-tab active">서양</button>
+                    <button class="category-tab">동서양</button>
+                    <button class="category-tab">동양</button>
+                    <button class="category-tab">과학사</button>
+                </div>
+            </div>
+
+            <!-- 서양 카테고리 -->
+            <div class="book-display subtle-shadow" id="category-western" style="display: block;">
+                <div class="books-grid">
+                    <div class="book-item" th:each="book : ${westernBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                        <div class="book-cover">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="book-author" th:text="${book.author}">저자</p>
+                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 동양 카테고리 -->
-        <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
-            <div class="books-grid">
-                <div class="book-item" th:each="book : ${easternBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
-                    <div class="book-cover">
-                        <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                    </div>
-                    <div class="book-info">
-                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                        <p class="book-author" th:text="${book.author}">저자</p>
-                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+            <!-- 동서양 카테고리 -->
+            <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
+                <div class="books-grid">
+                    <div class="book-item" th:each="book : ${eastWestBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                        <div class="book-cover">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="book-author" th:text="${book.author}">저자</p>
+                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 과학사 카테고리 -->
-        <div class="book-display subtle-shadow" id="category-science" style="display: none;">
-            <div class="books-grid">
-                <div class="book-item" th:each="book : ${scienceBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
-                    <div class="book-cover">
-                        <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+            <!-- 동양 카테고리 -->
+            <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
+                <div class="books-grid">
+                    <div class="book-item" th:each="book : ${easternBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                        <div class="book-cover">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="book-author" th:text="${book.author}">저자</p>
+                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        </div>
                     </div>
-                    <div class="book-info">
-                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                        <p class="book-author" th:text="${book.author}">저자</p>
-                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                </div>
+            </div>
+
+            <!-- 과학사 카테고리 -->
+            <div class="book-display subtle-shadow" id="category-science" style="display: none;">
+                <div class="books-grid">
+                    <div class="book-item" th:each="book : ${scienceBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                        <div class="book-cover">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="book-author" th:text="${book.author}">저자</p>
+                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        </div>
                     </div>
                 </div>
             </div>

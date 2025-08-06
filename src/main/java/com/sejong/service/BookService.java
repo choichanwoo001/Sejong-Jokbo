@@ -47,6 +47,30 @@ public class BookService {
     public List<Book> searchBooksByAuthor(String author) {
         return bookRepository.findByAuthorContaining(author);
     }
+    /**
+     * 통합 검색을 수행합니다.
+     * @param keyword 검색 키워드
+     * @return 검색 결과 도서 목록
+     */
+    public List<Book> searchBooks(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllBooks();
+        }
+        return bookRepository.searchBooks(keyword.trim());
+    }
+    
+    /**
+     * 카테고리와 키워드로 검색합니다.
+     * @param category 카테고리
+     * @param keyword 검색 키워드
+     * @return 검색 결과 도서 목록
+     */
+    public List<Book> searchBooksByCategoryAndKeyword(String category, String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getBooksByCategory(category);
+        }
+        return bookRepository.searchBooksByCategoryAndKeyword(category, keyword.trim());
+    }
     
     /**
      * ID로 도서를 조회합니다.

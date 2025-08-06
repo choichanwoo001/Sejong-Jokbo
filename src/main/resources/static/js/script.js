@@ -1,3 +1,32 @@
+// 검색 기능
+const searchInput = document.querySelector('.search-input');
+const searchForm = document.getElementById('searchForm');
+
+// 검색 입력 이벤트
+searchInput.addEventListener('focus', function() {
+    this.style.transform = 'scale(1.005)';
+});
+
+searchInput.addEventListener('blur', function() {
+    this.style.transform = 'scale(1)';
+});
+
+// 실시간 검색 (Enter 키 또는 검색 버튼 클릭 시)
+searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        performSearch();
+    }
+});
+
+// 검색 수행 함수
+function performSearch() {
+    const keyword = searchInput.value.trim();
+    if (keyword) {
+        searchForm.submit();
+    }
+}
+
 // 카테고리 탭 클릭 이벤트
 document.querySelectorAll('.category-tab').forEach(tab => {
     tab.addEventListener('click', function() {
@@ -36,14 +65,12 @@ document.querySelectorAll('.category-tab').forEach(tab => {
     });
 });
 
-// 검색 입력 이벤트
-const searchInput = document.querySelector('.search-input');
-searchInput.addEventListener('focus', function() {
-    this.style.transform = 'scale(1.005)';
-});
-
-searchInput.addEventListener('blur', function() {
-    this.style.transform = 'scale(1)';
+// 페이지 로드 시 검색 결과가 있으면 검색 입력 필드에 포커스
+document.addEventListener('DOMContentLoaded', function() {
+    const searchResults = document.querySelector('.search-results');
+    if (searchResults) {
+        searchInput.focus();
+    }
 });
 
 // 카테고리 탭 클릭 효과
