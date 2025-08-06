@@ -1,6 +1,5 @@
 package com.sejong.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -8,15 +7,35 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
     
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
     
     // 인증번호 저장용 (실제로는 Redis나 DB 사용 권장)
-    private final Map<String, String> verificationCodes = new HashMap<>();
+    private final Map<String, VerificationData> verificationCodes = new HashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    
+    // 인증번호 데이터 클래스
+    private static class VerificationData {
+        String code;
+        long expiryTime;
+        
+        VerificationData(String code, long expiryTime) {
+            this.code = code;
+            this.expiryTime = expiryTime;
+        }
+        
+        boolean isExpired() {
+            return System.currentTimeMillis() > expiryTime;
+        }
+    }
     
     /**
      * 인증번호 생성
@@ -40,7 +59,13 @@ public class EmailService {
             String verificationCode = generateVerificationCode();
             
             // 인증번호 저장 (5분간 유효)
-            verificationCodes.put(email, verificationCode);
+            long expiryTime = System.currentTimeMillis() + (5 * 60 * 1000); // 5분
+            verificationCodes.put(email, new VerificationData(verificationCode, expiryTime));
+            
+            // 5분 후 자동 삭제 스케줄링
+            scheduler.schedule(() -> {
+                verificationCodes.remove(email);
+            }, 5, TimeUnit.MINUTES);
             
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
@@ -63,9 +88,9 @@ public class EmailService {
      * 인증번호 확인
      */
     public boolean verifyCode(String email, String code) {
-        String savedCode = verificationCodes.get(email);
+        VerificationData data = verificationCodes.get(email);
         
-        if (savedCode != null && savedCode.equals(code)) {
+        if (data != null && !data.isExpired() && data.code.equals(code)) {
             // 인증 완료 후 저장된 코드 삭제
             verificationCodes.remove(email);
             return true;

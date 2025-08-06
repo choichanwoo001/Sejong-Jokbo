@@ -23,7 +23,10 @@
 
         <!-- 검색 결과 표시 -->
         <div th:if="${isSearch}" class="search-results">
-            <h2 th:if="${keyword}" th:text="'검색 결과: ' + ${keyword}">검색 결과</h2>
+            <div class="search-header">
+                <h2 th:if="${keyword}" th:text="'검색 결과: ' + ${keyword}">검색 결과</h2>
+                <a href="/" class="home-button">홈으로 가기</a>
+            </div>
             <div class="books-grid">
                 <div class="book-item" th:each="book : ${books}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
                     <div class="book-cover">

@@ -6,6 +6,7 @@ let isEmailVerified = false;
 document.addEventListener('DOMContentLoaded', function() {
     initializeFileUpload();
     initializeFormHandlers();
+    updateSubmitButtonState();
 });
 
 // 족보 탭 전환 함수
@@ -31,13 +32,18 @@ function showRegisterTab(tabName) {
 }
 
 // 인증번호 발송
-function sendVerificationCode() {
-    const email = event.target.parentElement.querySelector('input[type="email"]').value;
+function sendVerificationCode(button) {
+    const emailInput = button.parentElement.querySelector('input[type="email"]');
+    const email = emailInput.value;
     
     if (!email) {
         alert('이메일을 입력해주세요.');
         return;
     }
+    
+    // 버튼 상태 변경
+    button.disabled = true;
+    button.textContent = '발송 중...';
     
     // 서버에 인증번호 발송 요청
     fetch('/api/send-verification', {
@@ -51,32 +57,42 @@ function sendVerificationCode() {
     .then(data => {
         if (data.success) {
             alert('인증번호가 발송되었습니다.');
-            event.target.disabled = true;
-            event.target.textContent = '재발송';
+            button.textContent = '재발송';
+            
+            // 1분 후 재발송 가능하도록 설정
             setTimeout(() => {
-                event.target.disabled = false;
-                event.target.textContent = '인증번호 발송';
-            }, 60000); // 1분 후 재발송 가능
+                button.disabled = false;
+                button.textContent = '인증번호 발송';
+            }, 60000);
         } else {
             alert('인증번호 발송에 실패했습니다: ' + data.message);
+            button.disabled = false;
+            button.textContent = '인증번호 발송';
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('인증번호 발송 중 오류가 발생했습니다.');
+        button.disabled = false;
+        button.textContent = '인증번호 발송';
     });
 }
 
 // 인증번호 확인
-function verifyCode() {
-    const email = event.target.parentElement.parentElement.querySelector('input[type="email"]').value;
-    const inputCode = event.target.parentElement.querySelector('input[name="verificationCode"]').value;
-    const statusDiv = document.getElementById('verificationStatus');
+function verifyCode(button) {
+    const emailInput = button.closest('.form-group').parentElement.querySelector('input[type="email"]');
+    const codeInput = button.parentElement.querySelector('input[name="verificationCode"]');
+    const email = emailInput.value;
+    const inputCode = codeInput.value;
     
     if (!email || !inputCode) {
         alert('이메일과 인증번호를 모두 입력해주세요.');
         return;
     }
+    
+    // 버튼 상태 변경
+    button.disabled = true;
+    button.textContent = '확인 중...';
     
     // 서버에 인증번호 확인 요청
     fetch('/api/verify-code', {
@@ -93,21 +109,55 @@ function verifyCode() {
     .then(data => {
         if (data.success) {
             isEmailVerified = true;
-            statusDiv.className = 'verification-status verification-success';
-            statusDiv.textContent = '이메일 인증이 완료되었습니다.';
-            statusDiv.style.display = 'block';
-            event.target.disabled = true;
-            event.target.textContent = '인증완료';
+            button.textContent = '인증완료';
+            button.disabled = true;
+            button.style.backgroundColor = '#28a745';
+            
+            // 모든 인증 상태 표시 업데이트
+            updateVerificationStatus('이메일 인증이 완료되었습니다.', 'success');
+            updateSubmitButtonState();
         } else {
             isEmailVerified = false;
-            statusDiv.className = 'verification-status verification-error';
-            statusDiv.textContent = '인증번호가 일치하지 않습니다.';
-            statusDiv.style.display = 'block';
+            button.disabled = false;
+            button.textContent = '인증확인';
+            updateVerificationStatus('인증번호가 일치하지 않습니다.', 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('인증번호 확인 중 오류가 발생했습니다.');
+        button.disabled = false;
+        button.textContent = '인증확인';
+    });
+}
+
+// 인증 상태 표시 업데이트
+function updateVerificationStatus(message, type) {
+    const statusDivs = document.querySelectorAll('#verificationStatus');
+    statusDivs.forEach(statusDiv => {
+        statusDiv.className = `verification-status verification-${type}`;
+        statusDiv.textContent = message;
+        statusDiv.style.display = 'block';
+    });
+}
+
+// 제출 버튼 상태 업데이트
+function updateSubmitButtonState() {
+    const submitButtons = document.querySelectorAll('.form-button');
+    submitButtons.forEach(button => {
+        if (!isEmailVerified) {
+            button.disabled = true;
+            button.textContent = '이메일 인증 후 등록 가능';
+            button.style.backgroundColor = '#6c757d';
+        } else {
+            button.disabled = false;
+            if (button.textContent.includes('텍스트')) {
+                button.textContent = '텍스트 족보 등록';
+            } else if (button.textContent.includes('파일')) {
+                button.textContent = '파일 족보 등록';
+            }
+            button.style.backgroundColor = '#007bff';
+        }
     });
 }
 
@@ -188,7 +238,19 @@ function handleTextJokboSubmit(e) {
             alert('족보가 성공적으로 등록되었습니다.');
             this.reset();
             isEmailVerified = false;
-            document.getElementById('verificationStatus').style.display = 'none';
+            document.querySelectorAll('#verificationStatus').forEach(status => {
+                status.style.display = 'none';
+            });
+            updateSubmitButtonState();
+            
+            // 인증 버튼들 초기화
+            document.querySelectorAll('.verify-button').forEach(button => {
+                if (button.textContent.includes('인증확인')) {
+                    button.disabled = false;
+                    button.textContent = '인증확인';
+                    button.style.backgroundColor = '';
+                }
+            });
         } else {
             alert('족보 등록에 실패했습니다: ' + result);
         }
@@ -221,7 +283,19 @@ function handleFileJokboSubmit(e) {
             this.reset();
             document.getElementById('fileUpload').innerHTML = '<p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>';
             isEmailVerified = false;
-            document.getElementById('verificationStatus').style.display = 'none';
+            document.querySelectorAll('#verificationStatus').forEach(status => {
+                status.style.display = 'none';
+            });
+            updateSubmitButtonState();
+            
+            // 인증 버튼들 초기화
+            document.querySelectorAll('.verify-button').forEach(button => {
+                if (button.textContent.includes('인증확인')) {
+                    button.disabled = false;
+                    button.textContent = '인증확인';
+                    button.style.backgroundColor = '';
+                }
+            });
         } else {
             alert('족보 등록에 실패했습니다: ' + result);
         }

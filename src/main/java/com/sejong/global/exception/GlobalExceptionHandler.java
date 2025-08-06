@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,15 +55,5 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    /**
-     * 뷰 페이지용 예외 처리 (ModelAndView 반환)
-     */
-    @ExceptionHandler(Exception.class)
-    public ModelAndView handleExceptionForView(Exception e) {
-        ModelAndView mav = new ModelAndView("error");
-        mav.addObject("errorMessage", "오류가 발생했습니다: " + e.getMessage());
-        mav.addObject("statusCode", "500");
-        
-        return mav;
-    }
+
 }

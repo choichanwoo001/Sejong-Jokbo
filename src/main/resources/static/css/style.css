@@ -133,12 +133,39 @@ body {
     margin-bottom: 40px;
 }
 
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
 .search-results h2 {
     font-size: 1.5rem;
     color: #000000;
     font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
+    margin: 0;
+}
+
+.home-button {
+    background: #dc2626;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.home-button:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .search-results .books-grid {
@@ -233,9 +260,12 @@ body {
 
 .books-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 32px;
     margin-top: 30px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .book-item {
@@ -246,6 +276,11 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     border: 1px solid #f0f2f5;
+    width: 200px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .book-item:hover {
@@ -256,13 +291,14 @@ body {
 }
 
 .book-cover {
-    width: 100%;
-    height: 240px;
+    width: 160px;
+    height: 200px;
     margin-bottom: 12px;
     border-radius: 8px;
     overflow: hidden;
     background: #f8fafc;
     border: 1px solid #f1f5f9;
+    align-self: center;
 }
 
 .book-cover img {
@@ -330,6 +366,38 @@ body {
 
     .book-display {
         padding: 60px 20px;
+    }
+
+    .search-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .search-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .home-button {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        max-width: none;
+    }
+
+    .book-item {
+        width: 100%;
+        height: auto;
+        min-height: 280px;
+    }
+
+    .book-cover {
+        width: 100%;
+        height: 160px;
     }
 }
 
