@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 게시판 - 고전독서 족보</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+</head>
+<body>
+<div class="container fade-in">
+    <main class="main-content">
+        <div class="inquiry-header">
+            <h1>문의 게시판</h1>
+            <a href="/" class="home-link">홈으로</a>
+        </div>
+        
+        <div class="inquiry-actions">
+            <a href="/inquiry/write" class="write-button">문의 작성</a>
+        </div>
+        
+        <div class="inquiry-list">
+            <div th:if="${#lists.isEmpty(inquiries)}" class="no-inquiries">
+                <p>등록된 문의가 없습니다.</p>
+            </div>
+            
+            <div th:each="inquiry : ${inquiries}" class="inquiry-item">
+                <div class="inquiry-header-info">
+                    <h3 class="inquiry-title" th:text="${inquiry.name}">작성자</h3>
+                    <span class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                </div>
+                <div class="inquiry-content">
+                    <div th:if="${inquiry.isPublic}">
+                        <p th:text="${#strings.abbreviate(inquiry.message, 100)}">문의 내용</p>
+                    </div>
+                    <div th:unless="${inquiry.isPublic}" class="private-inquiry">
+                        <p class="private-message">비공개 문의입니다.</p>
+                    </div>
+                </div>
+                <div class="inquiry-footer">
+                    <a th:href="@{/inquiry/{id}(id=${inquiry.inquiryId})}" class="view-button">보기</a>
+                    <div class="inquiry-status">
+                        <span th:if="${!inquiry.isPublic}" class="private-badge">비공개</span>
+                        <span th:if="${inquiry.comments != null and !inquiry.comments.isEmpty()}" class="has-answer">답변완료</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

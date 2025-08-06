@@ -22,4 +22,16 @@ public interface JokboRepository extends JpaRepository<Jokbo, Integer> {
      */
     @Query("SELECT j FROM Jokbo j WHERE j.book.bookId = :bookId ORDER BY j.createdAt DESC")
     List<Jokbo> findAllJokbosByBookId(@Param("bookId") Integer bookId);
+    
+    /**
+     * 특정 상태의 족보 수를 가져옵니다
+     */
+    @Query("SELECT COUNT(j) FROM Jokbo j WHERE j.status = :status")
+    long countByStatus(@Param("status") Jokbo.JokboStatus status);
+    
+    /**
+     * 특정 상태의 족보 목록을 최신순으로 가져옵니다
+     */
+    @Query("SELECT j FROM Jokbo j WHERE j.status = :status ORDER BY j.createdAt DESC")
+    List<Jokbo> findByStatusOrderByCreatedAtDesc(@Param("status") Jokbo.JokboStatus status);
 } 

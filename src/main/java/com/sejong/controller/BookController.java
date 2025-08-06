@@ -91,12 +91,25 @@ public class BookController {
                                    @RequestParam MultipartFile file,
                                    @RequestParam(required = false) String comment) {
         try {
-            jokboService.registerFileJokbo(bookId, uploaderName, file, comment);
+            // 입력값 검증
+            if (uploaderName == null || uploaderName.trim().isEmpty()) {
+                return "error: 업로더 이름을 입력해주세요.";
+            }
+            
+            if (file == null || file.isEmpty()) {
+                return "error: 업로드할 파일을 선택해주세요.";
+            }
+            
+            jokboService.registerFileJokbo(bookId, uploaderName.trim(), file, comment);
             return "success";
+        } catch (IllegalArgumentException e) {
+            return "error: " + e.getMessage();
         } catch (java.io.IOException e) {
             return "error: 파일 처리 중 오류가 발생했습니다. - " + e.getMessage();
+        } catch (RuntimeException e) {
+            return "error: " + e.getMessage();
         } catch (Exception e) {
-            return "error: 족보 등록 중 오류가 발생했습니다. - " + e.getMessage();
+            return "error: 족보 등록 중 예상치 못한 오류가 발생했습니다. - " + e.getMessage();
         }
     }
     

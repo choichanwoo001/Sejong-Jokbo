@@ -26,6 +26,9 @@ public class Inquiry extends BaseEntity {
     @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
     
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic = true; // 기본값은 공개
+    
     @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL)
     private List<Comment> comments;
 } 

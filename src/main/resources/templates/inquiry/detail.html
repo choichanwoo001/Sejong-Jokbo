@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 상세 - 고전독서 족보</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+</head>
+<body>
+<div class="container fade-in">
+    <main class="main-content">
+        <div class="inquiry-header">
+            <h1>문의 상세</h1>
+            <a href="/inquiry" class="home-link">목록으로</a>
+        </div>
+        
+        <div class="inquiry-detail">
+            <div class="inquiry-info">
+                <div class="inquiry-meta">
+                    <span class="inquiry-author" th:text="${inquiry.name}">작성자</span>
+                    <span class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                </div>
+                
+                <div class="inquiry-content">
+                    <div th:if="${inquiry.isPublic}">
+                        <p th:text="${inquiry.message}">문의 내용</p>
+                    </div>
+                    <div th:unless="${inquiry.isPublic}" class="private-inquiry-detail">
+                        <p class="private-message">비공개 문의입니다.</p>
+                        <p class="private-note">이 문의는 비공개로 설정되어 있어 내용이 표시되지 않습니다.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comments-section">
+                <h3>답변</h3>
+                <div th:if="${#lists.isEmpty(inquiry.comments)}" class="no-comments">
+                    <p>아직 답변이 없습니다.</p>
+                </div>
+                
+                <div th:each="comment : ${inquiry.comments}" class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">관리자</span>
+                        <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">답변일</span>
+                    </div>
+                    <div class="comment-content">
+                        <p th:text="${comment.content}">답변 내용</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
