@@ -405,6 +405,81 @@
     margin: 0;
 }
 
+/* 페이징 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 24px 0;
+}
+
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.page-btn:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+}
+
+.page-btn.current {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+    font-weight: 600;
+    cursor: default;
+}
+
+.page-btn.current:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+    transform: none;
+}
+
+.prev-btn,
+.next-btn {
+    padding: 8px 16px;
+    font-weight: 600;
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    color: white;
+}
+
+.page-dots {
+    color: #9ca3af;
+    font-weight: 500;
+    padding: 0 8px;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .inquiry-header {
@@ -437,5 +512,33 @@
     
     .inquiry-detail {
         padding: 24px;
+    }
+    
+    .pagination {
+        gap: 8px;
+        margin-top: 24px;
+        padding: 20px 0;
+    }
+    
+    .page-numbers {
+        gap: 4px;
+    }
+    
+    .page-btn {
+        min-width: 36px;
+        height: 36px;
+        padding: 6px 10px;
+        font-size: 0.875rem;
+    }
+    
+    .prev-btn,
+    .next-btn {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+    
+    .page-dots {
+        padding: 0 4px;
+        font-size: 0.875rem;
     }
 }

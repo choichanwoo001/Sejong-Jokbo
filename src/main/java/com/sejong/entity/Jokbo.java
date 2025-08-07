@@ -22,8 +22,11 @@ public class Jokbo extends BaseEntity {
     @Column(name = "uploader_name", nullable = false, length = 100)
     private String uploaderName;
     
-    @Column(name = "content_url", nullable = false, length = 500)
+    @Column(name = "content_url", length = 500)
     private String contentUrl;
+    
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content; // 텍스트 족보 내용
     
     @Column(name = "content_type", length = 20)
     private String contentType; // "text" 또는 "file"

@@ -139,9 +139,10 @@ function sortBooks(sortType) {
             if (sortType === 'name') {
                 return titleA.localeCompare(titleB, 'ko');
             } else if (sortType === 'jokbo') {
-                // 족보 많은 순 정렬 (임시로 역순으로 정렬하여 차이를 보임)
-                // 실제로는 서버에서 족보 개수 정보를 받아와야 함
-                return titleB.localeCompare(titleA, 'ko');
+                // 족보 많은 순 정렬
+                const jokboCountA = parseInt(a.querySelector('.jokbo-count').textContent.match(/\d+/)[0]);
+                const jokboCountB = parseInt(b.querySelector('.jokbo-count').textContent.match(/\d+/)[0]);
+                return jokboCountB - jokboCountA; // 내림차순 (많은 순)
             }
             return 0;
         });

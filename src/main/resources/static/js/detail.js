@@ -7,9 +7,38 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFileUpload();
     initializeFormHandlers();
     updateSubmitButtonState();
+    checkTabParameter();
 });
 
-// 족보 탭 전환 함수
+// URL 파라미터 확인하여 탭 설정
+function checkTabParameter() {
+    // 서버에서 전달받은 activeTab 변수 사용
+    if (typeof activeTab !== 'undefined' && activeTab === 'list') {
+        // 족보 목록 탭 활성화
+        showJokboTabByName('list');
+    }
+    // 기본값은 등록 탭이므로 별도 처리 불필요
+}
+
+// 족보 탭 전환 함수 (탭 이름으로 직접 호출)
+function showJokboTabByName(tabName) {
+    // 모든 탭과 콘텐츠 비활성화
+    document.querySelectorAll('.jokbo-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.jokbo-content').forEach(content => content.classList.remove('active'));
+    
+    // 선택된 탭과 콘텐츠 활성화
+    const targetTab = document.querySelector(`.jokbo-tab[onclick="showJokboTab('${tabName}')"]`);
+    if (targetTab) {
+        targetTab.classList.add('active');
+    }
+    
+    const targetContent = document.getElementById(tabName);
+    if (targetContent) {
+        targetContent.classList.add('active');
+    }
+}
+
+// 족보 탭 전환 함수 (이벤트 핸들러용)
 function showJokboTab(tabName) {
     // 모든 탭과 콘텐츠 비활성화
     document.querySelectorAll('.jokbo-tab').forEach(tab => tab.classList.remove('active'));

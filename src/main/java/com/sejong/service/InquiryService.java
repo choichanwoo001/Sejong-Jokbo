@@ -6,6 +6,9 @@ import com.sejong.entity.Inquiry;
 import com.sejong.repository.CommentRepository;
 import com.sejong.repository.InquiryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,21 +22,45 @@ public class InquiryService {
     private final AdminService adminService;
     
     /**
-     * 모든 문의를 조회합니다
+     * 모든 문의를 페이징하여 조회합니다 (10개씩)
+     */
+    public Page<Inquiry> getAllInquiries(int page) {
+        Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
+        return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+    
+    /**
+     * 공개된 문의만 페이징하여 조회합니다 (10개씩)
+     */
+    public Page<Inquiry> getPublicInquiries(int page) {
+        Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
+        return inquiryRepository.findByIsPublicTrueOrderByCreatedAtDesc(pageable);
+    }
+    
+    /**
+     * 답변되지 않은 문의만 페이징하여 조회합니다 (10개씩)
+     */
+    public Page<Inquiry> getUnansweredInquiries(int page) {
+        Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
+        return inquiryRepository.findByCommentsIsEmptyOrderByCreatedAtDesc(pageable);
+    }
+    
+    /**
+     * 모든 문의를 조회합니다 (페이징 없음)
      */
     public List<Inquiry> getAllInquiries() {
         return inquiryRepository.findAllByOrderByCreatedAtDesc();
     }
     
     /**
-     * 공개된 문의만 조회합니다
+     * 공개된 문의만 조회합니다 (페이징 없음)
      */
     public List<Inquiry> getPublicInquiries() {
-        return inquiryRepository.findAllByOrderByCreatedAtDesc();
+        return inquiryRepository.findByIsPublicTrueOrderByCreatedAtDesc();
     }
     
     /**
-     * 답변되지 않은 문의만 조회합니다
+     * 답변되지 않은 문의만 조회합니다 (페이징 없음)
      */
     public List<Inquiry> getUnansweredInquiries() {
         return inquiryRepository.findByCommentsIsEmptyOrderByCreatedAtDesc();

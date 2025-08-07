@@ -10,6 +10,7 @@ import com.sejong.service.BookService;
 import com.sejong.service.InquiryService;
 import com.sejong.service.JokboService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -101,7 +102,7 @@ public class AdminController {
     }
     
     /**
-     * 승인 대기 중인 족보 목록
+     * 승인 대기 중인 족보 목록 (페이징 없음)
      */
     @GetMapping("/jokbos/pending")
     public String pendingJokbos(HttpSession session, Model model) {
@@ -117,7 +118,30 @@ public class AdminController {
     }
     
     /**
-     * 문의 목록
+     * 승인 대기 중인 족보 목록 (페이징 포함)
+     */
+    @GetMapping("/jokbos/pending/page/{page}")
+    public String pendingJokbosWithPaging(@PathVariable int page, 
+                                         HttpSession session, 
+                                         Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Page<Jokbo> jokboPage = jokboService.getPendingJokbos(page);
+        
+        model.addAttribute("jokbos", jokboPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", jokboPage.getTotalPages());
+        model.addAttribute("hasNext", jokboPage.hasNext());
+        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
+        
+        return "admin/pending-jokbos";
+    }
+    
+    /**
+     * 문의 목록 (페이징 없음)
      */
     @GetMapping("/inquiries")
     public String inquiries(HttpSession session, Model model) {
@@ -128,6 +152,29 @@ public class AdminController {
         
         List<Inquiry> inquiries = inquiryService.getAllInquiries();
         model.addAttribute("inquiries", inquiries);
+        
+        return "admin/inquiries";
+    }
+    
+    /**
+     * 문의 목록 (페이징 포함)
+     */
+    @GetMapping("/inquiries/page/{page}")
+    public String inquiriesWithPaging(@PathVariable int page, 
+                                     HttpSession session, 
+                                     Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Page<Inquiry> inquiryPage = inquiryService.getAllInquiries(page);
+        
+        model.addAttribute("inquiries", inquiryPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", inquiryPage.getTotalPages());
+        model.addAttribute("hasNext", inquiryPage.hasNext());
+        model.addAttribute("hasPrevious", inquiryPage.hasPrevious());
         
         return "admin/inquiries";
     }

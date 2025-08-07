@@ -354,6 +354,83 @@
     border: 1px solid #f5c6cb;
 }
 
+/* 족보 목록 페이징 스타일 */
+.jokbo-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 30px;
+    padding: 20px 0;
+}
+
+.jokbo-pagination .page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jokbo-pagination .page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.jokbo-pagination .page-btn:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+}
+
+.jokbo-pagination .page-btn.current {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+    font-weight: 600;
+    cursor: default;
+}
+
+.jokbo-pagination .page-btn.current:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+    transform: none;
+}
+
+.jokbo-pagination .prev-btn,
+.jokbo-pagination .next-btn {
+    padding: 6px 14px;
+    font-weight: 600;
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+}
+
+.jokbo-pagination .prev-btn:hover,
+.jokbo-pagination .next-btn:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    color: white;
+}
+
+.jokbo-pagination .page-dots {
+    color: #9ca3af;
+    font-weight: 500;
+    padding: 0 6px;
+    font-size: 0.875rem;
+}
+
 @media (max-width: 768px) {
     .main-layout {
         flex-direction: column;
@@ -371,5 +448,33 @@
     .email-group, .verification-code-group {
         flex-direction: column;
         align-items: stretch;
+    }
+    
+    .jokbo-pagination {
+        gap: 8px;
+        margin-top: 20px;
+        padding: 16px 0;
+    }
+    
+    .jokbo-pagination .page-numbers {
+        gap: 4px;
+    }
+    
+    .jokbo-pagination .page-btn {
+        min-width: 32px;
+        height: 32px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .jokbo-pagination .prev-btn,
+    .jokbo-pagination .next-btn {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .jokbo-pagination .page-dots {
+        padding: 0 4px;
+        font-size: 0.8rem;
     }
 } 

@@ -152,7 +152,7 @@
                             <!-- 텍스트 족보 액션 버튼 -->
                             <div th:if="${jokbo.contentType == 'text'}" class="jokbo-actions">
                                 <a th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" target="_blank" class="btn-view">보기</a>
-                                <a th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" class="btn-download">다운로드</a>
+                                <a th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" class="btn-download">PDF 다운로드</a>
                             </div>
                             
                             <!-- 파일 족보인 경우 -->
@@ -166,6 +166,74 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- 족보 목록 페이징 UI -->
+                    <div th:if="${totalPages > 1}" class="jokbo-pagination">
+                        <!-- 이전 페이지 버튼 -->
+                        <a th:if="${hasPrevious}" 
+                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}" 
+                           class="page-btn prev-btn">이전</a>
+                        
+                        <!-- 페이지 번호 버튼들 -->
+                        <div class="page-numbers">
+                            <!-- 첫 번째 페이지 (현재 페이지가 4보다 클 때만 표시) -->
+                            <a th:if="${currentPage > 3}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=0, tab=list)}" 
+                               class="page-btn">1</a>
+                            
+                            <!-- ... 표시 (첫 페이지와 표시 범위 사이에 간격이 있을 때) -->
+                            <span th:if="${currentPage > 4}" class="page-dots">...</span>
+                            
+                            <!-- 현재 페이지 앞 3개 -->
+                            <a th:if="${currentPage >= 3}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 3}, tab=list)}" 
+                               th:text="${currentPage - 2}"
+                               class="page-btn"></a>
+                            
+                            <a th:if="${currentPage >= 2}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 2}, tab=list)}" 
+                               th:text="${currentPage - 1}"
+                               class="page-btn"></a>
+                            
+                            <a th:if="${currentPage >= 1}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}" 
+                               th:text="${currentPage}"
+                               class="page-btn"></a>
+                            
+                            <!-- 현재 페이지 -->
+                            <span th:text="${currentPage + 1}" class="page-btn current"></span>
+                            
+                            <!-- 현재 페이지 뒤 3개 -->
+                            <a th:if="${currentPage < totalPages - 1}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}" 
+                               th:text="${currentPage + 2}"
+                               class="page-btn"></a>
+                            
+                            <a th:if="${currentPage < totalPages - 2}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 2}, tab=list)}" 
+                               th:text="${currentPage + 3}"
+                               class="page-btn"></a>
+                            
+                            <a th:if="${currentPage < totalPages - 3}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 3}, tab=list)}" 
+                               th:text="${currentPage + 4}"
+                               class="page-btn"></a>
+                            
+                            <!-- ... 표시 (표시 범위와 마지막 페이지 사이에 간격이 있을 때) -->
+                            <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+                            
+                            <!-- 마지막 페이지 (현재 페이지가 마지막에서 4번째보다 작을 때만 표시) -->
+                            <a th:if="${currentPage < totalPages - 4}" 
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${totalPages - 1}, tab=list)}" 
+                               th:text="${totalPages}"
+                               class="page-btn"></a>
+                        </div>
+                        
+                        <!-- 다음 페이지 버튼 -->
+                        <a th:if="${hasNext}" 
+                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}" 
+                           class="page-btn next-btn">다음</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -173,6 +241,7 @@
     
     <script th:inline="javascript">
         const bookId = /*[[${book.bookId}]]*/ 0;
+        const activeTab = /*[[${activeTab}]]*/ 'register';
     </script>
     <script th:src="@{/js/detail.js}"></script>
 </body>

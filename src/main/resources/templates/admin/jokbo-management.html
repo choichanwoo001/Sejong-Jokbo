@@ -73,10 +73,13 @@
                                    th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" 
                                    class="btn-download">다운로드</a>
                                 
-                                <!-- 텍스트 족보는 내용 보기 -->
+                                <!-- 텍스트 족보는 내용 보기 및 PDF 다운로드 -->
                                 <button th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
                                         th:onclick="'viewTextJokbo(\'' + ${jokbo.contentUrl} + '\')'" 
                                         class="btn-view">내용보기</button>
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
+                                   th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" 
+                                   class="btn-download">PDF 다운로드</a>
                             </div>
                         </td>
                     </tr>

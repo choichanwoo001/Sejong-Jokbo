@@ -4,6 +4,9 @@ import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
 import com.sejong.repository.BookRepository;
 import com.sejong.repository.JokboRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,18 +32,35 @@ public class JokboService {
 
     private final JokboRepository jokboRepository;
     private final BookRepository bookRepository;
+    private final PdfService pdfService;
     
     private static final String UPLOAD_DIR = "uploads/jokbo/";
     
     /**
-     * 특정 책의 승인된 족보 목록을 가져옵니다
+     * 특정 책의 승인된 족보 목록을 페이징하여 가져옵니다 (5개씩)
+     */
+    public Page<Jokbo> getApprovedJokbosByBookId(Integer bookId, int page) {
+        Pageable pageable = PageRequest.of(page, 5); // 5개씩 페이징
+        return jokboRepository.findApprovedJokbosByBookId(bookId, pageable);
+    }
+    
+    /**
+     * 특정 책의 모든 족보 목록을 페이징하여 가져옵니다 (관리자용, 5개씩)
+     */
+    public Page<Jokbo> getAllJokbosByBookId(Integer bookId, int page) {
+        Pageable pageable = PageRequest.of(page, 5); // 5개씩 페이징
+        return jokboRepository.findAllJokbosByBookId(bookId, pageable);
+    }
+    
+    /**
+     * 특정 책의 승인된 족보 목록을 가져옵니다 (페이징 없음)
      */
     public List<Jokbo> getApprovedJokbosByBookId(Integer bookId) {
         return jokboRepository.findApprovedJokbosByBookId(bookId);
     }
     
     /**
-     * 특정 책의 모든 족보 목록을 가져옵니다 (관리자용)
+     * 특정 책의 모든 족보 목록을 가져옵니다 (관리자용, 페이징 없음)
      */
     public List<Jokbo> getAllJokbosByBookId(Integer bookId) {
         return jokboRepository.findAllJokbosByBookId(bookId);
@@ -61,9 +81,10 @@ public class JokboService {
         // 텍스트를 PDF로 변환하여 파일로 저장
         String pdfFilename = null;
         try {
-            pdfFilename = convertTextToPdf(content, uploaderName);
+            String fileName = UUID.randomUUID().toString();
+            pdfFilename = pdfService.createPdfFromText(content, uploaderName, fileName);
             System.out.println("PDF 파일명 생성: " + pdfFilename);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("PDF 변환 실패: " + e.getMessage());
             throw new RuntimeException("PDF 변환 중 오류가 발생했습니다: " + e.getMessage());
         }
@@ -71,7 +92,8 @@ public class JokboService {
         Jokbo jokbo = new Jokbo();
         jokbo.setBook(book);
         jokbo.setUploaderName(uploaderName);
-        jokbo.setContentUrl(pdfFilename); // PDF 파일명을 URL 필드에 저장
+        jokbo.setContent(content); // 텍스트 내용 저장
+        jokbo.setContentUrl(pdfFilename); // PDF 파일 경로 저장
         jokbo.setContentType("text");
         jokbo.setComment(comment);
         jokbo.setStatus(Jokbo.JokboStatus.대기);
@@ -213,108 +235,7 @@ public class JokboService {
         return Paths.get(UPLOAD_DIR, filename);
     }
     
-    /**
-     * 텍스트를 PDF로 변환합니다
-     */
-    private String convertTextToPdf(String content, String uploaderName) throws IOException {
-        // 업로드 디렉토리 생성
-        Path uploadPath = createUploadDirectory();
-        
-        // PDF 파일명 생성
-        String pdfFilename = UUID.randomUUID().toString() + ".pdf";
-        Path pdfPath = uploadPath.resolve(pdfFilename);
-        
-        System.out.println("PDF 생성 시작: " + pdfFilename);
-        System.out.println("PDF 저장 경로: " + pdfPath.toAbsolutePath());
-        
-        try (PDDocument document = new PDDocument()) {
-            PDPage page = new PDPage();
-            document.addPage(page);
-            
-            PDPageContentStream contentStream = new PDPageContentStream(document, page);
-            
-            // 기본 폰트 사용 (한글 지원을 위해 시스템 폰트 사용)
-            PDFont font = null;
-            try {
-                font = PDType0Font.load(document, getClass().getResourceAsStream("/fonts/NanumGothic.ttf"));
-            } catch (Exception e) {
-                System.out.println("나눔고딕 폰트를 찾을 수 없습니다. 기본 폰트를 사용합니다.");
-            }
-            
-            if (font == null) {
-                // 기본 폰트 사용 (한글 지원 안됨)
-                font = PDType1Font.HELVETICA;
-            }
-            
-            contentStream.beginText();
-            contentStream.setFont(font, 12);
-            contentStream.setLeading(14.5f);
-            
-            // 시작 위치 설정
-            contentStream.newLineAtOffset(50, 750);
-            
-            // 제목 추가
-            contentStream.setFont(font, 18);
-            contentStream.showText("족보 내용");
-            contentStream.newLine();
-            contentStream.newLine();
-            
-            // 등록자 정보 추가
-            contentStream.setFont(font, 12);
-            contentStream.showText("등록자: " + uploaderName);
-            contentStream.newLine();
-            contentStream.newLine();
-            
-            // 구분선 추가
-            contentStream.showText("=".repeat(50));
-            contentStream.newLine();
-            contentStream.newLine();
-            
-            // 내용 추가 (긴 텍스트를 여러 줄로 나누기)
-            String[] lines = content.split("\n");
-            for (String line : lines) {
-                if (line.length() > 80) {
-                    // 긴 줄을 여러 줄로 나누기
-                    String[] words = line.split(" ");
-                    StringBuilder currentLine = new StringBuilder();
-                    
-                    for (String word : words) {
-                        if (currentLine.length() + word.length() > 80) {
-                            contentStream.showText(currentLine.toString());
-                            contentStream.newLine();
-                            currentLine = new StringBuilder(word + " ");
-                        } else {
-                            currentLine.append(word).append(" ");
-                        }
-                    }
-                    
-                    if (currentLine.length() > 0) {
-                        contentStream.showText(currentLine.toString());
-                        contentStream.newLine();
-                    }
-                } else {
-                    contentStream.showText(line);
-                    contentStream.newLine();
-                }
-            }
-            
-            contentStream.endText();
-            contentStream.close();
-            
-            // PDF 파일 저장
-            document.save(pdfPath.toFile());
-            document.close();
-            
-            System.out.println("PDF 생성 완료: " + pdfFilename);
-            
-        } catch (Exception e) {
-            System.err.println("PDF 생성 실패: " + e.getMessage());
-            e.printStackTrace();
-            throw new IOException("PDF 생성 중 오류가 발생했습니다: " + e.getMessage());
-        }
-        
-        return pdfFilename;
-    }
+
     
     /**
      * 승인 대기 중인 족보 수를 가져옵니다
@@ -324,9 +245,25 @@ public class JokboService {
     }
     
     /**
-     * 승인 대기 중인 족보 목록을 가져옵니다
+     * 승인 대기 중인 족보 목록을 페이징하여 가져옵니다 (5개씩)
+     */
+    public Page<Jokbo> getPendingJokbos(int page) {
+        Pageable pageable = PageRequest.of(page, 5); // 5개씩 페이징
+        return jokboRepository.findByStatusOrderByCreatedAtDesc(Jokbo.JokboStatus.대기, pageable);
+    }
+    
+    /**
+     * 승인 대기 중인 족보 목록을 가져옵니다 (페이징 없음)
      */
     public List<Jokbo> getPendingJokbos() {
         return jokboRepository.findByStatusOrderByCreatedAtDesc(Jokbo.JokboStatus.대기);
+    }
+    
+    /**
+     * ID로 족보를 가져옵니다
+     */
+    public Jokbo getJokboById(Integer jokboId) {
+        return jokboRepository.findById(jokboId)
+                .orElseThrow(() -> new RuntimeException("족보를 찾을 수 없습니다"));
     }
 } 

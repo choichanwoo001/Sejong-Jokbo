@@ -3,6 +3,7 @@ package com.sejong.controller;
 import com.sejong.entity.Inquiry;
 import com.sejong.service.InquiryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,18 @@ public class InquiryController {
     private final InquiryService inquiryService;
     
     /**
-     * 문의 게시판 목록 페이지
+     * 문의 게시판 목록 페이지 (페이징 포함)
      */
     @GetMapping("/inquiry")
-    public String inquiryList(Model model) {
-        List<Inquiry> publicInquiries = inquiryService.getPublicInquiries();
-        model.addAttribute("inquiries", publicInquiries);
+    public String inquiryList(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Inquiry> inquiryPage = inquiryService.getPublicInquiries(page);
+        
+        model.addAttribute("inquiries", inquiryPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", inquiryPage.getTotalPages());
+        model.addAttribute("hasNext", inquiryPage.hasNext());
+        model.addAttribute("hasPrevious", inquiryPage.hasPrevious());
+        
         return "inquiry/list";
     }
     

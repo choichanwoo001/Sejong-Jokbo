@@ -4,8 +4,10 @@ import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
 import com.sejong.service.BookService;
 import com.sejong.service.JokboService;
+import com.sejong.service.PdfService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ public class BookController {
 
     private final BookService bookService;
     private final JokboService jokboService;
+    private final PdfService pdfService;
     
     /**
      * 통합 검색을 수행합니다
@@ -55,15 +58,23 @@ public class BookController {
     }
     
     /**
-     * 책 상세 페이지를 보여줍니다
+     * 책 상세 페이지를 보여줍니다 (페이징 포함)
      */
     @GetMapping("/book/{bookId}")
-    public String bookDetail(@PathVariable Integer bookId, Model model) {
+    public String bookDetail(@PathVariable Integer bookId, 
+                           @RequestParam(defaultValue = "0") int page,
+                           @RequestParam(required = false) String tab,
+                           Model model) {
         Book book = bookService.getBookById(bookId);
-        List<Jokbo> approvedJokbos = jokboService.getApprovedJokbosByBookId(bookId);
+        Page<Jokbo> jokboPage = jokboService.getApprovedJokbosByBookId(bookId, page);
         
         model.addAttribute("book", book);
-        model.addAttribute("jokbos", approvedJokbos);
+        model.addAttribute("jokbos", jokboPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", jokboPage.getTotalPages());
+        model.addAttribute("hasNext", jokboPage.hasNext());
+        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
+        model.addAttribute("activeTab", tab != null ? tab : "register");
         
         return "book/detail";
     }
@@ -137,6 +148,37 @@ public class BookController {
     }
     
     /**
+     * 텍스트 족보를 PDF로 다운로드합니다
+     */
+    @GetMapping("/jokbo/download/text/{jokboId}")
+    public ResponseEntity<byte[]> downloadTextJokboAsPdf(@PathVariable Integer jokboId) {
+        try {
+            Jokbo jokbo = jokboService.getJokboById(jokboId);
+            
+            if (jokbo == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            if (!"text".equals(jokbo.getContentType())) {
+                return ResponseEntity.badRequest().build();
+            }
+            
+            // 텍스트 내용을 PDF로 변환
+            byte[] pdfBytes = pdfService.createPdfBytesFromText(jokbo.getContent(), jokbo.getUploaderName());
+            
+            String filename = "jokbo_" + jokboId + ".pdf";
+            
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
+                    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    /**
      * 족보 파일을 뷰어에서 보여줍니다
      */
     @GetMapping("/jokbo/view/{filename}")
@@ -183,7 +225,7 @@ public class BookController {
     }
     
     /**
-     * 관리자용 족보 관리 페이지
+     * 관리자용 족보 관리 페이지 (페이징 없음)
      */
     @GetMapping("/admin/book/{bookId}/jokbos")
     public String adminJokboManagement(@PathVariable Integer bookId, Model model) {
@@ -192,6 +234,26 @@ public class BookController {
         
         model.addAttribute("book", book);
         model.addAttribute("jokbos", allJokbos);
+        
+        return "admin/jokbo-management";
+    }
+    
+    /**
+     * 관리자용 족보 관리 페이지 (페이징 포함)
+     */
+    @GetMapping("/admin/book/{bookId}/jokbos/page/{page}")
+    public String adminJokboManagementWithPaging(@PathVariable Integer bookId, 
+                                                @PathVariable int page, 
+                                                Model model) {
+        Book book = bookService.getBookById(bookId);
+        Page<Jokbo> jokboPage = jokboService.getAllJokbosByBookId(bookId, page);
+        
+        model.addAttribute("book", book);
+        model.addAttribute("jokbos", jokboPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", jokboPage.getTotalPages());
+        model.addAttribute("hasNext", jokboPage.hasNext());
+        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
         
         return "admin/jokbo-management";
     }

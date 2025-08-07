@@ -33,7 +33,7 @@ public class SejongJokboApplication {
                 } catch (Exception e) {
                     System.err.println("업로드 디렉토리 생성에 실패했습니다: " + e.getMessage());
                 }
-            }
+            }   
         }
     }
 } 
