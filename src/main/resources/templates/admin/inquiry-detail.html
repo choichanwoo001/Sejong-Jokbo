@@ -246,7 +246,7 @@
     </div>
     
     <div class="container">
-        <a href="/admin/inquiries" class="back-btn">← 문의 목록으로 돌아가기</a>
+        <a href="/admin/inquiries" class="back-btn">문의 목록으로 돌아가기</a>
         
         <div class="inquiry-detail">
             <div class="inquiry-header">
@@ -296,7 +296,7 @@
             e.preventDefault();
             
             const content = document.getElementById('content').value;
-            const inquiryId = [[${inquiry.inquiryId}]];
+            const inquiryId = [[${inquiry.inquiryId}]]; // 문의 ID
             
             if (!content.trim()) {
                 alert('답변 내용을 입력해주세요.');
