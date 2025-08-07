@@ -145,8 +145,14 @@
                             </div>
                             
                             <!-- 텍스트 족보인 경우 -->
-                            <div th:if="${jokbo.contentType == 'text'}" class="jokbo-content-text" th:text="${jokbo.contentUrl}">
-                                족보 내용
+                            <div th:if="${jokbo.contentType == 'text'}" class="jokbo-content-text">
+                                <p>텍스트 족보가 등록되었습니다. 아래 버튼을 통해 내용을 확인하실 수 있습니다.</p>
+                            </div>
+                            
+                            <!-- 텍스트 족보 액션 버튼 -->
+                            <div th:if="${jokbo.contentType == 'text'}" class="jokbo-actions">
+                                <a th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" target="_blank" class="btn-view">보기</a>
+                                <a th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" class="btn-download">다운로드</a>
                             </div>
                             
                             <!-- 파일 족보인 경우 -->

@@ -226,12 +226,19 @@
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
-    white-space: pre-wrap;
+}
+
+.jokbo-content-text p {
+    margin: 0;
+    color: #666;
+    font-style: italic;
 }
 
 .jokbo-actions {
     display: flex;
     gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
 }
 
 .btn-view, .btn-download {

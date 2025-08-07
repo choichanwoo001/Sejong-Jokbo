@@ -38,6 +38,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     
+    // PDF 생성 - PDFBox 사용
+    implementation 'org.apache.pdfbox:pdfbox:2.0.29'
+    
     // 개발 도구
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     

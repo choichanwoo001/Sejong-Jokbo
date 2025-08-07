@@ -15,6 +15,16 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import java.io.InputStream;
+
+
+
 @Service
 @RequiredArgsConstructor
 public class JokboService {
@@ -45,15 +55,33 @@ public class JokboService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다"));
         
+        System.out.println("텍스트 족보 등록 시작");
+        System.out.println("책 ID: " + bookId);
+        System.out.println("등록자: " + uploaderName);
+        System.out.println("내용 길이: " + content.length());
+        
+        // 텍스트를 PDF로 변환하여 파일로 저장
+        String pdfFilename = null;
+        try {
+            pdfFilename = convertTextToPdf(content, uploaderName);
+            System.out.println("PDF 파일명 생성: " + pdfFilename);
+        } catch (IOException e) {
+            System.err.println("PDF 변환 실패: " + e.getMessage());
+            throw new RuntimeException("PDF 변환 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        
         Jokbo jokbo = new Jokbo();
         jokbo.setBook(book);
         jokbo.setUploaderName(uploaderName);
-        jokbo.setContentUrl(content); // 텍스트 내용을 URL 필드에 저장
+        jokbo.setContentUrl(pdfFilename); // PDF 파일명을 URL 필드에 저장
         jokbo.setContentType("text");
         jokbo.setComment(comment);
         jokbo.setStatus(Jokbo.JokboStatus.대기);
         
-        return jokboRepository.save(jokbo);
+        Jokbo savedJokbo = jokboRepository.save(jokbo);
+        System.out.println("족보 저장 완료. ContentUrl: " + savedJokbo.getContentUrl());
+        
+        return savedJokbo;
     }
     
     /**
@@ -185,6 +213,109 @@ public class JokboService {
      */
     public Path getFilePath(String filename) {
         return Paths.get(UPLOAD_DIR, filename);
+    }
+    
+    /**
+     * 텍스트를 PDF로 변환합니다
+     */
+    private String convertTextToPdf(String content, String uploaderName) throws IOException {
+        // 업로드 디렉토리 생성
+        Path uploadPath = createUploadDirectory();
+        
+        // PDF 파일명 생성
+        String pdfFilename = UUID.randomUUID().toString() + ".pdf";
+        Path pdfPath = uploadPath.resolve(pdfFilename);
+        
+        System.out.println("PDF 생성 시작: " + pdfFilename);
+        System.out.println("PDF 저장 경로: " + pdfPath.toAbsolutePath());
+        
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage();
+            document.addPage(page);
+            
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            
+            // 기본 폰트 사용 (한글 지원을 위해 시스템 폰트 사용)
+            PDFont font = null;
+            try {
+                font = PDType0Font.load(document, getClass().getResourceAsStream("/fonts/NanumGothic.ttf"));
+            } catch (Exception e) {
+                System.out.println("나눔고딕 폰트를 찾을 수 없습니다. 기본 폰트를 사용합니다.");
+            }
+            
+            if (font == null) {
+                // 기본 폰트 사용 (한글 지원 안됨)
+                font = PDType1Font.HELVETICA;
+            }
+            
+            contentStream.beginText();
+            contentStream.setFont(font, 12);
+            contentStream.setLeading(14.5f);
+            
+            // 시작 위치 설정
+            contentStream.newLineAtOffset(50, 750);
+            
+            // 제목 추가
+            contentStream.setFont(font, 18);
+            contentStream.showText("족보 내용");
+            contentStream.newLine();
+            contentStream.newLine();
+            
+            // 등록자 정보 추가
+            contentStream.setFont(font, 12);
+            contentStream.showText("등록자: " + uploaderName);
+            contentStream.newLine();
+            contentStream.newLine();
+            
+            // 구분선 추가
+            contentStream.showText("=".repeat(50));
+            contentStream.newLine();
+            contentStream.newLine();
+            
+            // 내용 추가 (긴 텍스트를 여러 줄로 나누기)
+            String[] lines = content.split("\n");
+            for (String line : lines) {
+                if (line.length() > 80) {
+                    // 긴 줄을 여러 줄로 나누기
+                    String[] words = line.split(" ");
+                    StringBuilder currentLine = new StringBuilder();
+                    
+                    for (String word : words) {
+                        if (currentLine.length() + word.length() > 80) {
+                            contentStream.showText(currentLine.toString());
+                            contentStream.newLine();
+                            currentLine = new StringBuilder(word + " ");
+                        } else {
+                            currentLine.append(word).append(" ");
+                        }
+                    }
+                    
+                    if (currentLine.length() > 0) {
+                        contentStream.showText(currentLine.toString());
+                        contentStream.newLine();
+                    }
+                } else {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
+            }
+            
+            contentStream.endText();
+            contentStream.close();
+            
+            // PDF 파일 저장
+            document.save(pdfPath.toFile());
+            document.close();
+            
+            System.out.println("PDF 생성 완료: " + pdfFilename);
+            
+        } catch (Exception e) {
+            System.err.println("PDF 생성 실패: " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("PDF 생성 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        
+        return pdfFilename;
     }
     
     /**
