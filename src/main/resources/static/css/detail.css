@@ -277,15 +277,55 @@
     background: #fef2f2;
 }
 
+.file-info {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+}
+
+.file-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.file-details span {
+    font-weight: 500;
+    color: #495057;
+}
+
+.file-remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+}
+
+.file-remove-btn:hover {
+    background: #c82333;
+}
+
 .back-link {
     display: inline-block;
     margin-bottom: 20px;
-    color: #dc2626;
+    background: #dc2626;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
     text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .back-link:hover {
-    color: #b91c1c;
+    background: #b91c1c;
+    transform: translateY(-1px);
 }
 
 .verification-status {

@@ -16,7 +16,7 @@
 }
 
 .home-link {
-    background: #6b7280;
+    background: #dc2626;
     color: white;
     padding: 8px 16px;
     border-radius: 6px;
@@ -26,7 +26,22 @@
 }
 
 .home-link:hover {
-    background: #4b5563;
+    background: #b91c1c;
+    transform: translateY(-1px);
+}
+
+.home-button {
+    background: #dc2626;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.home-button:hover {
+    background: #b91c1c;
     transform: translateY(-1px);
 }
 
@@ -36,7 +51,7 @@
 }
 
 .write-button {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
@@ -44,13 +59,13 @@
     font-weight: 600;
     transition: all 0.3s ease;
     display: inline-block;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .write-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .inquiry-list {
@@ -115,7 +130,7 @@
 }
 
 .view-button {
-    background: #3b82f6;
+    background: #dc2626;
     color: white;
     padding: 8px 16px;
     border-radius: 6px;
@@ -125,7 +140,7 @@
 }
 
 .view-button:hover {
-    background: #2563eb;
+    background: #b91c1c;
     transform: translateY(-1px);
 }
 
@@ -226,8 +241,8 @@
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .form-group textarea {
@@ -263,7 +278,7 @@
 }
 
 .submit-button {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
     padding: 12px 32px;
     border: none;
@@ -272,13 +287,13 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .submit-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .cancel-button {

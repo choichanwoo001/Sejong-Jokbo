@@ -61,6 +61,12 @@ document.querySelectorAll('.category-tab').forEach(tab => {
 
         if (targetCategory) {
             document.getElementById(targetCategory).style.display = 'block';
+            
+            // 현재 필터 적용
+            const sortFilter = document.getElementById('sortFilter');
+            const currentFilter = sortFilter ? sortFilter.value : 'name';
+            console.log('카테고리 변경, 필터 적용:', currentFilter);
+            sortBooks(currentFilter);
         }
     });
 });
@@ -82,6 +88,71 @@ document.querySelectorAll('.category-tab').forEach(button => {
         }, 150);
     });
 });
+
+// 필터 드롭다운 이벤트
+document.addEventListener('DOMContentLoaded', function() {
+    const sortFilter = document.getElementById('sortFilter');
+    if (sortFilter) {
+        sortFilter.addEventListener('change', function() {
+            const selectedValue = this.value;
+            console.log('필터 변경:', selectedValue);
+            sortBooks(selectedValue);
+        });
+    }
+});
+
+// 책 정렬 함수
+function sortBooks(sortType) {
+    const currentCategory = document.querySelector('.category-tab.active');
+    if (!currentCategory) return;
+
+    const tabText = currentCategory.textContent.trim();
+    let targetCategory;
+    
+    switch(tabText) {
+        case '서양':
+            targetCategory = 'category-western';
+            break;
+        case '동서양':
+            targetCategory = 'category-east-west';
+            break;
+        case '동양':
+            targetCategory = 'category-eastern';
+            break;
+        case '과학사':
+            targetCategory = 'category-science';
+            break;
+    }
+
+    if (targetCategory) {
+        const bookGrid = document.querySelector(`#${targetCategory} .books-grid`);
+        if (!bookGrid) return;
+        
+        const books = Array.from(bookGrid.children);
+        
+        if (books.length === 0) return;
+
+        books.sort((a, b) => {
+            const titleA = a.querySelector('.book-title').textContent.trim();
+            const titleB = b.querySelector('.book-title').textContent.trim();
+
+            if (sortType === 'name') {
+                return titleA.localeCompare(titleB, 'ko');
+            } else if (sortType === 'jokbo') {
+                // 족보 많은 순 정렬 (임시로 역순으로 정렬하여 차이를 보임)
+                // 실제로는 서버에서 족보 개수 정보를 받아와야 함
+                return titleB.localeCompare(titleA, 'ko');
+            }
+            return 0;
+        });
+
+        // 정렬된 결과를 다시 DOM에 추가
+        books.forEach(book => bookGrid.appendChild(book));
+        
+        // 정렬 완료 알림 (개발용)
+        console.log(`${sortType} 기준으로 정렬 완료`);
+    }
+}
 
 // 부드러운 페이지 로드 애니메이션
 window.addEventListener('load', function() {

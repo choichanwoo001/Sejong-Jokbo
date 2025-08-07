@@ -13,11 +13,6 @@
             <h1>고전독서 족보 사이트</h1>
         </div>
         
-        <!-- 문의 게시판 버튼 -->
-        <div class="inquiry-section">
-            <a href="/inquiry" class="inquiry-button subtle-shadow">문의 게시판</a>
-        </div>
-        
         <div class="search-section">
             <div class="search-container">
                 <form id="searchForm" method="get" action="/search">
@@ -39,6 +34,7 @@
                     </div>
                     <div class="book-info">
                         <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
                         <p class="book-author" th:text="${book.author}">저자</p>
                         <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                     </div>
@@ -49,11 +45,18 @@
         <!-- 카테고리별 도서 표시 (검색 결과가 없을 때만) -->
         <div th:unless="${isSearch}">
             <div class="category-section">
-                <div class="category-tabs subtle-shadow">
-                    <button class="category-tab active">서양</button>
-                    <button class="category-tab">동서양</button>
-                    <button class="category-tab">동양</button>
-                    <button class="category-tab">과학사</button>
+                <div class="category-header">
+                    <a href="/inquiry" class="inquiry-button">문의 게시판</a>
+                    <div class="category-tabs subtle-shadow">
+                        <button class="category-tab active">서양</button>
+                        <button class="category-tab">동서양</button>
+                        <button class="category-tab">동양</button>
+                        <button class="category-tab">과학사</button>
+                    </div>
+                    <select id="sortFilter" class="filter-dropdown">
+                        <option value="name">이름순</option>
+                        <option value="jokbo">족보 많은 순</option>
+                    </select>
                 </div>
             </div>
 
@@ -66,6 +69,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -82,6 +86,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -98,6 +103,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -114,6 +120,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
