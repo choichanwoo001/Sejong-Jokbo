@@ -44,6 +44,24 @@ spring:
 server:
   port: 8080
 
+# Google Cloud Storage 설정
+spring:
+  cloud:
+    gcp:
+      storage:
+        project-id: ${GOOGLE_CLOUD_PROJECT_ID}
+        credentials:
+          location: ${GOOGLE_CLOUD_CREDENTIALS_FILE:classpath:gcp-credentials.json}
+
+# Google Cloud Storage 버킷 설정
+app:
+  storage:
+    bucket-name: ${GOOGLE_CLOUD_STORAGE_BUCKET:sejong-jokbo-uploads}
+  
+  # 개발 환경 설정 (로컬 개발 시 true로 설정)
+  development:
+    use-local-storage: ${USE_LOCAL_STORAGE:false}
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

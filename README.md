@@ -121,3 +121,28 @@ docker run -p 8080:8080 \
 
 컨테이너가 정상적으로 실행되면 브라우저에서 `http://localhost:8080` 주소로 접속하여 애플리케이션을 확인할 수 있습니다.
 
+## 로컬 개발 환경 설정
+
+### 로컬 파일 저장 방식 사용 (Google Cloud Storage 없이 개발)
+
+로컬에서 개발할 때 Google Cloud Storage 설정 없이 파일 업로드 기능을 테스트하려면:
+
+1. **환경 변수 설정**:
+   ```bash
+   # Windows PowerShell
+   $env:USE_LOCAL_STORAGE="true"
+   
+   # 또는 .env 파일에 추가
+   USE_LOCAL_STORAGE=true
+   ```
+
+2. **JokboService.java 수정**:
+   - Google Cloud Storage 업로드 부분을 주석 처리
+   - 로컬 파일 저장 부분의 주석을 해제
+
+3. **BookController.java 수정**:
+   - Google Cloud Storage 다운로드 부분을 주석 처리
+   - 로컬 파일 다운로드 부분의 주석을 해제
+
+이렇게 하면 로컬 개발 환경에서도 파일 업로드/다운로드 기능을 정상적으로 테스트할 수 있습니다.
+

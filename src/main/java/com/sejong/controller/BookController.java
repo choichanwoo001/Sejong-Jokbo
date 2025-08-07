@@ -123,13 +123,19 @@ public class BookController {
     }
     
     /**
-     * 족보 파일을 다운로드합니다
+     * 족보 파일을 다운로드합니다 (Google Cloud Storage 사용)
      */
     @GetMapping("/jokbo/download/{filename}")
     public ResponseEntity<Resource> downloadJokboFile(@PathVariable String filename) {
         try {
+            // Google Cloud Storage 다운로드 (Docker 배포 시 사용)
+            Resource resource = jokboService.getStorageService().downloadFile(filename);
+            
+            // 로컬 파일 다운로드 (개발 환경용)
+            /*
             Path filePath = jokboService.getFilePath(filename);
             Resource resource = new UrlResource(filePath.toUri());
+            */
             
             if (resource.exists() && resource.isReadable()) {
                 return ResponseEntity.ok()
@@ -138,8 +144,6 @@ public class BookController {
             } else {
                 return ResponseEntity.notFound().build();
             }
-        } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
