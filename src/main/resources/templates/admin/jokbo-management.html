@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'족보 관리 - ' + ${book.title}">족보 관리 - 세종족보</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
+</head>
+<body>
+    <div class="admin-container">
+        <a href="/" class="back-button">홈으로 돌아가기</a>
+        
+        <div class="book-info">
+            <h1 class="book-title" th:text="${book.title}">책 제목</h1>
+            <p th:if="${book.author}"><strong>저자:</strong> <span th:text="${book.author}">저자명</span></p>
+            <p th:if="${book.publisher}"><strong>출판사:</strong> <span th:text="${book.publisher}">출판사명</span></p>
+            <p th:if="${book.category}"><strong>카테고리:</strong> <span th:text="${book.category}">카테고리</span></p>
+        </div>
+        
+        <h2>족보 관리</h2>
+        
+        <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
+            <p>등록된 족보가 없습니다.</p>
+        </div>
+        
+        <div th:if="${!#lists.isEmpty(jokbos)}">
+            <table class="jokbo-table">
+                <thead>
+                    <tr>
+                        <th>등록자</th>
+                        <th>등록일</th>
+                        <th>내용</th>
+                        <th>상태</th>
+                        <th>코멘트</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="jokbo : ${jokbos}">
+                        <td th:text="${jokbo.uploaderName}">등록자</td>
+                        <td th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</td>
+                        <td>
+                            <!-- 텍스트 족보인 경우 -->
+                            <div th:if="${jokbo.contentType == 'text'}" class="content-preview">
+                                텍스트 족보
+                            </div>
+                            <!-- 파일 족보인 경우 -->
+                            <div th:if="${jokbo.contentType == 'file'}" class="content-preview" th:text="${jokbo.contentUrl}">
+                                파일명
+                            </div>
+                        </td>
+                        <td>
+                            <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}" 
+                                  th:text="${jokbo.status.name()}">상태</span>
+                        </td>
+                        <td th:text="${jokbo.comment}">코멘트</td>
+                        <td>
+                            <div class="action-buttons">
+                                <!-- 승인 대기 중인 경우에만 승인/반려 버튼 표시 -->
+                                <button th:if="${jokbo.status.name() == '대기'}" 
+                                        th:onclick="'approveJokbo(' + ${jokbo.jokboId} + ')'" 
+                                        class="btn-approve">승인</button>
+                                <button th:if="${jokbo.status.name() == '대기'}" 
+                                        th:onclick="'rejectJokbo(' + ${jokbo.jokboId} + ')'" 
+                                        class="btn-reject">반려</button>
+                                
+                                <!-- 승인된 족보는 보기/다운로드 버튼 표시 -->
+                                <!-- 텍스트 족보: PDF로 보기/다운로드 -->
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
+                                   th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                                   target="_blank" class="btn-view">보기</a>
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
+                                   th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" 
+                                   class="btn-download">다운로드</a>
+                                
+                                <!-- 파일 족보: 원본 파일로 보기/다운로드 -->
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'file'}" 
+                                   th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
+                                   target="_blank" class="btn-view">보기</a>
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'file'}" 
+                                   th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" 
+                                   class="btn-download">다운로드</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+    
+    <script th:src="@{/js/jokbo-management.js}"></script>
+</body>
+</html> 

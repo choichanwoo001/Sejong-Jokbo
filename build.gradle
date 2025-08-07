@@ -26,13 +26,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     
     // MySQL 드라이버
     runtimeOnly 'com.mysql:mysql-connector-j'
     
+    // .env 파일 지원
+    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+    
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    
+    // PDF 생성 - PDFBox 사용
+    implementation 'org.apache.pdfbox:pdfbox:2.0.29'
+    
+    // Google Cloud Storage
+    implementation 'com.google.cloud:spring-cloud-gcp-storage:4.8.4'
     
     // 개발 도구
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 게시판 - 고전독서 족보</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+</head>
+<body>
+<div class="container fade-in">
+    <main class="main-content">
+        <div class="inquiry-header">
+            <h1>문의 게시판</h1>
+            <a href="/" class="home-button">홈으로 돌아가기</a>
+        </div>
+        
+        <div class="inquiry-actions">
+            <a href="/inquiry/write" class="write-button">문의 작성</a>
+        </div>
+        
+        <div class="inquiry-list">
+            <div th:if="${#lists.isEmpty(inquiries)}" class="no-inquiries">
+                <p>등록된 문의가 없습니다.</p>
+            </div>
+            
+            <div th:each="inquiry : ${inquiries}" class="inquiry-item">
+                <div class="inquiry-header-info">
+                    <h3 class="inquiry-title" th:text="${inquiry.name}">작성자</h3>
+                    <span class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                </div>
+                <div class="inquiry-content">
+                    <div th:if="${inquiry.isPublic}">
+                        <p th:text="${#strings.abbreviate(inquiry.message, 100)}">문의 내용</p>
+                    </div>
+                    <div th:unless="${inquiry.isPublic}" class="private-inquiry">
+                        <p class="private-message">비공개 문의입니다.</p>
+                    </div>
+                </div>
+                <div class="inquiry-footer">
+                    <a th:href="@{/inquiry/{id}(id=${inquiry.inquiryId})}" class="view-button">보기</a>
+                    <div class="inquiry-status">
+                        <span th:if="${!inquiry.isPublic}" class="private-badge">비공개</span>
+                        <span th:if="${inquiry.comments != null and !inquiry.comments.isEmpty()}" class="has-answer">답변완료</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 페이징 UI -->
+        <div th:if="${totalPages > 1}" class="pagination">
+            <!-- 이전 페이지 버튼 -->
+            <a th:if="${hasPrevious}" 
+               th:href="@{/inquiry(page=${currentPage - 1})}" 
+               class="page-btn prev-btn">이전</a>
+            
+            <!-- 페이지 번호 버튼들 -->
+            <div class="page-numbers">
+                <!-- 첫 번째 페이지 (현재 페이지가 4보다 클 때만 표시) -->
+                <a th:if="${currentPage > 3}" 
+                   th:href="@{/inquiry(page=0)}" 
+                   class="page-btn">1</a>
+                
+                <!-- ... 표시 (첫 페이지와 표시 범위 사이에 간격이 있을 때) -->
+                <span th:if="${currentPage > 4}" class="page-dots">...</span>
+                
+                <!-- 현재 페이지 앞 3개 -->
+                <a th:if="${currentPage >= 3}" 
+                   th:href="@{/inquiry(page=${currentPage - 3})}" 
+                   th:text="${currentPage - 2}"
+                   class="page-btn"></a>
+                
+                <a th:if="${currentPage >= 2}" 
+                   th:href="@{/inquiry(page=${currentPage - 2})}" 
+                   th:text="${currentPage - 1}"
+                   class="page-btn"></a>
+                
+                <a th:if="${currentPage >= 1}" 
+                   th:href="@{/inquiry(page=${currentPage - 1})}" 
+                   th:text="${currentPage}"
+                   class="page-btn"></a>
+                
+                <!-- 현재 페이지 -->
+                <span th:text="${currentPage + 1}" class="page-btn current"></span>
+                
+                <!-- 현재 페이지 뒤 3개 -->
+                <a th:if="${currentPage < totalPages - 1}" 
+                   th:href="@{/inquiry(page=${currentPage + 1})}" 
+                   th:text="${currentPage + 2}"
+                   class="page-btn"></a>
+                
+                <a th:if="${currentPage < totalPages - 2}" 
+                   th:href="@{/inquiry(page=${currentPage + 2})}" 
+                   th:text="${currentPage + 3}"
+                   class="page-btn"></a>
+                
+                <a th:if="${currentPage < totalPages - 3}" 
+                   th:href="@{/inquiry(page=${currentPage + 3})}" 
+                   th:text="${currentPage + 4}"
+                   class="page-btn"></a>
+                
+                <!-- ... 표시 (표시 범위와 마지막 페이지 사이에 간격이 있을 때) -->
+                <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+                
+                <!-- 마지막 페이지 (현재 페이지가 마지막에서 4번째보다 작을 때만 표시) -->
+                <a th:if="${currentPage < totalPages - 4}" 
+                   th:href="@{/inquiry(page=${totalPages - 1})}" 
+                   th:text="${totalPages}"
+                   class="page-btn"></a>
+            </div>
+            
+            <!-- 다음 페이지 버튼 -->
+            <a th:if="${hasNext}" 
+               th:href="@{/inquiry(page=${currentPage + 1})}" 
+               class="page-btn next-btn">다음</a>
+        </div>
+    </main>
+</div>
+</body>
+</html>
