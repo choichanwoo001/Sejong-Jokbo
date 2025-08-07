@@ -86,15 +86,21 @@ public class JokboService {
         
         // 업로드 디렉토리 생성
         Path uploadPath = createUploadDirectory();
+        System.out.println("업로드 경로: " + uploadPath.toAbsolutePath());
         
         // 파일명 생성 (중복 방지)
         String newFilename = UUID.randomUUID().toString() + "." + fileExtension;
+        System.out.println("새 파일명: " + newFilename);
         
         // 파일 저장
         Path filePath = uploadPath.resolve(newFilename);
+        System.out.println("저장할 파일 경로: " + filePath.toAbsolutePath());
+        
         try {
             Files.copy(file.getInputStream(), filePath);
+            System.out.println("파일 저장 성공");
         } catch (IOException e) {
+            System.err.println("파일 저장 실패: " + e.getMessage());
             throw new IOException("파일 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
         
@@ -114,12 +120,18 @@ public class JokboService {
      */
     private Path createUploadDirectory() throws IOException {
         Path uploadPath = Paths.get(UPLOAD_DIR);
+        System.out.println("업로드 디렉토리 경로: " + uploadPath.toAbsolutePath());
+        
         if (!Files.exists(uploadPath)) {
             try {
                 Files.createDirectories(uploadPath);
+                System.out.println("업로드 디렉토리 생성 성공");
             } catch (IOException e) {
+                System.err.println("업로드 디렉토리 생성 실패: " + e.getMessage());
                 throw new IOException("업로드 디렉토리 생성에 실패했습니다: " + e.getMessage(), e);
             }
+        } else {
+            System.out.println("업로드 디렉토리가 이미 존재합니다");
         }
         return uploadPath;
     }

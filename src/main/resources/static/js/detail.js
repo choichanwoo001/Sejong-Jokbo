@@ -193,13 +193,57 @@ function initializeFileUpload() {
 function updateFileDisplay() {
     const fileInput = document.getElementById('fileInput');
     const fileUpload = document.getElementById('fileUpload');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
     
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        fileUpload.innerHTML = `<p>선택된 파일: ${file.name}</p>`;
+        
+        // 파일 크기 검증 (10MB 제한)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('파일 크기가 10MB를 초과합니다.');
+            removeFile();
+            return;
+        }
+        
+        // 파일 확장자 검증
+        const allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'txt'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('허용되지 않는 파일 형식입니다. (허용: pdf, jpg, jpeg, png, gif, txt)');
+            removeFile();
+            return;
+        }
+        
+        // 파일 정보 표시
+        fileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+        fileInfo.style.display = 'block';
+        fileUpload.style.display = 'none';
     } else {
-        fileUpload.innerHTML = '<p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>';
+        fileInfo.style.display = 'none';
+        fileUpload.style.display = 'block';
     }
+}
+
+// 파일 크기 포맷팅
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// 파일 삭제
+function removeFile() {
+    const fileInput = document.getElementById('fileInput');
+    const fileUpload = document.getElementById('fileUpload');
+    const fileInfo = document.getElementById('fileInfo');
+    
+    fileInput.value = '';
+    fileInfo.style.display = 'none';
+    fileUpload.style.display = 'block';
+    fileUpload.innerHTML = '<p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>';
 }
 
 // 폼 핸들러 초기화
@@ -269,19 +313,36 @@ function handleFileJokboSubmit(e) {
         return;
     }
     
+    const fileInput = document.getElementById('fileInput');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('업로드할 파일을 선택해주세요.');
+        return;
+    }
+    
     const formData = new FormData(this);
     const bookId = this.closest('.book-detail').dataset.bookId;
+    
+    // 제출 버튼 비활성화
+    const submitButton = this.querySelector('.form-button');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = '업로드 중...';
     
     fetch(`/book/${bookId}/jokbo/file`, {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
     .then(result => {
         if (result === 'success') {
             alert('족보가 성공적으로 등록되었습니다.');
             this.reset();
-            document.getElementById('fileUpload').innerHTML = '<p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>';
+            removeFile();
             isEmailVerified = false;
             document.querySelectorAll('#verificationStatus').forEach(status => {
                 status.style.display = 'none';
@@ -301,6 +362,12 @@ function handleFileJokboSubmit(e) {
         }
     })
     .catch(error => {
-        alert('오류가 발생했습니다: ' + error);
+        console.error('Upload error:', error);
+        alert('파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+    })
+    .finally(() => {
+        // 제출 버튼 복원
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
     });
 } 

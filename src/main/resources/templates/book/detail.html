@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="book-detail" th:data-book-id="${book.bookId}">
-        <a href="/" class="back-link">← 홈으로 돌아가기</a>
+        <a href="/" class="back-link">홈으로 돌아가기</a>
         
         <div class="main-layout">
             <!-- 책 정보 섹션 -->
@@ -113,6 +113,12 @@
                                     <div class="file-upload" id="fileUpload">
                                         <p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
                                         <input type="file" name="file" id="fileInput" style="display: none;" accept=".pdf,.jpg,.jpeg,.png,.gif,.txt" required>
+                                    </div>
+                                    <div id="fileInfo" class="file-info" style="display: none;">
+                                        <div class="file-details">
+                                            <span id="fileName"></span>
+                                            <button type="button" class="file-remove-btn" onclick="removeFile()">삭제</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
