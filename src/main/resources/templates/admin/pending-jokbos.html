@@ -261,7 +261,7 @@
                 <div class="jokbo-content">
                     <div class="content-type" th:text="${jokbo.contentType == 'text' ? '텍스트 족보' : '파일 족보'}">내용 타입</div>
                     
-                    <div th:if="${jokbo.contentType == 'text'}" class="text-content" th:text="${jokbo.contentUrl}">텍스트 내용</div>
+                    <div th:if="${jokbo.contentType == 'text'}" class="text-content" th:text="${jokbo.content}">텍스트 내용</div>
                     
                     <div th:if="${jokbo.contentType == 'file'}" class="file-content">
                         <a th:href="'/jokbo/download/' + ${jokbo.contentUrl}" class="file-link" th:text="${jokbo.contentUrl}">파일명</a>

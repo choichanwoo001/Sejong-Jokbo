@@ -4,7 +4,6 @@ import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
 import com.sejong.service.BookService;
 import com.sejong.service.JokboService;
-import com.sejong.service.PdfService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,6 @@ public class BookController {
 
     private final BookService bookService;
     private final JokboService jokboService;
-    private final PdfService pdfService;
     
     /**
      * 통합 검색을 수행합니다
@@ -148,23 +146,29 @@ public class BookController {
     }
     
     /**
+     * 텍스트 족보를 PDF로 보기 (브라우저에서 열기)
+     */
+    @GetMapping("/jokbo/view/text/{jokboId}")
+    public ResponseEntity<byte[]> viewTextJokboAsPdf(@PathVariable Integer jokboId) {
+        try {
+            byte[] pdfBytes = jokboService.getTextJokboAsPdf(jokboId);
+            
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
+                    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    /**
      * 텍스트 족보를 PDF로 다운로드합니다
      */
     @GetMapping("/jokbo/download/text/{jokboId}")
     public ResponseEntity<byte[]> downloadTextJokboAsPdf(@PathVariable Integer jokboId) {
         try {
-            Jokbo jokbo = jokboService.getJokboById(jokboId);
-            
-            if (jokbo == null) {
-                return ResponseEntity.notFound().build();
-            }
-            
-            if (!"text".equals(jokbo.getContentType())) {
-                return ResponseEntity.badRequest().build();
-            }
-            
-            // 텍스트 내용을 PDF로 변환
-            byte[] pdfBytes = pdfService.createPdfBytesFromText(jokbo.getContent(), jokbo.getUploaderName());
+            byte[] pdfBytes = jokboService.getTextJokboAsPdf(jokboId);
             
             String filename = "jokbo_" + jokboId + ".pdf";
             

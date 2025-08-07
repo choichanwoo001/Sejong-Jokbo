@@ -42,8 +42,8 @@
                         <td th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</td>
                         <td>
                             <!-- 텍스트 족보인 경우 -->
-                            <div th:if="${jokbo.contentType == 'text'}" class="content-preview" th:text="${jokbo.contentUrl}">
-                                족보 내용
+                            <div th:if="${jokbo.contentType == 'text'}" class="content-preview">
+                                텍스트 족보
                             </div>
                             <!-- 파일 족보인 경우 -->
                             <div th:if="${jokbo.contentType == 'file'}" class="content-preview" th:text="${jokbo.contentUrl}">
@@ -66,20 +66,21 @@
                                         class="btn-reject">반려</button>
                                 
                                 <!-- 승인된 족보는 보기/다운로드 버튼 표시 -->
+                                <!-- 텍스트 족보: PDF로 보기/다운로드 -->
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
+                                   th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                                   target="_blank" class="btn-view">보기</a>
+                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
+                                   th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" 
+                                   class="btn-download">다운로드</a>
+                                
+                                <!-- 파일 족보: 원본 파일로 보기/다운로드 -->
                                 <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'file'}" 
                                    th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
                                    target="_blank" class="btn-view">보기</a>
                                 <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'file'}" 
                                    th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" 
                                    class="btn-download">다운로드</a>
-                                
-                                <!-- 텍스트 족보는 내용 보기 및 PDF 다운로드 -->
-                                <button th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
-                                        th:onclick="'viewTextJokbo(\'' + ${jokbo.contentUrl} + '\')'" 
-                                        class="btn-view">내용보기</button>
-                                <a th:if="${jokbo.status.name() == '승인' && jokbo.contentType == 'text'}" 
-                                   th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" 
-                                   class="btn-download">PDF 다운로드</a>
                             </div>
                         </td>
                     </tr>
@@ -88,14 +89,7 @@
         </div>
     </div>
     
-    <!-- 텍스트 족보 내용 보기 모달 -->
-    <div id="textModal" class="modal">
-        <div class="modal-content">
-            <h3>족보 내용</h3>
-            <div id="textContent" class="text-content"></div>
-            <button onclick="closeTextModal()" class="modal-close">닫기</button>
-        </div>
-    </div>
+
     
     <script th:src="@{/js/jokbo-management.js}"></script>
 </body>

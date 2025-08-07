@@ -18,12 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+
 
 
 @Service
@@ -78,28 +73,17 @@ public class JokboService {
         System.out.println("등록자: " + uploaderName);
         System.out.println("내용 길이: " + content.length());
         
-        // 텍스트를 PDF로 변환하여 파일로 저장
-        String pdfFilename = null;
-        try {
-            String fileName = UUID.randomUUID().toString();
-            pdfFilename = pdfService.createPdfFromText(content, uploaderName, fileName);
-            System.out.println("PDF 파일명 생성: " + pdfFilename);
-        } catch (Exception e) {
-            System.err.println("PDF 변환 실패: " + e.getMessage());
-            throw new RuntimeException("PDF 변환 중 오류가 발생했습니다: " + e.getMessage());
-        }
-        
         Jokbo jokbo = new Jokbo();
         jokbo.setBook(book);
         jokbo.setUploaderName(uploaderName);
-        jokbo.setContent(content); // 텍스트 내용 저장
-        jokbo.setContentUrl(pdfFilename); // PDF 파일 경로 저장
+        jokbo.setContent(content); // 텍스트 내용만 RDB에 저장
+        jokbo.setContentUrl(null); // 텍스트 족보는 파일 저장하지 않음
         jokbo.setContentType("text");
         jokbo.setComment(comment);
         jokbo.setStatus(Jokbo.JokboStatus.대기);
         
         Jokbo savedJokbo = jokboRepository.save(jokbo);
-        System.out.println("족보 저장 완료. ContentUrl: " + savedJokbo.getContentUrl());
+        System.out.println("텍스트 족보 저장 완료");
         
         return savedJokbo;
     }
@@ -265,5 +249,22 @@ public class JokboService {
     public Jokbo getJokboById(Integer jokboId) {
         return jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new RuntimeException("족보를 찾을 수 없습니다"));
+    }
+    
+    /**
+     * 텍스트 족보를 PDF 바이트 배열로 변환합니다 (실시간 변환)
+     */
+    public byte[] getTextJokboAsPdf(Integer jokboId) throws Exception {
+        Jokbo jokbo = getJokboById(jokboId);
+        
+        if (!"text".equals(jokbo.getContentType())) {
+            throw new IllegalArgumentException("텍스트 족보가 아닙니다.");
+        }
+        
+        if (jokbo.getContent() == null || jokbo.getContent().trim().isEmpty()) {
+            throw new IllegalArgumentException("족보 내용이 없습니다.");
+        }
+        
+        return pdfService.createPdfBytesFromText(jokbo.getContent(), jokbo.getUploaderName());
     }
 } 
