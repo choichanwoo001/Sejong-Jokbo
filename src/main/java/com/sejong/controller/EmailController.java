@@ -1,19 +1,19 @@
 package com.sejong.controller;
 
 import com.sejong.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class EmailController {
     
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
     
     /**
      * 인증번호 발송
