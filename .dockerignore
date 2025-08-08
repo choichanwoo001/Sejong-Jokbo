@@ -1,0 +1,12 @@
+.gradle
+.idea
+build/
+.git
+.gitignore
+*.bat
+*.md
+dummy_data.sql
+init.sql
+update_schema.sql
+uploads/
+
