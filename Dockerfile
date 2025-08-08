@@ -27,8 +27,8 @@ FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
 # 빌드 단계(builder)에서 생성된 JAR 파일을 복사합니다.
-# build/libs/ 디렉토리 아래에 생성된 JAR 파일 중 이름이 'sejong-jokbo'로 시작하고 '.jar'로 끝나는 파일을 app.jar로 복사합니다.
-COPY --from=builder /app/build/libs/sejong-jokbo-*.jar app.jar
+# build/libs/ 디렉토리 아래에 생성된 JAR 파일 중 이름이 'Sejong_Jokbo'로 시작하고 '.jar'로 끝나는 파일을 app.jar로 복사합니다.
+COPY --from=builder /app/build/libs/Sejong_Jokbo-*.jar app.jar
 
 # 애플리케이션이 사용할 포트를 8080으로 노출시킵니다.
 EXPOSE 8080
