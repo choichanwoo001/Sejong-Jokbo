@@ -30,7 +30,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          # GHCR는 이미지 경로에 대문자를 허용하지 않으므로 소문자로 고정
+          images: ghcr.io/${{ github.repository_owner }}/sejong-jokbo
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
