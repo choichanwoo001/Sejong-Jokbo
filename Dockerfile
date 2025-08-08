@@ -5,19 +5,18 @@ FROM gradle:8.5.0-jdk21-jammy AS builder
 # 작업 디렉토리를 /app으로 설정합니다.
 WORKDIR /app
 
-# 먼저 의존성 관련 파일만 복사하여 Gradle의 캐싱을 활용합니다.
-# 이렇게 하면 소스 코드가 변경되지 않았을 경우, 의존성을 다시 다운로드하지 않아 빌드 속도가 향상됩니다.
-COPY build.gradle gradlew ./
+# 먼저 의존성 관련 파일만 복사하여 캐시를 활용합니다.
+# Gradle Wrapper를 사용해 버전 일치를 보장합니다.
 COPY gradle ./gradle
+COPY gradlew build.gradle ./
+RUN chmod +x gradlew
 
-# 의존성을 미리 다운로드합니다. --go-offline 옵션으로 네트워크 없이 빌드 가능하도록 준비합니다.
-RUN gradle build --go-offline || true
+# 의존성 프리페치 (네트워크 이슈가 있어도 빌드가 계속되도록 허용)
+RUN ./gradlew dependencies --no-daemon || true
 
-# 전체 소스 코드를 복사합니다.
+# 전체 소스 복사 후 빌드 (테스트 제외)
 COPY src ./src
-
-# 애플리케이션을 빌드합니다. 테스트는 제외하여 빌드 시간을 단축합니다.
-RUN gradle build -x test
+RUN ./gradlew bootJar -x test --no-daemon
 
 # Stage 2: 실행 환경
 # 더 가볍고 안전한 JRE(Java Runtime Environment) 이미지를 기반으로 최종 이미지를 만듭니다.
@@ -26,9 +25,9 @@ FROM eclipse-temurin:21-jre-jammy
 # 작업 디렉토리를 /app으로 설정합니다.
 WORKDIR /app
 
-# 빌드 단계(builder)에서 생성된 JAR 파일을 복사합니다.
-# build/libs/ 디렉토리 아래에 생성된 JAR 파일 중 이름이 'Sejong_Jokbo'로 시작하고 '.jar'로 끝나는 파일을 app.jar로 복사합니다.
-COPY --from=builder /app/build/libs/Sejong_Jokbo-*.jar app.jar
+# 빌드 단계에서 생성된 단일 부트 JAR을 복사합니다. (프로젝트명 변경에도 안전)
+# 부트 JAR만 복사(plain JAR 제외). 버전이 SNAPSHOT이 아닐 경우 패턴을 조정하세요.
+COPY --from=builder /app/build/libs/*-SNAPSHOT.jar app.jar
 
 # 애플리케이션이 사용할 포트를 8080으로 노출시킵니다.
 EXPOSE 8080
