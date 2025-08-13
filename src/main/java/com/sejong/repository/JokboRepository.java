@@ -54,4 +54,10 @@ public interface JokboRepository extends JpaRepository<Jokbo, Integer> {
      */
     @Query("SELECT j FROM Jokbo j WHERE j.status = :status ORDER BY j.createdAt DESC")
     List<Jokbo> findByStatusOrderByCreatedAtDesc(@Param("status") Jokbo.JokboStatus status);
+    
+    /**
+     * 모든 족보 목록을 최신순으로 페이징하여 가져옵니다
+     */
+    @Query("SELECT j FROM Jokbo j ORDER BY j.createdAt DESC")
+    Page<Jokbo> findAllByOrderByCreatedAtDesc(Pageable pageable);
 } 

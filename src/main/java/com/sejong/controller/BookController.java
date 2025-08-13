@@ -266,31 +266,5 @@ public class BookController {
         return "admin/jokbo-management";
     }
     
-    /**
-     * 족보를 승인합니다
-     */
-    @PostMapping("/admin/jokbo/{jokboId}/approve")
-    @ResponseBody
-    public String approveJokbo(@PathVariable Integer jokboId) {
-        try {
-            jokboService.approveJokbo(jokboId);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 승인 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-    
-    /**
-     * 족보를 반려합니다
-     */
-    @PostMapping("/admin/jokbo/{jokboId}/reject")
-    @ResponseBody
-    public String rejectJokbo(@PathVariable Integer jokboId) {
-        try {
-            jokboService.rejectJokbo(jokboId);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 반려 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
+
 } 

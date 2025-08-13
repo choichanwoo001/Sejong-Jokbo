@@ -152,3 +152,46 @@ INSERT INTO jokbo (book_id, uploader_name, content_url, content, content_type, c
 
 -- 책의 족보 수 업데이트
 UPDATE book SET jokbo_count = 15 WHERE book_id = 1;
+
+-- 족보 승인 이력 테이블 데이터 추가 (기존 족보들에 대한 승인 이력)
+INSERT INTO jokbo_approval_history (jokbo_id, admin_id, action, previous_status, new_status, comment, created_at) VALUES
+(1, 1, '승인', '대기', '승인', '내용이 체계적으로 잘 정리되어 있어 승인합니다.', DATE_SUB(NOW(), INTERVAL 23 HOUR)),
+(2, 1, '승인', '대기', '승인', '주요 개념들이 명확하게 정리되어 승인합니다.', DATE_SUB(NOW(), INTERVAL 22 HOUR)),
+(3, 1, '승인', '대기', '승인', '시험 대비에 유용한 자료로 판단되어 승인합니다.', DATE_SUB(NOW(), INTERVAL 21 HOUR)),
+(4, 1, '승인', '대기', '승인', '독후감과 분석이 잘 작성되어 있어 승인합니다.', DATE_SUB(NOW(), INTERVAL 20 HOUR)),
+(5, 1, '승인', '대기', '승인', '핵심 문장들이 잘 정리되어 있어 승인합니다.', DATE_SUB(NOW(), INTERVAL 19 HOUR)),
+(6, 1, '승인', '대기', '승인', '시대적 배경 분석이 훌륭하여 승인합니다.', DATE_SUB(NOW(), INTERVAL 18 HOUR)),
+(7, 1, '승인', '대기', '승인', '현대적 해석이 적절하여 승인합니다.', DATE_SUB(NOW(), INTERVAL 17 HOUR)),
+(8, 1, '승인', '대기', '승인', '주요 인물 정리가 체계적이어서 승인합니다.', DATE_SUB(NOW(), INTERVAL 16 HOUR)),
+(9, 1, '승인', '대기', '승인', '철학적 의미 분석이 깊이 있어 승인합니다.', DATE_SUB(NOW(), INTERVAL 15 HOUR)),
+(10, 1, '승인', '대기', '승인', '교육적 가치가 잘 설명되어 있어 승인합니다.', DATE_SUB(NOW(), INTERVAL 14 HOUR)),
+(11, 1, '승인', '대기', '승인', '비교 분석 자료가 유용하여 승인합니다.', DATE_SUB(NOW(), INTERVAL 13 HOUR)),
+(12, 1, '승인', '대기', '승인', '현대 교육에의 적용 방안이 잘 제시되어 승인합니다.', DATE_SUB(NOW(), INTERVAL 12 HOUR)),
+(13, 1, '승인', '대기', '승인', '핵심 용어 정리가 체계적이어서 승인합니다.', DATE_SUB(NOW(), INTERVAL 11 HOUR)),
+(14, 1, '승인', '대기', '승인', '시대적 배경 설명이 상세하여 승인합니다.', DATE_SUB(NOW(), INTERVAL 10 HOUR)),
+(15, 1, '승인', '대기', '승인', '종합적 정리가 완성도 높아 승인합니다.', DATE_SUB(NOW(), INTERVAL 9 HOUR));
+
+-- 새로운 승인 대기 중인 족보들 (다양한 상태를 보여주기 위해)
+INSERT INTO jokbo (book_id, uploader_name, content_url, content, content_type, comment, status, created_at) VALUES
+(2, '테스트사용자1', NULL, '북학의는 박제가가 저술한 실학서로, 조선 후기의 진보적 사상을 담고 있습니다. 이 책은 중국의 선진 문물을 적극 수용해야 한다는 북학론을 주장하며, 기술과 상업의 발달을 통한 부국강병을 추구했습니다.', 'text', '북학의 기본 개념 정리', '대기', DATE_SUB(NOW(), INTERVAL 1 HOUR)),
+(3, '테스트사용자2', 'test_file_1.pdf', NULL, 'file', '조선상고사 핵심 내용 요약', '대기', DATE_SUB(NOW(), INTERVAL 2 HOUR)),
+(4, '테스트사용자3', NULL, '삼국유사는 일연이 편찬한 역사서로, 정사에서 다루지 않은 야사와 설화를 포함하고 있습니다.', 'text', '삼국유사 주요 내용 간단 정리', '대기', DATE_SUB(NOW(), INTERVAL 3 HOUR)),
+(1, '테스트사용자4', NULL, '성학십도 재시험 대비 자료입니다. 하지만 내용이 부정확하고 오류가 많아 보입니다.', 'text', '성학십도 재시험 대비 (품질 낮음)', '대기', DATE_SUB(NOW(), INTERVAL 4 HOUR)),
+(5, '테스트사용자5', 'test_file_2.jpg', NULL, 'file', '논어 핵심 구절 모음', '대기', DATE_SUB(NOW(), INTERVAL 5 HOUR));
+
+-- 반려된 족보 예시 (관리자가 반려 처리)
+INSERT INTO jokbo (book_id, uploader_name, content_url, content, content_type, comment, status, created_at) VALUES
+(1, '부적절사용자', NULL, '이 내용은 전혀 관련이 없는 내용입니다. 성학십도와 무관한 개인적인 일기를 올렸습니다.', 'text', '관련 없는 내용', '반려', DATE_SUB(NOW(), INTERVAL 6 HOUR));
+
+-- 반려 이력 추가
+INSERT INTO jokbo_approval_history (jokbo_id, admin_id, action, previous_status, new_status, comment, created_at) VALUES
+(21, 1, '반려', '대기', '반려', '성학십도와 관련이 없는 내용으로 반려합니다. 관련 있는 내용으로 다시 제출해주세요.', DATE_SUB(NOW(), INTERVAL 6 HOUR));
+
+-- 승인 취소 예시 (승인했다가 다시 취소한 경우)
+INSERT INTO jokbo (book_id, uploader_name, content_url, content, content_type, comment, status, created_at) VALUES
+(1, '재검토사용자', NULL, '성학십도 내용입니다만, 사실 확인이 필요한 내용이 포함되어 있습니다.', 'text', '성학십도 심화 분석', '대기', DATE_SUB(NOW(), INTERVAL 8 HOUR));
+
+-- 승인 후 취소 이력 
+INSERT INTO jokbo_approval_history (jokbo_id, admin_id, action, previous_status, new_status, comment, created_at) VALUES
+(22, 1, '승인', '대기', '승인', '초기 검토에서 내용이 적절하다고 판단하여 승인합니다.', DATE_SUB(NOW(), INTERVAL 7 HOUR, 30 MINUTE)),
+(22, 2, '승인취소', '승인', '대기', '추가 검토 결과 일부 내용의 정확성에 의문이 있어 재검토를 위해 승인을 취소합니다.', DATE_SUB(NOW(), INTERVAL 7 HOUR));

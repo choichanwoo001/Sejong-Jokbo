@@ -245,4 +245,20 @@ public class JokboService {
         
         return pdfService.createPdfBytesFromText(jokbo.getContent(), jokbo.getUploaderName());
     }
+    
+    /**
+     * 상태별 족보 목록을 페이징하여 가져옵니다
+     */
+    public Page<Jokbo> getJokbosByStatus(Jokbo.JokboStatus status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jokboRepository.findByStatusOrderByCreatedAtDesc(status, pageable);
+    }
+    
+    /**
+     * 모든 족보 목록을 페이징하여 가져옵니다 (관리자용)
+     */
+    public Page<Jokbo> getAllJokbos(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jokboRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
 } 
