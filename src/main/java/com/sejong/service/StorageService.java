@@ -4,6 +4,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Google Cloud Storage를 사용한 파일 저장 서비스
  */
-@Service
+@Service("cloudStorageService")
+@ConditionalOnProperty(name = "app.development.use-local-storage", havingValue = "false")
 @RequiredArgsConstructor
 @Slf4j
-public class StorageService {
+public class StorageService implements FileStorageService {
 
     private final Storage storage;
 

@@ -129,13 +129,13 @@ public class BookController {
     public ResponseEntity<Resource> downloadJokboFile(@PathVariable String filename) {
         try {
             // Google Cloud Storage 다운로드 (Docker 배포 시 사용)
-            Resource resource = jokboService.getStorageService().downloadFile(filename);
+            // Resource resource = jokboService.getStorageService().downloadFile(filename);
             
             // 로컬 파일 다운로드 (개발 환경용)
-            /*
+            
             Path filePath = jokboService.getFilePath(filename);
             Resource resource = new UrlResource(filePath.toUri());
-            */
+            
             
             if (resource.exists() && resource.isReadable()) {
                 return ResponseEntity.ok()
