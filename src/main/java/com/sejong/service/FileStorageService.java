@@ -35,4 +35,9 @@ public interface FileStorageService {
      * 파일이 존재하는지 확인합니다
      */
     boolean fileExists(String filename);
+    
+    /**
+     * 파일의 로컬 경로를 반환합니다 (로컬 파일 시스템 접근용)
+     */
+    java.nio.file.Path getFilePath(String filename);
 }

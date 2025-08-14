@@ -114,4 +114,11 @@ public class LocalStorageService implements FileStorageService {
         Path filePath = uploadPath.resolve(filename);
         return Files.exists(filePath);
     }
+
+    /**
+     * 파일의 로컬 경로를 반환합니다
+     */
+    public Path getFilePath(String filename) {
+        return uploadPath.resolve(filename);
+    }
 }

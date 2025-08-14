@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -183,11 +182,11 @@ public class JokboService {
     }
     
     /**
-     * 파일 경로를 가져옵니다 (Google Cloud Storage 사용)
+     * 파일 경로를 가져옵니다 (환경에 따라 자동 선택)
      */
     public Path getFilePath(String filename) {
-        // Google Cloud Storage를 사용하므로 로컬 경로 대신 파일명만 반환
-        return Paths.get(filename);
+        // FileStorageService 인터페이스를 통해 환경에 맞는 경로 반환
+        return fileStorageService.getFilePath(filename);
     }
     
     /**

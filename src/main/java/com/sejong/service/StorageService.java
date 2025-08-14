@@ -106,4 +106,11 @@ public class StorageService implements FileStorageService {
         Blob blob = storage.get(BlobId.of(bucketName, filename));
         return blob != null && blob.exists();
     }
+
+    /**
+     * 파일의 로컬 경로를 반환합니다 (GCP의 경우 지원하지 않음)
+     */
+    public java.nio.file.Path getFilePath(String filename) {
+        throw new UnsupportedOperationException("GCP Storage는 로컬 파일 경로를 지원하지 않습니다. downloadFile()을 사용하세요.");
+    }
 }
