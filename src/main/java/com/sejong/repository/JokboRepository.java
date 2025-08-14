@@ -60,4 +60,10 @@ public interface JokboRepository extends JpaRepository<Jokbo, Integer> {
      */
     @Query("SELECT j FROM Jokbo j ORDER BY j.createdAt DESC")
     Page<Jokbo> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    
+    /**
+     * 특정 책의 특정 상태 족보 수를 가져옵니다
+     */
+    @Query("SELECT COUNT(j) FROM Jokbo j WHERE j.book.bookId = :bookId AND j.status = :status")
+    long countByBookIdAndStatus(@Param("bookId") Integer bookId, @Param("status") Jokbo.JokboStatus status);
 } 

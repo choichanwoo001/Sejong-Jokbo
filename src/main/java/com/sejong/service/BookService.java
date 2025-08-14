@@ -1,7 +1,9 @@
 package com.sejong.service;
 
 import com.sejong.entity.Book;
+import com.sejong.entity.Jokbo;
 import com.sejong.repository.BookRepository;
+import com.sejong.repository.JokboRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import java.util.List;
 public class BookService {
     
     private final BookRepository bookRepository;
+    private final JokboRepository jokboRepository;
     
     /**
      * 모든 도서를 조회합니다.
@@ -80,5 +83,29 @@ public class BookService {
     public Book getBookById(Integer bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다"));
+    }
+    
+    /**
+     * 모든 책의 jokboCount를 실시간으로 업데이트합니다 (초기화용)
+     */
+    public void updateAllJokboCounts() {
+        List<Book> allBooks = bookRepository.findAll();
+        for (Book book : allBooks) {
+            long approvedCount = jokboRepository.countByBookIdAndStatus(book.getBookId(), Jokbo.JokboStatus.승인);
+            book.setJokboCount((int) approvedCount);
+            bookRepository.save(book);
+        }
+    }
+    
+    /**
+     * 특정 책의 jokboCount를 업데이트합니다
+     */
+    public void updateJokboCount(Integer bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다"));
+        
+        long approvedCount = jokboRepository.countByBookIdAndStatus(bookId, Jokbo.JokboStatus.승인);
+        book.setJokboCount((int) approvedCount);
+        bookRepository.save(book);
     }
 } 

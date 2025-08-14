@@ -1,5 +1,7 @@
 package com.sejong;
 
+import com.sejong.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
@@ -17,10 +19,13 @@ public class SejongJokboApplication {
     }
     
     /**
-     * 애플리케이션 시작 시 업로드 디렉토리를 생성합니다
+     * 애플리케이션 시작 시 초기화 작업을 수행합니다
      */
     @Component
-    public static class UploadDirectoryInitializer implements CommandLineRunner {
+    public static class ApplicationInitializer implements CommandLineRunner {
+        
+        @Autowired
+        private BookService bookService;
         
         @Override
         public void run(String... args) throws Exception {
@@ -33,7 +38,16 @@ public class SejongJokboApplication {
                 } catch (Exception e) {
                     System.err.println("업로드 디렉토리 생성에 실패했습니다: " + e.getMessage());
                 }
-            }   
+            }
+            
+            // 모든 책의 jokboCount 초기화
+            try {
+                System.out.println("책 별 족보 수 업데이트 중...");
+                bookService.updateAllJokboCounts();
+                System.out.println("책 별 족보 수 업데이트 완료!");
+            } catch (Exception e) {
+                System.err.println("족보 수 업데이트 실패: " + e.getMessage());
+            }
         }
     }
 } 
