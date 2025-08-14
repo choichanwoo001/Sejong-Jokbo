@@ -14,18 +14,21 @@ import java.util.List;
 public interface JokboApprovalHistoryRepository extends JpaRepository<JokboApprovalHistory, Integer> {
     
     /**
-     * 특정 족보의 승인 이력 조회 (최신순)
+     * 특정 족보의 승인 이력 조회 (최신순, 관련 정보 포함)
      */
-    List<JokboApprovalHistory> findByJokboJokboIdOrderByCreatedAtDesc(Integer jokboId);
+    @Query("SELECT h FROM JokboApprovalHistory h JOIN FETCH h.jokbo j JOIN FETCH j.book JOIN FETCH h.admin WHERE h.jokbo.jokboId = :jokboId ORDER BY h.createdAt DESC")
+    List<JokboApprovalHistory> findByJokboJokboIdOrderByCreatedAtDesc(@Param("jokboId") Integer jokboId);
     
     /**
-     * 특정 관리자의 승인 처리 이력 조회 (최신순)
+     * 특정 관리자의 승인 처리 이력 조회 (최신순, 관련 정보 포함)
      */
-    Page<JokboApprovalHistory> findByAdminAdminIdOrderByCreatedAtDesc(Integer adminId, Pageable pageable);
+    @Query("SELECT h FROM JokboApprovalHistory h JOIN FETCH h.jokbo j JOIN FETCH j.book JOIN FETCH h.admin WHERE h.admin.adminId = :adminId ORDER BY h.createdAt DESC")
+    Page<JokboApprovalHistory> findByAdminAdminIdOrderByCreatedAtDesc(@Param("adminId") Integer adminId, Pageable pageable);
     
     /**
-     * 모든 승인 이력 조회 (최신순, 페이징)
+     * 모든 승인 이력 조회 (최신순, 페이징, 관련 정보 포함)
      */
+    @Query("SELECT h FROM JokboApprovalHistory h JOIN FETCH h.jokbo j JOIN FETCH j.book JOIN FETCH h.admin ORDER BY h.createdAt DESC")
     Page<JokboApprovalHistory> findAllByOrderByCreatedAtDesc(Pageable pageable);
     
     /**
