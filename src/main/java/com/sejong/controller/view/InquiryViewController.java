@@ -1,4 +1,4 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
 import com.sejong.entity.Inquiry;
 import com.sejong.service.InquiryService;
@@ -8,17 +8,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @Controller
 @RequiredArgsConstructor
-public class InquiryController {
+@Tag(name = "문의 뷰", description = "문의 게시판 페이지 관련")
+public class InquiryViewController {
 
     private final InquiryService inquiryService;
     
     /**
      * 문의 게시판 목록 페이지 (페이징 포함)
      */
+    @Operation(summary = "문의 목록 조회", description = "공개된 문의 목록을 페이징하여 조회합니다")
     @GetMapping("/inquiry")
-    public String inquiryList(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String inquiryList(@Parameter(description = "페이지 번호") @RequestParam(defaultValue = "0") int page, Model model) {
         Page<Inquiry> inquiryPage = inquiryService.getPublicInquiries(page);
         
         model.addAttribute("inquiries", inquiryPage.getContent());
@@ -36,32 +42,6 @@ public class InquiryController {
     @GetMapping("/inquiry/write")
     public String inquiryWriteForm() {
         return "inquiry/write";
-    }
-    
-    /**
-     * 문의 등록
-     */
-    @PostMapping("/inquiry")
-    @ResponseBody
-    public String registerInquiry(@RequestParam String name,
-                                 @RequestParam(required = false) String email,
-                                 @RequestParam String message,
-                                 @RequestParam(defaultValue = "true") Boolean isPublic) {
-        try {
-            // 입력값 검증
-            if (name == null || name.trim().isEmpty()) {
-                return "error: 이름을 입력해주세요.";
-            }
-            
-            if (message == null || message.trim().isEmpty()) {
-                return "error: 문의 내용을 입력해주세요.";
-            }
-            
-            inquiryService.registerInquiry(name.trim(), email, message.trim(), isPublic);
-            return "success";
-        } catch (Exception e) {
-            return "error: 문의 등록 중 오류가 발생했습니다. - " + e.getMessage();
-        }
     }
     
     /**

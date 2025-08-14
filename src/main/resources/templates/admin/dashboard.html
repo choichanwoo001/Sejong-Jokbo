@@ -4,56 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 대시보드 - 세종족보</title>
+    
+    <!-- 공통 헤더 CSS -->
+    <div th:replace="admin/fragments/header :: admin-header-css"></div>
+    
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f7fa;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 600;
-        }
-        
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s ease;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        /* 대시보드 전용 스타일 */
         
         .dashboard-grid {
             display: grid;
@@ -122,17 +78,19 @@
         }
         
         .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-top: 30px;
+            justify-content: center;
         }
         
         .action-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 25px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -142,6 +100,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex: 1;
+            white-space: nowrap;
         }
         
         .action-btn:hover {
@@ -209,17 +169,27 @@
         .view-all-link a:hover {
             text-decoration: underline;
         }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .action-btn {
+                flex: none;
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <h1>관리자 대시보드</h1>
-            <a href="/admin/logout" class="logout-btn">로그아웃</a>
-        </div>
-    </div>
+    <!-- 공통 헤더 -->
+    <div th:replace="admin/fragments/header :: admin-header('dashboard')"></div>
     
-    <div class="container">
+    <div class="main-content">
+        <h1 class="page-title">관리자 대시보드</h1>
         <div class="dashboard-grid">
             <div class="dashboard-card pending-jokbos">
                 <div class="card-header">
@@ -243,6 +213,8 @@
         <div class="action-buttons">
             <a href="/admin/books" class="action-btn">📖 모든 책 관리</a>
             <a href="/admin/jokbos/pending" class="action-btn">⏳ 승인 대기 족보</a>
+            <a href="/admin/jokbos" class="action-btn">🗂️ 전체 족보</a>
+            <a href="/admin/approval-history" class="action-btn">📊 승인 이력</a>
             <a href="/admin/inquiries" class="action-btn">💬 문의 관리</a>
         </div>
         

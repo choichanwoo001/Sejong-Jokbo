@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>족보 이력 - 세종족보</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="admin-nav">
+            <a href="/admin/dashboard" class="nav-link">대시보드</a>
+            <a href="/admin/jokbos/pending" class="nav-link">대기 족보</a>
+            <a href="/admin/jokbos" class="nav-link">전체 족보</a>
+            <a href="/admin/approval-history" class="nav-link">승인 이력</a>
+            <a href="/admin/logout" class="nav-link">로그아웃</a>
+        </nav>
+        
+        <h1>족보 상세 이력</h1>
+        
+        <!-- 족보 정보 -->
+        <div class="jokbo-info-card">
+            <h2>족보 정보</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>족보 ID:</label>
+                    <span th:text="${jokbo.jokboId}">1</span>
+                </div>
+                <div class="info-item">
+                    <label>책 제목:</label>
+                    <span th:text="${jokbo.book.title}">책 제목</span>
+                </div>
+                <div class="info-item">
+                    <label>등록자:</label>
+                    <span th:text="${jokbo.uploaderName}">등록자명</span>
+                </div>
+                <div class="info-item">
+                    <label>등록일:</label>
+                    <span th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm:ss')}">등록일</span>
+                </div>
+                <div class="info-item">
+                    <label>타입:</label>
+                    <span th:if="${jokbo.contentType == 'text'}" class="content-type-badge text">텍스트</span>
+                    <span th:if="${jokbo.contentType == 'file'}" class="content-type-badge file">파일</span>
+                </div>
+                <div class="info-item">
+                    <label>현재 상태:</label>
+                    <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}" 
+                          th:text="${jokbo.status.name()}">상태</span>
+                </div>
+                <div class="info-item full-width" th:if="${jokbo.comment}">
+                    <label>사용자 코멘트:</label>
+                    <span th:text="${jokbo.comment}">코멘트</span>
+                </div>
+            </div>
+            
+            <!-- 족보 보기 버튼 (승인된 경우만) -->
+            <div th:if="${jokbo.status.name() == '승인'}" class="view-actions">
+                <a th:if="${jokbo.contentType == 'text'}" 
+                   th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                   target="_blank" class="btn-view">족보 보기</a>
+                <a th:if="${jokbo.contentType == 'file'}" 
+                   th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
+                   target="_blank" class="btn-view">족보 보기</a>
+            </div>
+        </div>
+        
+        <!-- 처리 이력 -->
+        <div class="history-section">
+            <h2>처리 이력</h2>
+            
+            <div th:if="${#lists.isEmpty(history)}" class="no-data">
+                <p>처리 이력이 없습니다.</p>
+            </div>
+            
+            <div th:if="${!#lists.isEmpty(history)}" class="timeline">
+                <div th:each="h : ${history}" class="timeline-item">
+                    <div class="timeline-marker">
+                        <span th:class="${'action-icon action-' + h.action.name().toLowerCase()}" 
+                              th:text="${h.action.name().substring(0,1)}">A</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span th:class="${'action-badge action-' + h.action.name().toLowerCase()}" 
+                                  th:text="${h.action.name()}">액션</span>
+                            <span class="timeline-date" 
+                                  th:text="${#temporals.format(h.createdAt, 'yyyy-MM-dd HH:mm:ss')}">처리일시</span>
+                        </div>
+                        <div class="timeline-body">
+                            <p><strong>처리 관리자:</strong> <span th:text="${h.admin.adminName}">관리자명</span></p>
+                            <div class="status-change">
+                                <span th:if="${h.previousStatus}" 
+                                      th:class="${'status-badge status-' + h.previousStatus.name().toLowerCase()}" 
+                                      th:text="${h.previousStatus.name()}">이전 상태</span>
+                                <span th:if="${h.previousStatus}" class="arrow">→</span>
+                                <span th:class="${'status-badge status-' + h.newStatus.name().toLowerCase()}" 
+                                      th:text="${h.newStatus.name()}">새 상태</span>
+                            </div>
+                            <p th:if="${h.comment}" class="timeline-comment">
+                                <strong>처리 사유:</strong> <span th:text="${h.comment}">처리 사유</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="back-actions">
+            <a href="/admin/jokbos" class="btn-secondary">전체 족보로 돌아가기</a>
+            <a href="/admin/approval-history" class="btn-secondary">승인 이력으로 돌아가기</a>
+        </div>
+    </div>
+</body>
+</html>

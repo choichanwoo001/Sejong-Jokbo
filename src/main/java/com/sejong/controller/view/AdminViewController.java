@@ -1,10 +1,10 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
-import com.sejong.entity.Admin;
 import com.sejong.entity.Book;
 import com.sejong.entity.Comment;
 import com.sejong.entity.Inquiry;
 import com.sejong.entity.Jokbo;
+import com.sejong.entity.JokboApprovalHistory;
 import com.sejong.service.AdminService;
 import com.sejong.service.BookService;
 import com.sejong.service.InquiryService;
@@ -15,13 +15,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class AdminController {
+@Tag(name = "관리자 뷰", description = "관리자 페이지 관련")
+public class AdminViewController {
     
     private final AdminService adminService;
     private final BookService bookService;
@@ -31,27 +35,10 @@ public class AdminController {
     /**
      * 관리자 로그인 페이지
      */
+    @Operation(summary = "관리자 로그인 페이지", description = "관리자 로그인 페이지를 반환합니다")
     @GetMapping("/login")
     public String loginPage() {
         return "admin/login";
-    }
-    
-    /**
-     * 관리자 로그인 처리
-     */
-    @PostMapping("/login")
-    @ResponseBody
-    public String login(@RequestParam String adminName, 
-                       @RequestParam String password,
-                       HttpSession session) {
-        Admin admin = adminService.login(adminName, password);
-        if (admin != null) {
-            session.setAttribute("adminId", admin.getAdminId());
-            session.setAttribute("adminName", admin.getAdminName());
-            return "success";
-        } else {
-            return "error: 로그인 정보가 올바르지 않습니다.";
-        }
     }
     
     /**
@@ -202,23 +189,79 @@ public class AdminController {
     }
     
     /**
-     * 문의에 답변 추가
+     * 족보 승인 이력 조회
      */
-    @PostMapping("/inquiry/{inquiryId}/comment")
-    @ResponseBody
-    public String addComment(@PathVariable Integer inquiryId,
-                           @RequestParam String content,
-                           HttpSession session) {
+    @GetMapping("/jokbo/{jokboId}/history")
+    public String jokboHistory(@PathVariable Integer jokboId,
+                              HttpSession session,
+                              Model model) {
         Integer adminId = (Integer) session.getAttribute("adminId");
         if (adminId == null) {
-            return "error: 로그인이 필요합니다.";
+            return "redirect:/admin/login";
         }
         
-        try {
-            inquiryService.addComment(inquiryId, adminId, content);
-            return "success";
-        } catch (Exception e) {
-            return "error: 답변 등록 중 오류가 발생했습니다. - " + e.getMessage();
+        List<JokboApprovalHistory> history = adminService.getJokboApprovalHistory(jokboId);
+        Jokbo jokbo = jokboService.getJokboById(jokboId);
+        
+        model.addAttribute("jokbo", jokbo);
+        model.addAttribute("history", history);
+        
+        return "admin/jokbo-history";
+    }
+    
+    /**
+     * 모든 승인 이력 조회 (페이징)
+     */
+    @GetMapping("/approval-history")
+    public String approvalHistory(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "20") int size,
+                                 HttpSession session,
+                                 Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
         }
+        
+        Page<JokboApprovalHistory> historyPage = adminService.getAllApprovalHistory(page, size);
+        
+        model.addAttribute("history", historyPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", historyPage.getTotalPages());
+        model.addAttribute("hasNext", historyPage.hasNext());
+        model.addAttribute("hasPrevious", historyPage.hasPrevious());
+        
+        return "admin/approval-history";
+    }
+    
+    /**
+     * 족보 관리 페이지 (모든 족보 - 승인, 반려, 대기 포함)
+     */
+    @GetMapping("/jokbos")
+    public String allJokbos(@RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "20") int size,
+                           @RequestParam(required = false) String status,
+                           HttpSession session,
+                           Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Page<Jokbo> jokboPage;
+        if (status != null && !status.isEmpty()) {
+            Jokbo.JokboStatus jokboStatus = Jokbo.JokboStatus.valueOf(status);
+            jokboPage = jokboService.getJokbosByStatus(jokboStatus, page, size);
+        } else {
+            jokboPage = jokboService.getAllJokbos(page, size);
+        }
+        
+        model.addAttribute("jokbos", jokboPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", jokboPage.getTotalPages());
+        model.addAttribute("hasNext", jokboPage.hasNext());
+        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
+        model.addAttribute("selectedStatus", status);
+        
+        return "admin/jokbo-management";
     }
 }

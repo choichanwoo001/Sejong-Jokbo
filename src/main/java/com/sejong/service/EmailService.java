@@ -52,6 +52,11 @@ public class EmailService {
     }
     
     /**
+     * 이메일 첨부 파일 크기 제한 (1MB)
+     */
+    private static final long MAX_EMAIL_ATTACHMENT_SIZE = 1024 * 1024; // 1MB
+    
+    /**
      * 인증번호 이메일 발송
      */
     public boolean sendVerificationEmail(String email) {
@@ -99,10 +104,26 @@ public class EmailService {
         return false;
     }
     
-    /**
+        /**
      * 인증번호 만료 처리 (5분 후 자동 삭제)
      */
     public void removeExpiredCode(String email) {
         verificationCodes.remove(email);
     }
+    
+    /**
+     * 이메일 첨부 파일 크기 검증
+     */
+    public boolean validateEmailAttachmentSize(long fileSize) {
+        return fileSize <= MAX_EMAIL_ATTACHMENT_SIZE;
+    }
+    
+    /**
+     * 이메일용 파일 크기 제한 메시지 반환
+     */
+    public String getEmailAttachmentSizeMessage() {
+        return "이메일 첨부 파일은 1MB까지만 허용됩니다.";
+    }
+
+
 } 

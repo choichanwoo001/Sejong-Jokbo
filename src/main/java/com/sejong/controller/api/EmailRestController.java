@@ -1,8 +1,14 @@
-package com.sejong.controller;
+package com.sejong.controller.api;
 
 import com.sejong.service.EmailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +17,21 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class EmailController {
+@Tag(name = "이메일", description = "이메일 인증 관련 API")
+public class EmailRestController {
     
     private final EmailService emailService;
     
     /**
      * 인증번호 발송
      */
+    @Operation(summary = "인증번호 발송", description = "이메일로 인증번호를 발송합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "발송 성공/실패 응답"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
     @PostMapping("/send-verification")
-    public ResponseEntity<Map<String, Object>> sendVerificationCode(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> sendVerificationCode(@Parameter(description = "이메일 주소가 포함된 요청 본문") @RequestBody Map<String, String> request) {
         String email = request.get("email");
         Map<String, Object> response = new HashMap<>();
         
@@ -79,4 +91,4 @@ public class EmailController {
         
         return ResponseEntity.ok(response);
     }
-} 
+}

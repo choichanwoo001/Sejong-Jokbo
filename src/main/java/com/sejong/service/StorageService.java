@@ -4,6 +4,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Google Cloud Storage를 사용한 파일 저장 서비스
  */
-@Service
+@Service("cloudStorageService")
+@ConditionalOnProperty(name = "app.development.use-local-storage", havingValue = "false")
 @RequiredArgsConstructor
 @Slf4j
-public class StorageService {
+public class StorageService implements FileStorageService {
 
     private final Storage storage;
 
@@ -103,5 +105,12 @@ public class StorageService {
     public boolean fileExists(String filename) {
         Blob blob = storage.get(BlobId.of(bucketName, filename));
         return blob != null && blob.exists();
+    }
+
+    /**
+     * 파일의 로컬 경로를 반환합니다 (GCP의 경우 지원하지 않음)
+     */
+    public java.nio.file.Path getFilePath(String filename) {
+        throw new UnsupportedOperationException("GCP Storage는 로컬 파일 경로를 지원하지 않습니다. downloadFile()을 사용하세요.");
     }
 }

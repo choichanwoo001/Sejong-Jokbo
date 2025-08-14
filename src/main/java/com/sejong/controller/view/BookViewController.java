@@ -1,4 +1,4 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
 import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
@@ -14,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 import java.net.MalformedURLException;
@@ -23,7 +26,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class BookController {
+@Tag(name = "도서 뷰", description = "도서 검색 및 상세 페이지 관련")
+public class BookViewController {
 
     private final BookService bookService;
     private final JokboService jokboService;
@@ -31,8 +35,9 @@ public class BookController {
     /**
      * 통합 검색을 수행합니다
      */
+    @Operation(summary = "도서 통합 검색", description = "키워드로 도서를 검색합니다")
     @GetMapping("/search")
-    public String searchBooks(@RequestParam(required = false) String keyword, Model model) {
+    public String searchBooks(@Parameter(description = "검색 키워드") @RequestParam(required = false) String keyword, Model model) {
         List<Book> searchResults = bookService.searchBooks(keyword);
         model.addAttribute("books", searchResults);
         model.addAttribute("keyword", keyword);
@@ -78,71 +83,29 @@ public class BookController {
     }
     
     /**
-     * 텍스트 족보를 등록합니다
-     */
-    @PostMapping("/book/{bookId}/jokbo/text")
-    @ResponseBody
-    public String registerTextJokbo(@PathVariable Integer bookId,
-                                   @RequestParam String uploaderName,
-                                   @RequestParam String content,
-                                   @RequestParam(required = false) String comment) {
-        jokboService.registerTextJokbo(bookId, uploaderName, content, comment);
-        return "success";
-    }
-    
-    /**
-     * 파일 족보를 등록합니다
-     */
-    @PostMapping("/book/{bookId}/jokbo/file")
-    @ResponseBody
-    public String registerFileJokbo(@PathVariable Integer bookId,
-                                   @RequestParam String uploaderName,
-                                   @RequestParam MultipartFile file,
-                                   @RequestParam(required = false) String comment) {
-        try {
-            // 입력값 검증
-            if (uploaderName == null || uploaderName.trim().isEmpty()) {
-                return "error: 업로더 이름을 입력해주세요.";
-            }
-            
-            if (file == null || file.isEmpty()) {
-                return "error: 업로드할 파일을 선택해주세요.";
-            }
-            
-            jokboService.registerFileJokbo(bookId, uploaderName.trim(), file, comment);
-            return "success";
-        } catch (IllegalArgumentException e) {
-            return "error: " + e.getMessage();
-        } catch (java.io.IOException e) {
-            return "error: 파일 처리 중 오류가 발생했습니다. - " + e.getMessage();
-        } catch (RuntimeException e) {
-            return "error: " + e.getMessage();
-        } catch (Exception e) {
-            return "error: 족보 등록 중 예상치 못한 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-    
-    /**
-     * 족보 파일을 다운로드합니다 (Google Cloud Storage 사용)
+     * 족보 파일을 다운로드합니다 (환경에 따라 자동 선택)
      */
     @GetMapping("/jokbo/download/{filename}")
     public ResponseEntity<Resource> downloadJokboFile(@PathVariable String filename) {
         try {
-            // Google Cloud Storage 다운로드 (Docker 배포 시 사용)
-            Resource resource = jokboService.getStorageService().downloadFile(filename);
-            
-            // 로컬 파일 다운로드 (개발 환경용)
-            /*
-            Path filePath = jokboService.getFilePath(filename);
-            Resource resource = new UrlResource(filePath.toUri());
-            */
-            
-            if (resource.exists() && resource.isReadable()) {
+            // 로컬 환경에서는 getFilePath, GCP 환경에서는 downloadFile 사용
+            try {
+                Path filePath = jokboService.getFilePath(filename);
+                Resource resource = new UrlResource(filePath.toUri());
+                
+                if (resource.exists() && resource.isReadable()) {
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                            .body(resource);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            } catch (UnsupportedOperationException e) {
+                // GCP 환경인 경우 downloadFile 사용
+                Resource resource = jokboService.getFileStorageService().downloadFile(filename);
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                         .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -192,16 +155,26 @@ public class BookController {
     @GetMapping("/jokbo/view/{filename}")
     public ResponseEntity<Resource> viewJokboFile(@PathVariable String filename) {
         try {
-            Path filePath = jokboService.getFilePath(filename);
-            Resource resource = new UrlResource(filePath.toUri());
-            
-            if (resource.exists() && resource.isReadable()) {
+            // GCP 환경에서는 getFilePath가 지원되지 않으므로 downloadFile 사용
+            try {
+                Path filePath = jokboService.getFilePath(filename);
+                Resource resource = new UrlResource(filePath.toUri());
+                
+                if (resource.exists() && resource.isReadable()) {
+                    String contentType = getContentType(filename);
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType(contentType))
+                            .body(resource);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            } catch (UnsupportedOperationException e) {
+                // GCP 환경인 경우 downloadFile 사용
+                Resource resource = jokboService.getFileStorageService().downloadFile(filename);
                 String contentType = getContentType(filename);
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))
                         .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
             }
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
@@ -265,32 +238,4 @@ public class BookController {
         
         return "admin/jokbo-management";
     }
-    
-    /**
-     * 족보를 승인합니다
-     */
-    @PostMapping("/admin/jokbo/{jokboId}/approve")
-    @ResponseBody
-    public String approveJokbo(@PathVariable Integer jokboId) {
-        try {
-            jokboService.approveJokbo(jokboId);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 승인 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-    
-    /**
-     * 족보를 반려합니다
-     */
-    @PostMapping("/admin/jokbo/{jokboId}/reject")
-    @ResponseBody
-    public String rejectJokbo(@PathVariable Integer jokboId) {
-        try {
-            jokboService.rejectJokbo(jokboId);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 반려 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-} 
+}

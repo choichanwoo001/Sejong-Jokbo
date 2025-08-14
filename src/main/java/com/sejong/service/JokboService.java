@@ -11,15 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-
-
-
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +23,7 @@ public class JokboService {
     private final JokboRepository jokboRepository;
     private final BookRepository bookRepository;
     private final PdfService pdfService;
-    private final StorageService storageService;
-    
-    private static final String UPLOAD_DIR = "uploads/jokbo/";
+    private final FileStorageService fileStorageService;
     
     /**
      * 특정 책의 승인된 족보 목록을 페이징하여 가져옵니다 (5개씩)
@@ -121,33 +114,15 @@ public class JokboService {
         String newFilename = UUID.randomUUID().toString() + "." + fileExtension;
         System.out.println("새 파일명: " + newFilename);
         
-        // Google Cloud Storage에 파일 업로드 (Docker 배포 시 사용)
+        // 환경에 따라 자동으로 선택되는 파일 저장 서비스 사용
         try {
-            String uploadedFilename = storageService.uploadFile(file, newFilename);
-            System.out.println("Google Cloud Storage에 파일 업로드 성공: " + uploadedFilename);
+            String uploadedFilename = fileStorageService.uploadFile(file, newFilename);
+            System.out.println("파일 업로드 성공: " + uploadedFilename);
         } catch (IOException e) {
-            System.err.println("Google Cloud Storage 파일 업로드 실패: " + e.getMessage());
+            System.err.println("파일 업로드 실패: " + e.getMessage());
             throw new IOException("파일 업로드 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
         
-        // 로컬 파일 저장 방식 (개발 환경용)
-        /*
-        // 업로드 디렉토리 생성
-        Path uploadPath = createUploadDirectory();
-        System.out.println("업로드 경로: " + uploadPath.toAbsolutePath());
-        
-        // 파일 저장
-        Path filePath = uploadPath.resolve(newFilename);
-        System.out.println("저장할 파일 경로: " + filePath.toAbsolutePath());
-        
-        try {
-            Files.copy(file.getInputStream(), filePath);
-            System.out.println("로컬 파일 저장 성공");
-        } catch (IOException e) {
-            System.err.println("로컬 파일 저장 실패: " + e.getMessage());
-            throw new IOException("파일 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
-        }
-        */
         
         Jokbo jokbo = new Jokbo();
         jokbo.setBook(book);
@@ -160,26 +135,7 @@ public class JokboService {
         return jokboRepository.save(jokbo);
     }
     
-    /**
-     * 업로드 디렉토리를 생성합니다
-     */
-    private Path createUploadDirectory() throws IOException {
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        System.out.println("업로드 디렉토리 경로: " + uploadPath.toAbsolutePath());
-        
-        if (!Files.exists(uploadPath)) {
-            try {
-                Files.createDirectories(uploadPath);
-                System.out.println("업로드 디렉토리 생성 성공");
-            } catch (IOException e) {
-                System.err.println("업로드 디렉토리 생성 실패: " + e.getMessage());
-                throw new IOException("업로드 디렉토리 생성에 실패했습니다: " + e.getMessage(), e);
-            }
-        } else {
-            System.out.println("업로드 디렉토리가 이미 존재합니다");
-        }
-        return uploadPath;
-    }
+
     
     /**
      * 파일 확장자를 추출합니다
@@ -226,18 +182,18 @@ public class JokboService {
     }
     
     /**
-     * 파일 경로를 가져옵니다 (Google Cloud Storage 사용)
+     * 파일 경로를 가져옵니다 (환경에 따라 자동 선택)
      */
     public Path getFilePath(String filename) {
-        // Google Cloud Storage를 사용하므로 로컬 경로 대신 파일명만 반환
-        return Paths.get(filename);
+        // FileStorageService 인터페이스를 통해 환경에 맞는 경로 반환
+        return fileStorageService.getFilePath(filename);
     }
     
     /**
-     * StorageService를 반환합니다
+     * FileStorageService를 반환합니다
      */
-    public StorageService getStorageService() {
-        return storageService;
+    public FileStorageService getFileStorageService() {
+        return fileStorageService;
     }
     
 
@@ -287,5 +243,21 @@ public class JokboService {
         }
         
         return pdfService.createPdfBytesFromText(jokbo.getContent(), jokbo.getUploaderName());
+    }
+    
+    /**
+     * 상태별 족보 목록을 페이징하여 가져옵니다
+     */
+    public Page<Jokbo> getJokbosByStatus(Jokbo.JokboStatus status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jokboRepository.findByStatusOrderByCreatedAtDesc(status, pageable);
+    }
+    
+    /**
+     * 모든 족보 목록을 페이징하여 가져옵니다 (관리자용)
+     */
+    public Page<Jokbo> getAllJokbos(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jokboRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 } 

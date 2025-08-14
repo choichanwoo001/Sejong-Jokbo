@@ -158,4 +158,152 @@ function sortBooks(sortType) {
 // 부드러운 페이지 로드 애니메이션
 window.addEventListener('load', function() {
     document.querySelector('.container').classList.add('fade-in');
+});
+
+// 파일 크기 검증 관련 함수들
+const FILE_SIZE_LIMITS = {
+    GENERAL_UPLOAD: 10 * 1024 * 1024, // 10MB
+    EMAIL_ATTACHMENT: 1 * 1024 * 1024  // 1MB
+};
+
+/**
+ * 파일 크기를 사람이 읽기 쉬운 형태로 변환
+ */
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * 파일 크기 검증
+ */
+function validateFileSize(file, maxSize, context = 'general') {
+    if (!file) {
+        return { isValid: false, message: '파일을 선택해주세요.' };
+    }
+    
+    if (file.size > maxSize) {
+        const maxSizeFormatted = formatFileSize(maxSize);
+        const currentSizeFormatted = formatFileSize(file.size);
+        
+        let contextMessage = '';
+        if (context === 'email') {
+            contextMessage = '이메일 첨부 파일은 ';
+        } else {
+            contextMessage = '업로드 가능한 파일 크기는 ';
+        }
+        
+        return {
+            isValid: false,
+            message: `${contextMessage}${maxSizeFormatted}까지입니다.\n현재 선택된 파일: ${currentSizeFormatted}`
+        };
+    }
+    
+    return { isValid: true, message: '파일 크기가 적절합니다.' };
+}
+
+/**
+ * 파일 확장자 검증
+ */
+function validateFileExtension(file, allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'txt']) {
+    if (!file || !file.name) {
+        return { isValid: false, message: '유효하지 않은 파일입니다.' };
+    }
+    
+    const extension = file.name.split('.').pop().toLowerCase();
+    
+    if (!allowedExtensions.includes(extension)) {
+        return {
+            isValid: false,
+            message: `허용되지 않는 파일 형식입니다.\n허용 형식: ${allowedExtensions.join(', ')}`
+        };
+    }
+    
+    return { isValid: true, message: '지원되는 파일 형식입니다.' };
+}
+
+/**
+ * 종합 파일 검증
+ */
+function validateFile(file, context = 'general') {
+    const maxSize = context === 'email' ? FILE_SIZE_LIMITS.EMAIL_ATTACHMENT : FILE_SIZE_LIMITS.GENERAL_UPLOAD;
+    
+    // 파일 존재 확인
+    if (!file) {
+        return { isValid: false, message: '파일을 선택해주세요.' };
+    }
+    
+    // 크기 검증
+    const sizeValidation = validateFileSize(file, maxSize, context);
+    if (!sizeValidation.isValid) {
+        return sizeValidation;
+    }
+    
+    // 확장자 검증
+    const extensionValidation = validateFileExtension(file);
+    if (!extensionValidation.isValid) {
+        return extensionValidation;
+    }
+    
+    return { isValid: true, message: '업로드 가능한 파일입니다.' };
+}
+
+/**
+ * 사용자 친화적 에러 메시지 표시
+ */
+function showFileValidationMessage(message, isError = false) {
+    // 기존 메시지 제거
+    const existingMessage = document.querySelector('.file-validation-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // 새 메시지 생성
+    const messageElement = document.createElement('div');
+    messageElement.className = `file-validation-message ${isError ? 'error' : 'success'}`;
+    messageElement.style.cssText = `
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        font-size: 14px;
+        white-space: pre-line;
+        ${isError ? 
+            'background-color: #fee; border: 1px solid #fcc; color: #c33;' : 
+            'background-color: #efe; border: 1px solid #cfc; color: #3c3;'
+        }
+    `;
+    messageElement.textContent = message;
+    
+    return messageElement;
+}
+
+/**
+ * 파일 입력 필드에 이벤트 리스너 추가
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // 일반 파일 업로드 필드들
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const context = this.dataset.context || 'general'; // data-context 속성으로 컨텍스트 지정
+            
+            if (file) {
+                const validation = validateFile(file, context);
+                const messageElement = showFileValidationMessage(validation.message, !validation.isValid);
+                
+                // 메시지를 파일 입력 필드 다음에 삽입
+                this.parentNode.insertBefore(messageElement, this.nextSibling);
+                
+                // 유효하지 않으면 파일 선택 해제
+                if (!validation.isValid) {
+                    this.value = '';
+                }
+            }
+        });
+    });
 }); 

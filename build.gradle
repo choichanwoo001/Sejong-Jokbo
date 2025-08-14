@@ -9,7 +9,23 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = '21'
+    targetCompatibility = '21'
 }
+
+// 전체 프로젝트 UTF-8 인코딩 설정
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+}
+
+
 
 configurations {
     compileOnly {
@@ -44,13 +60,27 @@ dependencies {
     // Google Cloud Storage
     implementation 'com.google.cloud:spring-cloud-gcp-storage:4.8.4'
     
+    // Swagger UI (Springdoc-OpenAPI)
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    
     // 개발 도구
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     
-    // 테스트
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-} 
+// 모든 JavaExec 태스크에 UTF-8 인코딩 적용
+tasks.withType(JavaExec) {
+    systemProperty 'file.encoding', 'UTF-8'
+    systemProperty 'console.encoding', 'UTF-8'
+    jvmArgs '-Dfile.encoding=UTF-8', '-Dconsole.encoding=UTF-8'
+}
+
+// bootRun 태스크에 UTF-8 인코딩 설정
+bootRun {
+    systemProperty 'file.encoding', 'UTF-8'
+    systemProperty 'console.encoding', 'UTF-8'
+    jvmArgs '-Dfile.encoding=UTF-8', '-Dconsole.encoding=UTF-8'
+}
+
+ 
