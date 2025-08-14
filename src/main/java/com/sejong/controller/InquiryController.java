@@ -8,8 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "문의", description = "문의 게시판 관련 API")
 public class InquiryController {
 
     private final InquiryService inquiryService;
@@ -17,8 +24,9 @@ public class InquiryController {
     /**
      * 문의 게시판 목록 페이지 (페이징 포함)
      */
+    @Operation(summary = "문의 목록 조회", description = "공개된 문의 목록을 페이징하여 조회합니다")
     @GetMapping("/inquiry")
-    public String inquiryList(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String inquiryList(@Parameter(description = "페이지 번호") @RequestParam(defaultValue = "0") int page, Model model) {
         Page<Inquiry> inquiryPage = inquiryService.getPublicInquiries(page);
         
         model.addAttribute("inquiries", inquiryPage.getContent());

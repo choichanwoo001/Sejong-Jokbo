@@ -16,12 +16,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
+@Tag(name = "관리자", description = "관리자 관련 API")
 public class AdminController {
     
     private final AdminService adminService;
@@ -32,6 +39,7 @@ public class AdminController {
     /**
      * 관리자 로그인 페이지
      */
+    @Operation(summary = "관리자 로그인 페이지", description = "관리자 로그인 페이지를 반환합니다")
     @GetMapping("/login")
     public String loginPage() {
         return "admin/login";
@@ -40,10 +48,14 @@ public class AdminController {
     /**
      * 관리자 로그인 처리
      */
+    @Operation(summary = "관리자 로그인", description = "관리자 로그인을 처리합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "로그인 성공/실패 메시지")
+    })
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestParam String adminName, 
-                       @RequestParam String password,
+    public String login(@Parameter(description = "관리자 이름") @RequestParam String adminName, 
+                       @Parameter(description = "비밀번호") @RequestParam String password,
                        HttpSession session) {
         Admin admin = adminService.login(adminName, password);
         if (admin != null) {

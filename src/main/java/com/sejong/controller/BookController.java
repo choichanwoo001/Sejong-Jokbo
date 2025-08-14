@@ -16,6 +16,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import lombok.RequiredArgsConstructor;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -23,6 +29,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "도서 및 족보", description = "도서 검색, 족보 등록/다운로드 관련 API")
 public class BookController {
 
     private final BookService bookService;
@@ -31,8 +38,9 @@ public class BookController {
     /**
      * 통합 검색을 수행합니다
      */
+    @Operation(summary = "도서 통합 검색", description = "키워드로 도서를 검색합니다")
     @GetMapping("/search")
-    public String searchBooks(@RequestParam(required = false) String keyword, Model model) {
+    public String searchBooks(@Parameter(description = "검색 키워드") @RequestParam(required = false) String keyword, Model model) {
         List<Book> searchResults = bookService.searchBooks(keyword);
         model.addAttribute("books", searchResults);
         model.addAttribute("keyword", keyword);
