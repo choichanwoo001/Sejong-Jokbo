@@ -22,6 +22,7 @@ public class SejongJokboApplication {
      * 애플리케이션 시작 시 초기화 작업을 수행합니다
      */
     @Component
+    @org.springframework.context.annotation.Profile("!test")
     public static class ApplicationInitializer implements CommandLineRunner {
         
         @Autowired
@@ -40,13 +41,19 @@ public class SejongJokboApplication {
                 }
             }
             
-            // 모든 책의 jokboCount 초기화
-            try {
-                System.out.println("책 별 족보 수 업데이트 중...");
-                bookService.updateAllJokboCounts();
-                System.out.println("책 별 족보 수 업데이트 완료!");
-            } catch (Exception e) {
-                System.err.println("족보 수 업데이트 실패: " + e.getMessage());
+            // 모든 책의 jokboCount 초기화 (필요시에만 활성화)
+            // INIT_JOKBO_COUNT 환경변수가 true일 때만 실행
+            String initJokboCount = System.getenv("INIT_JOKBO_COUNT");
+            if ("true".equals(initJokboCount)) {
+                try {
+                    System.out.println("책 별 족보 수 업데이트 중...");
+                    bookService.updateAllJokboCounts();
+                    System.out.println("책 별 족보 수 업데이트 완료!");
+                } catch (Exception e) {
+                    System.err.println("족보 수 업데이트 실패: " + e.getMessage());
+                }
+            } else {
+                System.out.println("족보 수 초기화 건너뜀 (INIT_JOKBO_COUNT=true로 설정하면 실행)");
             }
         }
     }
