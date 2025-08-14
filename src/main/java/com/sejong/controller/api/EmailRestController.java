@@ -1,4 +1,4 @@
-package com.sejong.controller;
+package com.sejong.controller.api;
 
 import com.sejong.service.EmailService;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Tag(name = "이메일", description = "이메일 인증 관련 API")
-public class EmailController {
+public class EmailRestController {
     
     private final EmailService emailService;
     
@@ -91,4 +91,4 @@ public class EmailController {
         
         return ResponseEntity.ok(response);
     }
-} 
+}

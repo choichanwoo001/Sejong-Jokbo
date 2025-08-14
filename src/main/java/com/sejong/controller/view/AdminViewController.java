@@ -1,6 +1,5 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
-import com.sejong.entity.Admin;
 import com.sejong.entity.Book;
 import com.sejong.entity.Comment;
 import com.sejong.entity.Inquiry;
@@ -17,10 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -28,8 +24,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@Tag(name = "관리자", description = "관리자 관련 API")
-public class AdminController {
+@Tag(name = "관리자 뷰", description = "관리자 페이지 관련")
+public class AdminViewController {
     
     private final AdminService adminService;
     private final BookService bookService;
@@ -43,28 +39,6 @@ public class AdminController {
     @GetMapping("/login")
     public String loginPage() {
         return "admin/login";
-    }
-    
-    /**
-     * 관리자 로그인 처리
-     */
-    @Operation(summary = "관리자 로그인", description = "관리자 로그인을 처리합니다")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "로그인 성공/실패 메시지")
-    })
-    @PostMapping("/login")
-    @ResponseBody
-    public String login(@Parameter(description = "관리자 이름") @RequestParam String adminName, 
-                       @Parameter(description = "비밀번호") @RequestParam String password,
-                       HttpSession session) {
-        Admin admin = adminService.login(adminName, password);
-        if (admin != null) {
-            session.setAttribute("adminId", admin.getAdminId());
-            session.setAttribute("adminName", admin.getAdminName());
-            return "success";
-        } else {
-            return "error: 로그인 정보가 올바르지 않습니다.";
-        }
     }
     
     /**
@@ -212,90 +186,6 @@ public class AdminController {
         model.addAttribute("adminId", adminId);
         
         return "admin/inquiry-detail";
-    }
-    
-    /**
-     * 문의에 답변 추가
-     */
-    @PostMapping("/inquiry/{inquiryId}/comment")
-    @ResponseBody
-    public String addComment(@PathVariable Integer inquiryId,
-                           @RequestParam String content,
-                           HttpSession session) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "error: 로그인이 필요합니다.";
-        }
-        
-        try {
-            inquiryService.addComment(inquiryId, adminId, content);
-            return "success";
-        } catch (Exception e) {
-            return "error: 답변 등록 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-    
-    /**
-     * 족보 승인
-     */
-    @PostMapping("/jokbo/{jokboId}/approve")
-    @ResponseBody
-    public String approveJokbo(@PathVariable Integer jokboId,
-                              @RequestParam(required = false) String comment,
-                              HttpSession session) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "error: 로그인이 필요합니다.";
-        }
-        
-        try {
-            adminService.approveJokbo(jokboId, adminId, comment);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 승인 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-    
-    /**
-     * 족보 반려
-     */
-    @PostMapping("/jokbo/{jokboId}/reject")
-    @ResponseBody
-    public String rejectJokbo(@PathVariable Integer jokboId,
-                             @RequestParam(required = false) String comment,
-                             HttpSession session) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "error: 로그인이 필요합니다.";
-        }
-        
-        try {
-            adminService.rejectJokbo(jokboId, adminId, comment);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 반려 중 오류가 발생했습니다. - " + e.getMessage();
-        }
-    }
-    
-    /**
-     * 족보 승인 취소
-     */
-    @PostMapping("/jokbo/{jokboId}/cancel-approval")
-    @ResponseBody
-    public String cancelApproval(@PathVariable Integer jokboId,
-                                @RequestParam(required = false) String comment,
-                                HttpSession session) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "error: 로그인이 필요합니다.";
-        }
-        
-        try {
-            adminService.cancelApproval(jokboId, adminId, comment);
-            return "success";
-        } catch (Exception e) {
-            return "error: 족보 승인 취소 중 오류가 발생했습니다. - " + e.getMessage();
-        }
     }
     
     /**

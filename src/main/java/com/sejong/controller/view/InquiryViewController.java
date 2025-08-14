@@ -1,4 +1,4 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
 import com.sejong.entity.Inquiry;
 import com.sejong.service.InquiryService;
@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "문의", description = "문의 게시판 관련 API")
-public class InquiryController {
+@Tag(name = "문의 뷰", description = "문의 게시판 페이지 관련")
+public class InquiryViewController {
 
     private final InquiryService inquiryService;
     
@@ -44,32 +42,6 @@ public class InquiryController {
     @GetMapping("/inquiry/write")
     public String inquiryWriteForm() {
         return "inquiry/write";
-    }
-    
-    /**
-     * 문의 등록
-     */
-    @PostMapping("/inquiry")
-    @ResponseBody
-    public String registerInquiry(@RequestParam String name,
-                                 @RequestParam(required = false) String email,
-                                 @RequestParam String message,
-                                 @RequestParam(defaultValue = "true") Boolean isPublic) {
-        try {
-            // 입력값 검증
-            if (name == null || name.trim().isEmpty()) {
-                return "error: 이름을 입력해주세요.";
-            }
-            
-            if (message == null || message.trim().isEmpty()) {
-                return "error: 문의 내용을 입력해주세요.";
-            }
-            
-            inquiryService.registerInquiry(name.trim(), email, message.trim(), isPublic);
-            return "success";
-        } catch (Exception e) {
-            return "error: 문의 등록 중 오류가 발생했습니다. - " + e.getMessage();
-        }
     }
     
     /**

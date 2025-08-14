@@ -1,4 +1,4 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
 import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
@@ -14,13 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import lombok.RequiredArgsConstructor;
 import java.net.MalformedURLException;
@@ -29,8 +26,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "도서 및 족보", description = "도서 검색, 족보 등록/다운로드 관련 API")
-public class BookController {
+@Tag(name = "도서 뷰", description = "도서 검색 및 상세 페이지 관련")
+public class BookViewController {
 
     private final BookService bookService;
     private final JokboService jokboService;
@@ -83,51 +80,6 @@ public class BookController {
         model.addAttribute("activeTab", tab != null ? tab : "register");
         
         return "book/detail";
-    }
-    
-    /**
-     * 텍스트 족보를 등록합니다
-     */
-    @PostMapping("/book/{bookId}/jokbo/text")
-    @ResponseBody
-    public String registerTextJokbo(@PathVariable Integer bookId,
-                                   @RequestParam String uploaderName,
-                                   @RequestParam String content,
-                                   @RequestParam(required = false) String comment) {
-        jokboService.registerTextJokbo(bookId, uploaderName, content, comment);
-        return "success";
-    }
-    
-    /**
-     * 파일 족보를 등록합니다
-     */
-    @PostMapping("/book/{bookId}/jokbo/file")
-    @ResponseBody
-    public String registerFileJokbo(@PathVariable Integer bookId,
-                                   @RequestParam String uploaderName,
-                                   @RequestParam MultipartFile file,
-                                   @RequestParam(required = false) String comment) {
-        try {
-            // 입력값 검증
-            if (uploaderName == null || uploaderName.trim().isEmpty()) {
-                return "error: 업로더 이름을 입력해주세요.";
-            }
-            
-            if (file == null || file.isEmpty()) {
-                return "error: 업로드할 파일을 선택해주세요.";
-            }
-            
-            jokboService.registerFileJokbo(bookId, uploaderName.trim(), file, comment);
-            return "success";
-        } catch (IllegalArgumentException e) {
-            return "error: " + e.getMessage();
-        } catch (java.io.IOException e) {
-            return "error: 파일 처리 중 오류가 발생했습니다. - " + e.getMessage();
-        } catch (RuntimeException e) {
-            return "error: " + e.getMessage();
-        } catch (Exception e) {
-            return "error: 족보 등록 중 예상치 못한 오류가 발생했습니다. - " + e.getMessage();
-        }
     }
     
     /**
@@ -286,6 +238,4 @@ public class BookController {
         
         return "admin/jokbo-management";
     }
-    
-
-} 
+}

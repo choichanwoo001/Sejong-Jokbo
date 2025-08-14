@@ -1,4 +1,4 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
 import com.sejong.entity.Book;
 import com.sejong.service.BookService;
@@ -45,4 +45,4 @@ public class PageController {
         
         return "home";
     }
-} 
+}
