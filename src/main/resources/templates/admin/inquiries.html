@@ -153,6 +153,38 @@
             margin: 0 0 10px 0;
             color: #333;
         }
+        
+        /* 페이징 스타일 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        .page-link {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .page-link:hover {
+            background: #5a6fd8;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        
+        .page-info {
+            color: #666;
+            font-weight: 500;
+            padding: 0 10px;
+        }
     </style>
 </head>
 <body>
@@ -187,6 +219,21 @@
         <div class="no-inquiries" th:if="${inquiries.size() == 0}">
             <h3>등록된 문의가 없습니다</h3>
             <p>새로운 문의가 등록되면 여기에 표시됩니다.</p>
+        </div>
+        
+        <!-- 페이징 -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${hasPrevious}" 
+               th:href="@{/admin/inquiries(page=${currentPage - 1})}" 
+               class="page-link">이전</a>
+            
+            <span class="page-info">
+                <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            </span>
+            
+            <a th:if="${hasNext}" 
+               th:href="@{/admin/inquiries(page=${currentPage + 1})}" 
+               class="page-link">다음</a>
         </div>
     </div>
 </body>

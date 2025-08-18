@@ -205,37 +205,5 @@ public class BookViewController {
         }
     }
     
-    /**
-     * 관리자용 족보 관리 페이지 (페이징 없음)
-     */
-    @GetMapping("/admin/book/{bookId}/jokbos")
-    public String adminJokboManagement(@PathVariable Integer bookId, Model model) {
-        Book book = bookService.getBookById(bookId);
-        List<Jokbo> allJokbos = jokboService.getAllJokbosByBookId(bookId);
-        
-        model.addAttribute("book", book);
-        model.addAttribute("jokbos", allJokbos);
-        
-        return "admin/jokbo-management";
-    }
-    
-    /**
-     * 관리자용 족보 관리 페이지 (페이징 포함)
-     */
-    @GetMapping("/admin/book/{bookId}/jokbos/page/{page}")
-    public String adminJokboManagementWithPaging(@PathVariable Integer bookId, 
-                                                @PathVariable int page, 
-                                                Model model) {
-        Book book = bookService.getBookById(bookId);
-        Page<Jokbo> jokboPage = jokboService.getAllJokbosByBookId(bookId, page);
-        
-        model.addAttribute("book", book);
-        model.addAttribute("jokbos", jokboPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", jokboPage.getTotalPages());
-        model.addAttribute("hasNext", jokboPage.hasNext());
-        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
-        
-        return "admin/jokbo-management";
-    }
+
 }

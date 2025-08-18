@@ -28,7 +28,7 @@
             padding: 8px 12px;
             border: none;
             border-radius: 5px;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -122,7 +122,9 @@
                 <div class="books-grid">
                     <div class="book-item" th:each="book : ${books}" th:if="${book.category == '서양'}">
                         <div class="book-cover">
-                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            <a th:href="'/admin/book/' + ${book.bookId}">
+                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            </a>
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
@@ -130,7 +132,6 @@
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                             <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/detail'" class="admin-btn view-btn">책 상세보기</a>
                                 <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
                             </div>
                         </div>
@@ -143,7 +144,9 @@
                 <div class="books-grid">
                     <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동서양'}">
                         <div class="book-cover">
-                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            <a th:href="'/admin/book/' + ${book.bookId}">
+                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            </a>
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
@@ -151,7 +154,6 @@
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                             <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/detail'" class="admin-btn view-btn">책 상세보기</a>
                                 <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
                             </div>
                         </div>
@@ -164,7 +166,9 @@
                 <div class="books-grid">
                     <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동양'}">
                         <div class="book-cover">
-                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            <a th:href="'/admin/book/' + ${book.bookId}">
+                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            </a>
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
@@ -172,7 +176,6 @@
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                             <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/detail'" class="admin-btn view-btn">책 상세보기</a>
                                 <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
                             </div>
                         </div>
@@ -185,7 +188,9 @@
                 <div class="books-grid">
                     <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학사'}">
                         <div class="book-cover">
-                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            <a th:href="'/admin/book/' + ${book.bookId}">
+                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                            </a>
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
@@ -193,7 +198,6 @@
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                             <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/detail'" class="admin-btn view-btn">책 상세보기</a>
                                 <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
                             </div>
                         </div>

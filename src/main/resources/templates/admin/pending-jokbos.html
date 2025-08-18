@@ -171,6 +171,18 @@
             text-decoration: none;
         }
         
+        .preview-btn {
+            background: #17a2b8;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .preview-btn:hover {
+            background: #138496;
+            color: white;
+            text-decoration: none;
+        }
+        
         .no-jokbos {
             text-align: center;
             padding: 60px 20px;
@@ -204,7 +216,7 @@
                 <div class="jokbo-content">
                     <div class="content-type" th:text="${jokbo.contentType == 'text' ? '텍스트 족보' : '파일 족보'}">내용 타입</div>
                     
-                    <div th:if="${jokbo.contentType == 'text'}" class="text-content" th:text="${jokbo.content}">텍스트 내용</div>
+                    <!-- <div th:if="${jokbo.contentType == 'text'}" class="text-content" th:text="${jokbo.content}">텍스트 내용</div> -->
                     
                     <div th:if="${jokbo.contentType == 'file'}" class="file-content">
                         <a th:href="'/jokbo/download/' + ${jokbo.contentUrl}" class="file-link" th:text="${jokbo.contentUrl}">파일명</a>
@@ -219,9 +231,19 @@
                 </div>
                 
                 <div class="jokbo-actions">
+                    <!-- PDF 미리보기 버튼 -->
+                    <a th:if="${jokbo.contentType == 'text'}" 
+                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                       target="_blank" 
+                       class="action-btn preview-btn">PDF 미리보기</a>
+                    <a th:if="${jokbo.contentType == 'file'}" 
+                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
+                       target="_blank" 
+                       class="action-btn preview-btn">미리보기</a>
+                    
                     <button class="action-btn approve-btn" th:onclick="'approveJokbo(' + ${jokbo.jokboId} + ')'">승인</button>
                     <button class="action-btn reject-btn" th:onclick="'rejectJokbo(' + ${jokbo.jokboId} + ')'">반려</button>
-                    <a th:href="'/book/' + ${jokbo.book.bookId}" class="action-btn view-book-btn">책 보기</a>
+                    <a th:href="'/admin/book/' + ${jokbo.book.bookId}" class="action-btn view-book-btn">책 상세보기</a>
                 </div>
             </div>
         </div>
