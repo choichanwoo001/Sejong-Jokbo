@@ -1,8 +1,4 @@
-.admin-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
+/* admin-container 스타일은 공통 헤더의 main-content로 대체됨 */
 
 .book-info {
     background: #f8f9fa;
@@ -59,10 +55,19 @@
 
 .action-buttons {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
 }
 
-.btn-approve, .btn-reject, .btn-view, .btn-download {
+.action-buttons > div {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+/* 공통 버튼 스타일 */
+.btn-approve, .btn-reject, .btn-view, .btn-download, .btn-cancel {
     padding: 6px 12px;
     border: none;
     border-radius: 4px;
@@ -70,8 +75,14 @@
     font-size: 0.8rem;
     text-decoration: none;
     display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    min-width: 60px;
+    transition: all 0.2s ease;
+    line-height: 1.4;
 }
 
+/* 개별 버튼 색상 */
 .btn-approve {
     background: #28a745;
     color: white;
@@ -92,8 +103,16 @@
     color: white;
 }
 
-.btn-approve:hover, .btn-reject:hover, .btn-view:hover, .btn-download:hover {
+.btn-cancel {
+    background: #ffc107;
+    color: #212529;
+}
+
+/* 호버 효과 */
+.btn-approve:hover, .btn-reject:hover, .btn-view:hover, .btn-download:hover, .btn-cancel:hover {
     opacity: 0.8;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .content-preview {
@@ -167,4 +186,372 @@
     border-radius: 5px;
     margin: 20px 0;
     white-space: pre-wrap;
+}
+
+/* 관리자 네비게이션 - 공통 헤더로 대체됨
+.admin-nav {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 30px;
+}
+
+.nav-link {
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #495057;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    background: #e9ecef;
+    color: #212529;
+}
+
+.nav-link.active {
+    background: #dc2626;
+    color: white;
+}
+*/
+
+/* 필터 섹션 */
+.filter-section {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.filter-section label {
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.filter-section select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+}
+
+/* 상태 배지 업데이트 */
+.status-대기 {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-승인 {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-반려 {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* 콘텐츠 타입 배지 */
+.content-type-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.content-type-badge.text {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.content-type-badge.file {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* 액션 배지 */
+.action-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.action-승인 {
+    background: #d4edda;
+    color: #155724;
+}
+
+.action-반려 {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.action-승인취소 {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.action-재심사요청 {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+/* 버튼 스타일 확장 */
+
+.btn-history {
+    background: #6f42c1;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 모달 개선 */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* 페이징 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.page-link {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.page-link:hover {
+    background: #0056b3;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* 댓글 셀 */
+.comment-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 데이터 없음 */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+/* 족보 정보 카드 */
+.jokbo-info-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.view-actions {
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* 이력 섹션 */
+.history-section {
+    margin-top: 30px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.history-table th {
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.jokbo-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.jokbo-link:hover {
+    text-decoration: underline;
+}
+
+/* 타임라인 스타일 */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+    padding-left: 40px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -35px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-icon {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.timeline-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.timeline-body p {
+    margin: 10px 0;
+}
+
+.status-change {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.arrow {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.timeline-comment {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 3px solid #28a745;
+    margin-top: 10px;
+}
+
+.back-actions {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
 } 

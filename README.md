@@ -12,6 +12,10 @@
 - **MySQL**
 - **Gradle**
 - **Jakarta EE**
+- **Springdoc OpenAPI (Swagger UI 3)**
+- **Google Cloud Storage**
+- **Apache PDFBox**
+- **Spring Boot Mail**
 
 ## 프로젝트 구조
 
@@ -73,21 +77,53 @@ CREATE DATABASE sejong_jokbo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ## 주요 기능
 
-- 회원 관리 (등록, 조회, 수정, 삭제)
+- 도서 검색 및 족보 관리
+- 족보 업로드 (텍스트 및 파일)
+- 관리자 승인 시스템
+- 문의 게시판
+- 이메일 인증
+- PDF 변환 및 다운로드
 - Thymeleaf를 이용한 웹 인터페이스
 - JPA를 이용한 데이터베이스 연동
 - Bootstrap을 이용한 반응형 UI
 
-## API 엔드포인트
+## Swagger UI - API 문서
 
+애플리케이션 실행 후 아래 주소에서 모든 API를 테스트할 수 있습니다:
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **API Docs**: http://localhost:8080/api-docs
+
+### 사용 가능한 API 그룹
+
+1. **페이지 관련 API** - 홈페이지 등 정적 페이지
+2. **도서 및 족보 API** - 도서 검색, 족보 등록/다운로드
+3. **문의 API** - 문의 게시판 관련 기능
+4. **이메일 API** - 이메일 인증 관련 기능
+5. **관리자 API** - 관리자 전용 기능
+
+### 주요 API 엔드포인트
+
+#### 공개 API
 - `GET /` - 홈 페이지
-- `GET /members` - 회원 목록
-- `GET /members/new` - 회원 등록 폼
-- `POST /members` - 회원 등록
-- `GET /members/{id}` - 회원 상세 조회
-- `GET /members/{id}/edit` - 회원 수정 폼
-- `PUT /members/{id}` - 회원 수정
-- `DELETE /members/{id}` - 회원 삭제 
+- `GET /search` - 도서 검색
+- `GET /book/{bookId}` - 도서 상세 페이지
+- `POST /book/{bookId}/jokbo/text` - 텍스트 족보 등록
+- `POST /book/{bookId}/jokbo/file` - 파일 족보 등록
+- `GET /jokbo/download/{filename}` - 족보 파일 다운로드
+- `GET /inquiry` - 문의 목록
+- `POST /inquiry` - 문의 등록
+
+#### 관리자 API
+- `POST /admin/login` - 관리자 로그인
+- `GET /admin/dashboard` - 관리자 대시보드
+- `GET /admin/jokbos/pending` - 승인 대기 족보 목록
+- `POST /admin/jokbo/{jokboId}/approve` - 족보 승인
+- `POST /admin/jokbo/{jokboId}/reject` - 족보 반려
+
+#### 이메일 API
+- `POST /api/send-verification` - 인증번호 발송
+- `POST /api/verify-code` - 인증번호 확인 
 
 ## Docker를 이용한 실행
 

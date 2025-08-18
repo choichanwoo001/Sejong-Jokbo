@@ -22,10 +22,18 @@ public class InquiryService {
     private final AdminService adminService;
     
     /**
-     * 모든 문의를 페이징하여 조회합니다 (10개씩)
+     * 모든 문의를 페이징하여 조회합니다 (15개씩)
      */
     public Page<Inquiry> getAllInquiries(int page) {
-        Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
+        Pageable pageable = PageRequest.of(page, 15); // 15개씩 페이징
+        return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+    
+    /**
+     * 모든 문의를 페이징하여 조회합니다 (커스텀 페이지 크기)
+     */
+    public Page<Inquiry> getAllInquiries(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
     

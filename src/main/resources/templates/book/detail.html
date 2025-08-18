@@ -144,12 +144,6 @@
                                 <span class="jokbo-date" th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</span>
                             </div>
                             
-                            <!-- 족보 내용 설명 -->
-                            <div class="jokbo-content-text">
-                                <p th:if="${jokbo.contentType == 'text'}">텍스트 족보가 등록되었습니다. 아래 버튼을 통해 PDF로 확인하실 수 있습니다.</p>
-                                <p th:if="${jokbo.contentType == 'file'}">파일 족보가 등록되었습니다. 아래 버튼을 통해 파일을 확인하실 수 있습니다.</p>
-                            </div>
-                            
                             <!-- 통일된 액션 버튼 -->
                             <div class="jokbo-actions">
                                 <!-- 텍스트 족보: PDF로 보기/다운로드 -->

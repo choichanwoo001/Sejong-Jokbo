@@ -1,10 +1,13 @@
-package com.sejong.controller;
+package com.sejong.controller.view;
 
 import com.sejong.entity.Book;
 import com.sejong.service.BookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
  */
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "페이지", description = "홈페이지 등 정적 페이지 관련 API")
 public class PageController {
 
     private final BookService bookService;
@@ -24,6 +28,7 @@ public class PageController {
      * @param model 뷰에 전달할 데이터 모델
      * @return 홈 페이지 뷰
      */
+    @Operation(summary = "홈페이지", description = "메인 홈페이지를 반환합니다")
     @GetMapping("/")
     public String home(Model model) {
         // 각 카테고리별 도서 목록을 가져옵니다
@@ -40,4 +45,4 @@ public class PageController {
         
         return "home";
     }
-} 
+}
