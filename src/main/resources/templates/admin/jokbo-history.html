@@ -6,6 +6,48 @@
     <title>족보 이력 - 세종족보</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
+    <style>
+        /* 필터 섹션 스타일 */
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 20px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+        
+        .filter-item label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        
+        .filter-item select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+        }
+        
+        .filter-item select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+    </style>
 </head>
 <body>
     <div class="admin-container">
@@ -18,6 +60,39 @@
         </nav>
         
         <h1>족보 상세 이력</h1>
+        
+        <!-- 필터 섹션 -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-item">
+                    <label for="actionFilter">액션:</label>
+                    <select id="actionFilter" onchange="applyFilters()">
+                        <option value="" th:selected="${selectedAction == null}">전체</option>
+                        <option value="승인" th:selected="${selectedAction == '승인'}">승인</option>
+                        <option value="반려" th:selected="${selectedAction == '반려'}">반려</option>
+                        <option value="승인취소" th:selected="${selectedAction == '승인취소'}">승인취소</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="previousStatusFilter">이전 상태:</label>
+                    <select id="previousStatusFilter" onchange="applyFilters()">
+                        <option value="" th:selected="${selectedPreviousStatus == null}">전체</option>
+                        <option value="대기" th:selected="${selectedPreviousStatus == '대기'}">대기</option>
+                        <option value="승인" th:selected="${selectedPreviousStatus == '승인'}">승인</option>
+                        <option value="반려" th:selected="${selectedPreviousStatus == '반려'}">반려</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="newStatusFilter">새 상태:</label>
+                    <select id="newStatusFilter" onchange="applyFilters()">
+                        <option value="" th:selected="${selectedNewStatus == null}">전체</option>
+                        <option value="대기" th:selected="${selectedNewStatus == '대기'}">대기</option>
+                        <option value="승인" th:selected="${selectedNewStatus == '승인'}">승인</option>
+                        <option value="반려" th:selected="${selectedNewStatus == '반려'}">반려</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         
         <!-- 족보 정보 -->
         <div class="jokbo-info-card">
@@ -104,6 +179,21 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 페이징 -->
+            <div class="pagination" th:if="${totalPages > 1}">
+                <a th:if="${hasPrevious}" 
+                   th:href="@{'/admin/jokbo/' + ${jokbo.jokboId} + '/history'(page=${currentPage - 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}" 
+                   class="page-link">이전</a>
+                
+                <span class="page-info">
+                    <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+                </span>
+                
+                <a th:if="${hasNext}" 
+                   th:href="@{'/admin/jokbo/' + ${jokbo.jokboId} + '/history'(page=${currentPage + 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}" 
+                   class="page-link">다음</a>
+            </div>
         </div>
         
         <div class="back-actions">
@@ -111,5 +201,23 @@
             <a href="/admin/approval-history" class="btn-secondary">승인 이력으로 돌아가기</a>
         </div>
     </div>
+    
+    <script>
+        function applyFilters() {
+            const actionFilter = document.getElementById('actionFilter').value;
+            const previousStatusFilter = document.getElementById('previousStatusFilter').value;
+            const newStatusFilter = document.getElementById('newStatusFilter').value;
+            
+            const params = new URLSearchParams();
+            params.append('page', '0'); // 필터 적용 시 첫 페이지로
+            
+            if (actionFilter) params.append('action', actionFilter);
+            if (previousStatusFilter) params.append('previousStatus', previousStatusFilter);
+            if (newStatusFilter) params.append('newStatus', newStatusFilter);
+            
+            const jokboId = window.location.pathname.split('/')[3]; // /admin/jokbo/{jokboId}/history에서 jokboId 추출
+            window.location.href = `/admin/jokbo/${jokboId}/history?${params.toString()}`;
+        }
+    </script>
 </body>
 </html>

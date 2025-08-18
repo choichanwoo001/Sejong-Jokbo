@@ -47,4 +47,32 @@ public interface JokboApprovalHistoryRepository extends JpaRepository<JokboAppro
      */
     @Query("SELECT h.action, COUNT(h) FROM JokboApprovalHistory h WHERE h.admin.adminId = :adminId GROUP BY h.action")
     List<Object[]> countApprovalActionsByAdminId(@Param("adminId") Integer adminId);
+    
+    /**
+     * 특정 족보의 승인 이력 조회 (필터링 및 페이징)
+     */
+    @Query("SELECT h FROM JokboApprovalHistory h JOIN FETCH h.jokbo j JOIN FETCH j.book JOIN FETCH h.admin " +
+           "WHERE h.jokbo.jokboId = :jokboId " +
+           "AND (:action IS NULL OR h.action = :action) " +
+           "AND (:previousStatus IS NULL OR h.previousStatus = :previousStatus) " +
+           "AND (:newStatus IS NULL OR h.newStatus = :newStatus) " +
+           "ORDER BY h.createdAt DESC")
+    Page<JokboApprovalHistory> findByJokboIdWithFilters(@Param("jokboId") Integer jokboId,
+                                                       @Param("action") JokboApprovalHistory.ApprovalAction action,
+                                                       @Param("previousStatus") com.sejong.entity.Jokbo.JokboStatus previousStatus,
+                                                       @Param("newStatus") com.sejong.entity.Jokbo.JokboStatus newStatus,
+                                                       Pageable pageable);
+    
+    /**
+     * 모든 승인 이력 조회 (필터링 및 페이징)
+     */
+    @Query("SELECT h FROM JokboApprovalHistory h JOIN FETCH h.jokbo j JOIN FETCH j.book JOIN FETCH h.admin " +
+           "WHERE (:action IS NULL OR h.action = :action) " +
+           "AND (:previousStatus IS NULL OR h.previousStatus = :previousStatus) " +
+           "AND (:newStatus IS NULL OR h.newStatus = :newStatus) " +
+           "ORDER BY h.createdAt DESC")
+    Page<JokboApprovalHistory> findAllWithFilters(@Param("action") JokboApprovalHistory.ApprovalAction action,
+                                                 @Param("previousStatus") com.sejong.entity.Jokbo.JokboStatus previousStatus,
+                                                 @Param("newStatus") com.sejong.entity.Jokbo.JokboStatus newStatus,
+                                                 Pageable pageable);
 }

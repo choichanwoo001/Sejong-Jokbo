@@ -189,10 +189,15 @@ public class AdminViewController {
     }
     
     /**
-     * 족보 승인 이력 조회
+     * 족보 승인 이력 조회 (페이징 및 필터링)
      */
     @GetMapping("/jokbo/{jokboId}/history")
     public String jokboHistory(@PathVariable Integer jokboId,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "15") int size,
+                              @RequestParam(required = false) String action,
+                              @RequestParam(required = false) String previousStatus,
+                              @RequestParam(required = false) String newStatus,
                               HttpSession session,
                               Model model) {
         Integer adminId = (Integer) session.getAttribute("adminId");
@@ -200,21 +205,32 @@ public class AdminViewController {
             return "redirect:/admin/login";
         }
         
-        List<JokboApprovalHistory> history = adminService.getJokboApprovalHistory(jokboId);
+        Page<JokboApprovalHistory> historyPage = adminService.getJokboApprovalHistoryWithFilters(
+            jokboId, page, size, action, previousStatus, newStatus);
         Jokbo jokbo = jokboService.getJokboById(jokboId);
         
         model.addAttribute("jokbo", jokbo);
-        model.addAttribute("history", history);
+        model.addAttribute("history", historyPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", historyPage.getTotalPages());
+        model.addAttribute("hasNext", historyPage.hasNext());
+        model.addAttribute("hasPrevious", historyPage.hasPrevious());
+        model.addAttribute("selectedAction", action);
+        model.addAttribute("selectedPreviousStatus", previousStatus);
+        model.addAttribute("selectedNewStatus", newStatus);
         
         return "admin/jokbo-history";
     }
     
     /**
-     * 모든 승인 이력 조회 (페이징)
+     * 모든 승인 이력 조회 (페이징 및 필터링)
      */
     @GetMapping("/approval-history")
     public String approvalHistory(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "20") int size,
+                                 @RequestParam(defaultValue = "15") int size,
+                                 @RequestParam(required = false) String action,
+                                 @RequestParam(required = false) String previousStatus,
+                                 @RequestParam(required = false) String newStatus,
                                  HttpSession session,
                                  Model model) {
         Integer adminId = (Integer) session.getAttribute("adminId");
@@ -222,13 +238,17 @@ public class AdminViewController {
             return "redirect:/admin/login";
         }
         
-        Page<JokboApprovalHistory> historyPage = adminService.getAllApprovalHistory(page, size);
+        Page<JokboApprovalHistory> historyPage = adminService.getAllApprovalHistoryWithFilters(
+            page, size, action, previousStatus, newStatus);
         
         model.addAttribute("history", historyPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", historyPage.getTotalPages());
         model.addAttribute("hasNext", historyPage.hasNext());
         model.addAttribute("hasPrevious", historyPage.hasPrevious());
+        model.addAttribute("selectedAction", action);
+        model.addAttribute("selectedPreviousStatus", previousStatus);
+        model.addAttribute("selectedNewStatus", newStatus);
         
         return "admin/approval-history";
     }

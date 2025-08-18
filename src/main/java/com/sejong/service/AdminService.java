@@ -144,11 +144,87 @@ public class AdminService {
     }
     
     /**
+     * 특정 족보의 승인 이력을 필터링과 페이징으로 조회합니다
+     */
+    public Page<JokboApprovalHistory> getJokboApprovalHistoryWithFilters(Integer jokboId, int page, int size, 
+                                                                        String action, String previousStatus, String newStatus) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        // 문자열을 enum으로 변환
+        JokboApprovalHistory.ApprovalAction actionEnum = null;
+        if (action != null && !action.isEmpty()) {
+            try {
+                actionEnum = JokboApprovalHistory.ApprovalAction.valueOf(action);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 액션 값은 무시
+            }
+        }
+        
+        Jokbo.JokboStatus previousStatusEnum = null;
+        if (previousStatus != null && !previousStatus.isEmpty()) {
+            try {
+                previousStatusEnum = Jokbo.JokboStatus.valueOf(previousStatus);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 상태 값은 무시
+            }
+        }
+        
+        Jokbo.JokboStatus newStatusEnum = null;
+        if (newStatus != null && !newStatus.isEmpty()) {
+            try {
+                newStatusEnum = Jokbo.JokboStatus.valueOf(newStatus);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 상태 값은 무시
+            }
+        }
+        
+        return jokboApprovalHistoryRepository.findByJokboIdWithFilters(jokboId, actionEnum, previousStatusEnum, newStatusEnum, pageable);
+    }
+    
+    /**
      * 모든 승인 이력을 페이징으로 조회합니다
      */
     public Page<JokboApprovalHistory> getAllApprovalHistory(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jokboApprovalHistoryRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+    
+    /**
+     * 모든 승인 이력을 필터링과 페이징으로 조회합니다
+     */
+    public Page<JokboApprovalHistory> getAllApprovalHistoryWithFilters(int page, int size, 
+                                                                      String action, String previousStatus, String newStatus) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        // 문자열을 enum으로 변환
+        JokboApprovalHistory.ApprovalAction actionEnum = null;
+        if (action != null && !action.isEmpty()) {
+            try {
+                actionEnum = JokboApprovalHistory.ApprovalAction.valueOf(action);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 액션 값은 무시
+            }
+        }
+        
+        Jokbo.JokboStatus previousStatusEnum = null;
+        if (previousStatus != null && !previousStatus.isEmpty()) {
+            try {
+                previousStatusEnum = Jokbo.JokboStatus.valueOf(previousStatus);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 상태 값은 무시
+            }
+        }
+        
+        Jokbo.JokboStatus newStatusEnum = null;
+        if (newStatus != null && !newStatus.isEmpty()) {
+            try {
+                newStatusEnum = Jokbo.JokboStatus.valueOf(newStatus);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 상태 값은 무시
+            }
+        }
+        
+        return jokboApprovalHistoryRepository.findAllWithFilters(actionEnum, previousStatusEnum, newStatusEnum, pageable);
     }
     
     /**
