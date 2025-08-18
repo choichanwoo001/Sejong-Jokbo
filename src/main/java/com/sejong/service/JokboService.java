@@ -5,13 +5,16 @@ import com.sejong.entity.Jokbo;
 import com.sejong.repository.BookRepository;
 import com.sejong.repository.JokboRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -248,16 +251,36 @@ public class JokboService {
     /**
      * 상태별 족보 목록을 페이징하여 가져옵니다
      */
+    @Transactional(readOnly = true)
     public Page<Jokbo> getJokbosByStatus(Jokbo.JokboStatus status, int page, int size) {
+        // JOIN FETCH로 Book 정보까지 함께 로딩
+        List<Jokbo> allJokbos = jokboRepository.findByStatusWithBookOrderByCreatedAtDesc(status);
+        
+        // 메모리에서 페이징 처리
         Pageable pageable = PageRequest.of(page, size);
-        return jokboRepository.findByStatusOrderByCreatedAtDesc(status, pageable);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), allJokbos.size());
+        
+        List<Jokbo> pageContent = start >= allJokbos.size() ? 
+            new ArrayList<>() : allJokbos.subList(start, end);
+        return new PageImpl<>(pageContent, pageable, allJokbos.size());
     }
     
     /**
      * 모든 족보 목록을 페이징하여 가져옵니다 (관리자용)
      */
+    @Transactional(readOnly = true)
     public Page<Jokbo> getAllJokbos(int page, int size) {
+        // JOIN FETCH로 Book 정보까지 함께 로딩
+        List<Jokbo> allJokbos = jokboRepository.findAllWithBookOrderByCreatedAtDesc();
+        
+        // 메모리에서 페이징 처리
         Pageable pageable = PageRequest.of(page, size);
-        return jokboRepository.findAllByOrderByCreatedAtDesc(pageable);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), allJokbos.size());
+        
+        List<Jokbo> pageContent = start >= allJokbos.size() ? 
+            new ArrayList<>() : allJokbos.subList(start, end);
+        return new PageImpl<>(pageContent, pageable, allJokbos.size());
     }
 } 

@@ -36,7 +36,7 @@ function showApprovalModal(jokboId, actionType) {
         confirmButton.className = 'btn-reject';
     } else if (actionType === 'cancel') {
         modalTitle.textContent = '승인 취소';
-        confirmButton.textContent = '취소';
+        confirmButton.textContent = '승인취소';
         confirmButton.className = 'btn-cancel';
     }
     
@@ -49,10 +49,7 @@ function closeApprovalModal() {
     modal.style.display = 'none';
 }
 
-// 족보 이력 보기
-function viewJokboHistory(jokboId) {
-    window.open(`/admin/jokbo/${jokboId}/history`, '_blank');
-}
+
 
 // 족보 승인 (새로운 방식)
 function approveJokbo(jokboId, comment = '') {

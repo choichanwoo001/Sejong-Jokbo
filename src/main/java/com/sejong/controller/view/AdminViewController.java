@@ -234,6 +234,53 @@ public class AdminViewController {
     }
     
     /**
+     * 관리자용 책 상세 페이지 (페이징 없음)
+     */
+    @GetMapping("/book/{bookId}/detail")
+    public String adminBookDetail(@PathVariable Integer bookId, 
+                                 HttpSession session, 
+                                 Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Book book = bookService.getBookById(bookId);
+        List<Jokbo> jokbos = jokboService.getApprovedJokbosByBookId(bookId);
+        
+        model.addAttribute("book", book);
+        model.addAttribute("jokbos", jokbos);
+        
+        return "admin/book-detail";
+    }
+    
+    /**
+     * 관리자용 책 상세 페이지 (페이징 포함)
+     */
+    @GetMapping("/book/{bookId}/detail/page/{page}")
+    public String adminBookDetailWithPaging(@PathVariable Integer bookId, 
+                                           @PathVariable int page,
+                                           HttpSession session, 
+                                           Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Book book = bookService.getBookById(bookId);
+        Page<Jokbo> jokboPage = jokboService.getApprovedJokbosByBookId(bookId, page);
+        
+        model.addAttribute("book", book);
+        model.addAttribute("jokbos", jokboPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", jokboPage.getTotalPages());
+        model.addAttribute("hasNext", jokboPage.hasNext());
+        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
+        
+        return "admin/book-detail";
+    }
+    
+    /**
      * 족보 관리 페이지 (모든 족보 - 승인, 반려, 대기 포함)
      */
     @GetMapping("/jokbos")

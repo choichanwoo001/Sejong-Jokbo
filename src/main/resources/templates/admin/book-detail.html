@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.title} + ' - 관리자 뷰 - 세종족보'">책 제목 - 관리자 뷰 - 세종족보</title>
+    
+    <!-- 공통 헤더 CSS -->
+    <div th:replace="admin/fragments/header :: admin-header-css"></div>
+    
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+    
+    <style>
+        /* 관리자 페이지 전용 스타일 */
+        .admin-header-section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+        }
+        
+        .admin-header-section h2 {
+            color: #dc2626;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .admin-info {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .admin-actions-section {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .admin-actions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .admin-actions-header h3 {
+            color: #333;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .admin-action-btn {
+            background: #dc2626;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-action-btn:hover {
+            background: #b91c1c;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .jokbo-tabs {
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .jokbo-tab {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .jokbo-tab.active {
+            border-bottom-color: #dc2626;
+            color: #dc2626;
+        }
+        
+        /* 족보 등록 탭 숨김 */
+        .jokbo-tab[onclick*="register"] {
+            display: none;
+        }
+        
+        #register {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <div th:replace="admin/fragments/header :: admin-header('books')"></div>
+    
+    <div class="container">
+        <main class="main-content" style="padding: 20px 40px;">
+            <!-- 관리자 헤더 -->
+            <div class="admin-header-section">
+                <h2>📖 관리자 책 상세 뷰</h2>
+                <p class="admin-info">이 페이지는 관리자 전용 책 상세 페이지입니다. 사용자와 동일한 정보를 보여주지만 족보 등록 기능은 제외됩니다.</p>
+            </div>
+            
+            <div class="book-detail" th:data-book-id="${book.bookId}">
+                <a href="/admin/books" class="back-link">← 모든 책 관리로 돌아가기</a>
+                
+                <div class="main-layout">
+                    <!-- 책 정보 섹션 -->
+                    <div class="book-info">
+                        <img th:if="${book.imageUrl}" th:src="${book.imageUrl}" alt="책 표지" class="book-image">
+                        <div class="book-details">
+                            <h1 class="book-title" th:text="${book.title}">책 제목</h1>
+                            <p class="book-author" th:if="${book.author}">
+                                <strong>저자:</strong> <span th:text="${book.author}">저자명</span>
+                            </p>
+                            <p class="book-publisher" th:if="${book.publisher}">
+                                <strong>출판사:</strong> <span th:text="${book.publisher}">출판사명</span>
+                            </p>
+                            <p class="book-category" th:if="${book.category}">
+                                <strong>카테고리:</strong> <span th:text="${book.category}">카테고리</span>
+                            </p>
+                            <p class="book-jokbo-count">
+                                <strong>등록된 족보:</strong> <span th:text="${book.jokboCount} + '개'">0개</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 관리자 액션 섹션 -->
+                    <div class="admin-actions-section">
+                        <div class="admin-actions-header">
+                            <h3>관리자 도구</h3>
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-action-btn">
+                                이 책의 족보 관리하기
+                            </a>
+                        </div>
+                        <p style="color: #666; font-size: 14px; margin: 0;">
+                            • 족보 관리 페이지에서 이 책에 등록된 모든 족보를 승인/반려/삭제할 수 있습니다.<br>
+                            • 사용자 페이지를 보려면 <a th:href="'/book/' + ${book.bookId}" style="color: #dc2626;">여기</a>를 클릭하세요.
+                        </p>
+                    </div>
+                    
+                    <!-- 족보 섹션 -->
+                    <div class="jokbo-section">
+                        <h2>족보 목록</h2>
+                        
+                        <!-- 족보 탭 (목록만) -->
+                        <div class="jokbo-tabs">
+                            <button class="jokbo-tab active" onclick="showJokboTab('list')">족보 목록</button>
+                        </div>
+                        
+                        <!-- 족보 목록 탭 -->
+                        <div id="list" class="jokbo-content active">
+                            <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
+                                <p>등록된 족보가 없습니다.</p>
+                            </div>
+                            
+                            <div th:if="${!#lists.isEmpty(jokbos)}" class="jokbo-list">
+                                <div th:each="jokbo : ${jokbos}" class="jokbo-item">
+                                    <div class="jokbo-header">
+                                        <span class="jokbo-uploader" th:text="${jokbo.uploaderName}">등록자</span>
+                                        <span class="jokbo-date" th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</span>
+                                        <span class="jokbo-status" th:text="${jokbo.status}" 
+                                              th:class="'status-' + ${#strings.toLowerCase(jokbo.status)}">상태</span>
+                                    </div>
+                                    
+                                    <!-- 통일된 액션 버튼 -->
+                                    <div class="jokbo-actions">
+                                        <!-- 텍스트 족보: PDF로 보기/다운로드 -->
+                                        <a th:if="${jokbo.contentType == 'text'}" th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" target="_blank" class="btn-view">보기</a>
+                                        <a th:if="${jokbo.contentType == 'text'}" th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" class="btn-download">다운로드</a>
+                                        
+                                        <!-- 파일 족보: 원본 파일로 보기/다운로드 -->
+                                        <a th:if="${jokbo.contentType == 'file'}" th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" target="_blank" class="btn-view">보기</a>
+                                        <a th:if="${jokbo.contentType == 'file'}" th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" class="btn-download">다운로드</a>
+                                        
+                                        <!-- 관리자 전용 버튼 -->
+                                        <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos#jokbo-' + ${jokbo.jokboId}" class="btn-manage" style="background: #dc2626; color: white;">관리</a>
+                                    </div>
+                                    
+                                    <div th:if="${jokbo.comment}" class="jokbo-comment">
+                                        <strong>코멘트:</strong> <span th:text="${jokbo.comment}">코멘트</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 족보 목록 페이징 UI -->
+                            <div th:if="${totalPages > 1}" class="jokbo-pagination">
+                                <!-- 이전 페이지 버튼 -->
+                                <a th:if="${hasPrevious}" 
+                                   th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 1})}" 
+                                   class="page-btn prev-btn">이전</a>
+                                
+                                <!-- 페이지 번호 버튼들 -->
+                                <div class="page-numbers">
+                                    <!-- 첫 번째 페이지 (현재 페이지가 4보다 클 때만 표시) -->
+                                    <a th:if="${currentPage > 3}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=0)}" 
+                                       class="page-btn">1</a>
+                                    
+                                    <!-- ... 표시 (첫 페이지와 표시 범위 사이에 간격이 있을 때) -->
+                                    <span th:if="${currentPage > 4}" class="page-dots">...</span>
+                                    
+                                    <!-- 현재 페이지 앞 3개 -->
+                                    <a th:if="${currentPage >= 3}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 3})}" 
+                                       th:text="${currentPage - 2}"
+                                       class="page-btn"></a>
+                                    
+                                    <a th:if="${currentPage >= 2}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 2})}" 
+                                       th:text="${currentPage - 1}"
+                                       class="page-btn"></a>
+                                    
+                                    <a th:if="${currentPage >= 1}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 1})}" 
+                                       th:text="${currentPage}"
+                                       class="page-btn"></a>
+                                    
+                                    <!-- 현재 페이지 -->
+                                    <span th:text="${currentPage + 1}" class="page-btn current"></span>
+                                    
+                                    <!-- 현재 페이지 뒤 3개 -->
+                                    <a th:if="${currentPage < totalPages - 1}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 1})}" 
+                                       th:text="${currentPage + 2}"
+                                       class="page-btn"></a>
+                                    
+                                    <a th:if="${currentPage < totalPages - 2}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 2})}" 
+                                       th:text="${currentPage + 3}"
+                                       class="page-btn"></a>
+                                    
+                                    <a th:if="${currentPage < totalPages - 3}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 3})}" 
+                                       th:text="${currentPage + 4}"
+                                       class="page-btn"></a>
+                                    
+                                    <!-- ... 표시 (표시 범위와 마지막 페이지 사이에 간격이 있을 때) -->
+                                    <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+                                    
+                                    <!-- 마지막 페이지 (현재 페이지가 마지막에서 4번째보다 작을 때만 표시) -->
+                                    <a th:if="${currentPage < totalPages - 4}" 
+                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${totalPages - 1})}" 
+                                       th:text="${totalPages}"
+                                       class="page-btn"></a>
+                                </div>
+                                
+                                <!-- 다음 페이지 버튼 -->
+                                <a th:if="${hasNext}" 
+                                   th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 1})}" 
+                                   class="page-btn next-btn">다음</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:inline="javascript">
+        const bookId = /*[[${book.bookId}]]*/ 0;
+        const activeTab = 'list'; // 관리자 페이지에서는 항상 목록 탭
+        
+        // 탭 전환 함수 (목록만 활성화)
+        function showJokboTab(tabName) {
+            if (tabName === 'list') {
+                document.getElementById('list').style.display = 'block';
+            }
+        }
+    </script>
+    <script th:src="@{/js/detail.js}"></script>
+    
+    <style>
+        /* 족보 상태별 스타일 */
+        .status-approved {
+            background: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-rejected {
+            background: #ef4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .btn-manage {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-manage:hover {
+            background: #b91c1c;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</body>
+</html>
