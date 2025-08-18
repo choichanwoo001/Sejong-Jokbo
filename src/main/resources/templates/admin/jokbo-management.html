@@ -9,6 +9,96 @@
     <div th:replace="~{admin/fragments/header :: admin-header-css}"></div>
     
     <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
+    
+    <style>
+        /* 검색 영역 스타일 */
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+        
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 42px;
+            min-width: 80px;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .reset-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 42px;
+            min-width: 80px;
+        }
+        
+        .reset-btn:hover {
+            background: #4b5563;
+        }
+        
+        /* 검색 결과 없음 메시지 */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <!-- 공통 헤더 -->
@@ -16,6 +106,26 @@
     
     <div class="main-content">
         <h1 class="page-title">족보 관리</h1>
+        
+        <!-- 검색 영역 -->
+        <div class="search-section">
+            <form class="search-form" id="searchForm">
+                <div class="search-group">
+                    <label for="bookTitle">책 제목</label>
+                    <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 제목을 입력하세요">
+                </div>
+                <div class="search-group">
+                    <label for="registrant">등록자</label>
+                    <input type="text" id="registrant" name="registrant" class="search-input" placeholder="등록자를 입력하세요">
+                </div>
+                <div class="search-group">
+                    <label for="registrationDate">등록일</label>
+                    <input type="date" id="registrationDate" name="registrationDate" class="search-input">
+                </div>
+                <button type="submit" class="search-btn">검색</button>
+                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+            </form>
+        </div>
         
         <!-- 상태별 필터 -->
         <div class="filter-section">
@@ -32,8 +142,8 @@
             <p>등록된 족보가 없습니다.</p>
         </div>
         
-        <div th:if="${!#lists.isEmpty(jokbos)}">
-            <table class="jokbo-table">
+        <div th:if="${!#lists.isEmpty(jokbos)}" id="jokboTableContainer">
+            <table class="jokbo-table" id="jokboTable">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -47,7 +157,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="jokbo : ${jokbos}">
+                    <tr th:each="jokbo : ${jokbos}" 
+                        th:data-book-title="${jokbo.book.title}"
+                        th:data-registrant="${jokbo.uploaderName}"
+                        th:data-registration-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}">
                         <td th:text="${jokbo.jokboId}">ID</td>
                         <td th:text="${jokbo.book.title}">책 제목</td>
                         <td th:text="${jokbo.uploaderName}">등록자</td>
@@ -76,8 +189,6 @@
                                     <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'cancel\')'" 
                                             class="btn-cancel">승인취소</button>
                                 </div>
-                                
-
                                 
                                 <!-- 승인된 족보 보기/다운로드 -->
                                 <div th:if="${jokbo.status.name() == '승인'}">
@@ -134,5 +245,82 @@
     </div>
     
     <script th:src="@{/js/jokbo-management.js}"></script>
+    
+    <script>
+        // 검색 기능
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            performSearch();
+        });
+        
+        function performSearch() {
+            const bookTitle = document.getElementById('bookTitle').value.toLowerCase();
+            const registrant = document.getElementById('registrant').value.toLowerCase();
+            const registrationDate = document.getElementById('registrationDate').value;
+            
+            const tableRows = document.querySelectorAll('#jokboTable tbody tr');
+            let hasVisibleRows = false;
+            
+            tableRows.forEach(row => {
+                const title = row.getAttribute('data-book-title').toLowerCase();
+                const uploader = row.getAttribute('data-registrant').toLowerCase();
+                const date = row.getAttribute('data-registration-date');
+                
+                let titleMatch = true;
+                let registrantMatch = true;
+                let dateMatch = true;
+                
+                if (bookTitle && !title.includes(bookTitle)) {
+                    titleMatch = false;
+                }
+                
+                if (registrant && !uploader.includes(registrant)) {
+                    registrantMatch = false;
+                }
+                
+                if (registrationDate && date !== registrationDate) {
+                    dateMatch = false;
+                }
+                
+                if (titleMatch && registrantMatch && dateMatch) {
+                    row.style.display = 'table-row';
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // 검색 결과가 없을 때 메시지 표시
+            const noResultsMessage = document.querySelector('.no-results');
+            if (!hasVisibleRows) {
+                if (!noResultsMessage) {
+                    const message = document.createElement('div');
+                    message.className = 'no-results';
+                    message.textContent = '검색 결과가 없습니다.';
+                    document.getElementById('jokboTableContainer').appendChild(message);
+                }
+            } else {
+                if (noResultsMessage) {
+                    noResultsMessage.remove();
+                }
+            }
+        }
+        
+        function resetSearch() {
+            document.getElementById('searchForm').reset();
+            
+            // 모든 테이블 행 표시
+            const tableRows = document.querySelectorAll('#jokboTable tbody tr');
+            tableRows.forEach(row => {
+                row.style.display = 'table-row';
+            });
+            
+            // no-results 메시지 제거
+            const noResultsMessage = document.querySelector('.no-results');
+            if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+    </script>
 </body>
 </html> 
