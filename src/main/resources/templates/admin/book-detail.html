@@ -62,7 +62,7 @@
             border-radius: 5px;
             text-decoration: none;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 16px;
             transition: all 0.3s ease;
         }
         
@@ -200,14 +200,14 @@
                             <div th:if="${totalPages > 1}" class="jokbo-pagination">
                                 <!-- 이전 페이지 버튼 -->
                                 <a th:if="${hasPrevious}" 
-                                   th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 1})}" 
+                                   th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage - 1})}" 
                                    class="page-btn prev-btn">이전</a>
                                 
                                 <!-- 페이지 번호 버튼들 -->
                                 <div class="page-numbers">
                                     <!-- 첫 번째 페이지 (현재 페이지가 4보다 클 때만 표시) -->
                                     <a th:if="${currentPage > 3}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=0)}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=0)}" 
                                        class="page-btn">1</a>
                                     
                                     <!-- ... 표시 (첫 페이지와 표시 범위 사이에 간격이 있을 때) -->
@@ -215,17 +215,17 @@
                                     
                                     <!-- 현재 페이지 앞 3개 -->
                                     <a th:if="${currentPage >= 3}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 3})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage - 3})}" 
                                        th:text="${currentPage - 2}"
                                        class="page-btn"></a>
                                     
                                     <a th:if="${currentPage >= 2}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 2})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage - 2})}" 
                                        th:text="${currentPage - 1}"
                                        class="page-btn"></a>
                                     
                                     <a th:if="${currentPage >= 1}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage - 1})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage - 1})}" 
                                        th:text="${currentPage}"
                                        class="page-btn"></a>
                                     
@@ -234,17 +234,17 @@
                                     
                                     <!-- 현재 페이지 뒤 3개 -->
                                     <a th:if="${currentPage < totalPages - 1}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 1})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage + 1})}" 
                                        th:text="${currentPage + 2}"
                                        class="page-btn"></a>
                                     
                                     <a th:if="${currentPage < totalPages - 2}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 2})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage + 2})}" 
                                        th:text="${currentPage + 3}"
                                        class="page-btn"></a>
                                     
                                     <a th:if="${currentPage < totalPages - 3}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 3})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage + 3})}" 
                                        th:text="${currentPage + 4}"
                                        class="page-btn"></a>
                                     
@@ -253,14 +253,14 @@
                                     
                                     <!-- 마지막 페이지 (현재 페이지가 마지막에서 4번째보다 작을 때만 표시) -->
                                     <a th:if="${currentPage < totalPages - 4}" 
-                                       th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${totalPages - 1})}" 
+                                       th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${totalPages - 1})}" 
                                        th:text="${totalPages}"
                                        class="page-btn"></a>
                                 </div>
                                 
                                 <!-- 다음 페이지 버튼 -->
                                 <a th:if="${hasNext}" 
-                                   th:href="@{/admin/book/{bookId}/detail(bookId=${book.bookId}, page=${currentPage + 1})}" 
+                                   th:href="@{/admin/book/{bookId}/page/{page}(bookId=${book.bookId}, page=${currentPage + 1})}" 
                                    class="page-btn next-btn">다음</a>
                             </div>
                         </div>

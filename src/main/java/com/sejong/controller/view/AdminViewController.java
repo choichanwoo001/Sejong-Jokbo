@@ -128,43 +128,31 @@ public class AdminViewController {
     }
     
     /**
-     * 문의 목록 (페이징 없음)
-     */
-    @GetMapping("/inquiries")
-    public String inquiries(HttpSession session, Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
-        List<Inquiry> inquiries = inquiryService.getAllInquiries();
-        model.addAttribute("inquiries", inquiries);
-        
-        return "admin/inquiries";
-    }
-    
-    /**
      * 문의 목록 (페이징 포함)
      */
-    @GetMapping("/inquiries/page/{page}")
-    public String inquiriesWithPaging(@PathVariable int page, 
-                                     HttpSession session, 
-                                     Model model) {
+    @GetMapping("/inquiries")
+    public String inquiries(@RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "15") int size,
+                           HttpSession session, 
+                           Model model) {
         Integer adminId = (Integer) session.getAttribute("adminId");
         if (adminId == null) {
             return "redirect:/admin/login";
         }
         
-        Page<Inquiry> inquiryPage = inquiryService.getAllInquiries(page);
+        Page<Inquiry> inquiryPage = inquiryService.getAllInquiries(page, size);
         
         model.addAttribute("inquiries", inquiryPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", inquiryPage.getTotalPages());
         model.addAttribute("hasNext", inquiryPage.hasNext());
         model.addAttribute("hasPrevious", inquiryPage.hasPrevious());
+        model.addAttribute("totalElements", inquiryPage.getTotalElements());
         
         return "admin/inquiries";
     }
+    
+
     
     /**
      * 문의 상세 페이지
@@ -256,7 +244,7 @@ public class AdminViewController {
     /**
      * 관리자용 책 상세 페이지 (페이징 없음)
      */
-    @GetMapping("/book/{bookId}/detail")
+    @GetMapping("/book/{bookId}")
     public String adminBookDetail(@PathVariable Integer bookId, 
                                  HttpSession session, 
                                  Model model) {
@@ -277,7 +265,7 @@ public class AdminViewController {
     /**
      * 관리자용 책 상세 페이지 (페이징 포함)
      */
-    @GetMapping("/book/{bookId}/detail/page/{page}")
+    @GetMapping("/book/{bookId}/page/{page}")
     public String adminBookDetailWithPaging(@PathVariable Integer bookId, 
                                            @PathVariable int page,
                                            HttpSession session, 
@@ -298,6 +286,42 @@ public class AdminViewController {
         model.addAttribute("hasPrevious", jokboPage.hasPrevious());
         
         return "admin/book-detail";
+    }
+    
+    /**
+     * 특정 책의 족보 관리 페이지
+     */
+    @GetMapping("/book/{bookId}/jokbos")
+    public String bookJokbos(@PathVariable Integer bookId,
+                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "20") int size,
+                            @RequestParam(required = false) String status,
+                            HttpSession session,
+                            Model model) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Book book = bookService.getBookById(bookId);
+        Page<Jokbo> jokboPage;
+        
+        if (status != null && !status.isEmpty()) {
+            Jokbo.JokboStatus jokboStatus = Jokbo.JokboStatus.valueOf(status);
+            jokboPage = jokboService.getJokbosByStatus(jokboStatus, page, size);
+        } else {
+            jokboPage = jokboService.getAllJokbos(page, size);
+        }
+        
+        model.addAttribute("book", book);
+        model.addAttribute("jokbos", jokboPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", jokboPage.getTotalPages());
+        model.addAttribute("hasNext", jokboPage.hasNext());
+        model.addAttribute("hasPrevious", jokboPage.hasPrevious());
+        model.addAttribute("selectedStatus", status);
+        
+        return "admin/jokbo-management";
     }
     
     /**
