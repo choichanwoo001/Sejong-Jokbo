@@ -303,7 +303,7 @@
             <!-- 과학사 카테고리 -->
             <div class="book-display subtle-shadow" id="category-science" style="display: none;">
                 <div class="books-grid" id="science-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학사'}"
+                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"
                          th:data-title="${book.title}" th:data-author="${book.author}">
                         <div class="book-cover">
                             <a th:href="'/admin/book/' + ${book.bookId}">

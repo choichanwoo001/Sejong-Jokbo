@@ -664,4 +664,204 @@ body {
         font-size: 12px;
         padding: 8px 12px;
     }
+}
+
+/* 패키지도서 안내 배너 */
+.package-notice-banner {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 1px solid #dc2626;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+    animation: slideIn 0.5s ease;
+}
+
+.notice-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.notice-icon {
+    font-size: 1.2rem;
+}
+
+.notice-text {
+    color: #991b1b;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.notice-text strong {
+    color: #7f1d1d;
+    font-weight: 700;
+}
+
+.notice-link {
+    background: #dc2626;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.notice-link:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(185, 28, 28, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* 패키지도서 섹션 스타일 */
+.package-section {
+    margin-top: 60px;
+    padding: 30px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3);
+}
+
+.package-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.package-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.package-description {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.package-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.package-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.package-info h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: white;
+    text-align: center;
+}
+
+.package-books {
+    margin-bottom: 20px;
+}
+
+.package-book {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.book-number {
+    background: #dc2626;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.book-category {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.book-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.package-note {
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0.8;
+    font-style: italic;
+    margin: 0;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 패키지도서 반응형 디자인 */
+@media (max-width: 768px) {
+    .package-section {
+        margin-top: 40px;
+        padding: 20px;
+    }
+    
+    .package-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .package-description {
+        font-size: 1rem;
+    }
+    
+    .package-book {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .book-category {
+        align-self: center;
+    }
+    
+    .package-notice-banner {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .notice-content {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .notice-text {
+        font-size: 0.9rem;
+    }
+    
+    .notice-link {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
 } 

@@ -21,6 +21,15 @@
             </div>
         </div>
 
+        <!-- 패키지도서 안내 배너 -->
+        <div class="package-notice-banner">
+            <div class="notice-content">
+                <span class="notice-icon">📚</span>
+                <span class="notice-text">패키지도서 정보는 <strong>페이지 하단</strong>을 참고해주세요</span>
+                <a href="#package-section" class="notice-link">바로가기</a>
+            </div>
+        </div>
+
         <!-- 검색 결과 표시 -->
         <div th:if="${isSearch}" class="search-results">
             <div class="search-header">
@@ -124,6 +133,29 @@
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 패키지도서 섹션 -->
+        <div class="package-section" id="package-section">
+            <div class="package-header">
+                <h2>📚 패키지도서</h2>
+                <p class="package-description">상대적으로 분량이 적은 두 권의 도서를 묶어 한 권처럼 시험을 진행하는 도서</p>
+            </div>
+            <div class="package-content">
+                <div class="package-item">
+                    <div class="package-info">
+                        <h3>2023-1학기 기준 패키지도서</h3>
+                        <div class="package-books">
+                            <div class="package-book">
+                                <span class="book-number">①</span>
+                                <span class="book-category">동서양</span>
+                                <span class="book-title">서유견문 / 파한집</span>
+                            </div>
+                        </div>
+                        <p class="package-note">* 패키지도서는 두 권을 함께 학습하시면 됩니다.</p>
                     </div>
                 </div>
             </div>
