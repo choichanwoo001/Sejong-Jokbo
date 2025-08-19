@@ -216,6 +216,7 @@
             <a href="/admin/jokbos" class="action-btn">🗂️ 전체 족보</a>
             <a href="/admin/approval-history" class="action-btn">📊 승인 이력</a>
             <a href="/admin/inquiries" class="action-btn">💬 문의 관리</a>
+            <button id="syncBtn" class="action-btn" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">🔄 동기화</button>
         </div>
         
         <div class="recent-inquiries" th:if="${unansweredInquiries.size() > 0}">
@@ -232,5 +233,24 @@
             </div>
         </div>
     </div>
+    
+    <!-- SSE 알림 기능 -->
+    <script src="/js/sse.js"></script>
+    <script>
+        // 페이지 로드 시 관리자용 SSE 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 관리자 로그인 상태 확인 후 SSE 초기화
+            if (document.querySelector('.admin-header')) {
+                initSSE('admin');
+                
+                // 동기화 버튼 이벤트 리스너
+                document.getElementById('syncBtn').addEventListener('click', function() {
+                    handleSyncButton(this);
+                });
+            } else {
+                console.log('관리자 로그인이 필요합니다.');
+            }
+        });
+    </script>
 </body>
 </html>

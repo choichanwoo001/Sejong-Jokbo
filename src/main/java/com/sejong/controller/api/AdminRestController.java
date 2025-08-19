@@ -3,6 +3,7 @@ package com.sejong.controller.api;
 import com.sejong.entity.Admin;
 import com.sejong.service.AdminService;
 import com.sejong.service.InquiryService;
+import com.sejong.service.JokboService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class AdminRestController {
     
     private final AdminService adminService;
     private final InquiryService inquiryService;
+    private final JokboService jokboService;
     
     /**
      * 관리자 로그인 처리
@@ -138,5 +140,23 @@ public class AdminRestController {
         } catch (Exception e) {
             return "error: 족보 승인 취소 중 오류가 발생했습니다. - " + e.getMessage();
         }
+    }
+    
+    /**
+     * 승인 대기 중인 족보 수를 반환합니다
+     */
+    @Operation(summary = "승인 대기 족보 수", description = "승인 대기 중인 족보의 개수를 반환합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "족보 수 반환 성공")
+    })
+    @GetMapping("/jokbos/pending/count")
+    public java.util.Map<String, Object> getPendingJokbosCount(HttpSession session) {
+        Integer adminId = (Integer) session.getAttribute("adminId");
+        if (adminId == null) {
+            throw new RuntimeException("관리자 로그인이 필요합니다.");
+        }
+        
+        long count = jokboService.getPendingJokbosCount();
+        return java.util.Map.of("count", count);
     }
 }

@@ -238,5 +238,14 @@
         const activeTab = /*[[${activeTab}]]*/ 'register';
     </script>
     <script th:src="@{/js/detail.js}"></script>
+    
+    <!-- SSE 실시간 족보 승인 알림 기능 -->
+    <script src="/js/sse.js"></script>
+    <script>
+        // 페이지 로드 시 사용자용 SSE 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initSSE('user');
+        });
+    </script>
 </body>
 </html> 

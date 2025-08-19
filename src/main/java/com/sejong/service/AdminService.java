@@ -27,6 +27,7 @@ public class AdminService {
     private final JokboRepository jokboRepository;
     private final JokboApprovalHistoryRepository jokboApprovalHistoryRepository;
     private final BookRepository bookRepository;
+    private final SseService sseService;
     
     /**
      * 관리자 로그인을 처리합니다
@@ -72,6 +73,16 @@ public class AdminService {
         history.setNewStatus(Jokbo.JokboStatus.승인);
         history.setComment(comment);
         jokboApprovalHistoryRepository.save(history);
+        
+        // 사용자에게 족보 승인 알림 전송
+        try {
+            String bookTitle = jokbo.getBook().getTitle();
+            String jokboTitle = jokbo.getUploaderName() + "님의 족보";
+            sseService.sendJokboApprovalNotification(bookTitle, jokboTitle);
+        } catch (Exception e) {
+            // SSE 알림 전송 실패는 로그만 남기고 승인 프로세스는 계속 진행
+            System.err.println("SSE 알림 전송 실패: " + e.getMessage());
+        }
     }
     
     /**
