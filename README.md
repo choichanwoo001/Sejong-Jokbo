@@ -13,7 +13,7 @@
 - **Gradle**
 - **Jakarta EE**
 - **Springdoc OpenAPI (Swagger UI 3)**
-- **Google Cloud Storage**
+- **Cloudflare R2 / Google Cloud Storage** (파일 저장)
 - **Apache PDFBox**
 - **Spring Boot Mail**
 
@@ -159,26 +159,19 @@ docker run -p 8080:8080 \
 
 ## 로컬 개발 환경 설정
 
-### 로컬 파일 저장 방식 사용 (Google Cloud Storage 없이 개발)
+### 로컬 파일 저장 방식 사용 (클라우드 스토리지 없이 개발)
 
-로컬에서 개발할 때 Google Cloud Storage 설정 없이 파일 업로드 기능을 테스트하려면:
+로컬에서 개발할 때는 자동으로 로컬 파일 시스템을 사용합니다:
 
-1. **환경 변수 설정**:
-   ```bash
-   # Windows PowerShell
-   $env:USE_LOCAL_STORAGE="true"
-   
-   # 또는 .env 파일에 추가
-   USE_LOCAL_STORAGE=true
-   ```
+1. **프로필 설정**: `application-local.yml`이 자동으로 사용됨
+2. **파일 저장 위치**: `uploads/jokbo/` 디렉토리
+3. **추가 설정 불필요**: 자동으로 LocalStorageService 사용
 
-2. **JokboService.java 수정**:
-   - Google Cloud Storage 업로드 부분을 주석 처리
-   - 로컬 파일 저장 부분의 주석을 해제
+### 프로덕션 환경 (AWS EC2)
 
-3. **BookController.java 수정**:
-   - Google Cloud Storage 다운로드 부분을 주석 처리
-   - 로컬 파일 다운로드 부분의 주석을 해제
+프로덕션 환경에서는 `application-prod.yml`이 사용되며:
 
-이렇게 하면 로컬 개발 환경에서도 파일 업로드/다운로드 기능을 정상적으로 테스트할 수 있습니다.
+1. **파일 저장**: Cloudflare R2
+2. **데이터베이스**: MySQL (EC2 내부 또는 RDS)
+3. **환경 변수**: 시스템 환경 변수로 설정
 
