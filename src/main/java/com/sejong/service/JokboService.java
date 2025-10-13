@@ -27,6 +27,7 @@ public class JokboService {
     private final BookRepository bookRepository;
     private final PdfService pdfService;
     private final FileStorageService fileStorageService;
+    private final SseService sseService;
     
     /**
      * 특정 책의 승인된 족보 목록을 페이징하여 가져옵니다 (5개씩)
@@ -82,6 +83,9 @@ public class JokboService {
         Jokbo savedJokbo = jokboRepository.save(jokbo);
         System.out.println("텍스트 족보 저장 완료");
         
+        // 관리자에게 새로운 족보 요청 알림 전송
+        sseService.sendNewJokboRequestNotification(book.getTitle(), uploaderName);
+        
         return savedJokbo;
     }
     
@@ -135,7 +139,12 @@ public class JokboService {
         jokbo.setComment(comment);
         jokbo.setStatus(Jokbo.JokboStatus.대기);
         
-        return jokboRepository.save(jokbo);
+        Jokbo savedJokbo = jokboRepository.save(jokbo);
+        
+        // 관리자에게 새로운 족보 요청 알림 전송
+        sseService.sendNewJokboRequestNotification(book.getTitle(), uploaderName);
+        
+        return savedJokbo;
     }
     
 
@@ -171,7 +180,13 @@ public class JokboService {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new RuntimeException("족보를 찾을 수 없습니다"));
         jokbo.setStatus(Jokbo.JokboStatus.승인);
-        return jokboRepository.save(jokbo);
+        Jokbo savedJokbo = jokboRepository.save(jokbo);
+        
+        // 사용자에게 족보 승인 알림 전송
+        sseService.sendJokboApprovalNotification(jokbo.getBook().getTitle(), 
+            jokbo.getContentType().equals("text") ? "텍스트 족보" : "파일 족보");
+        
+        return savedJokbo;
     }
     
     /**

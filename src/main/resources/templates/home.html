@@ -21,6 +21,15 @@
             </div>
         </div>
 
+        <!-- 패키지도서 안내 배너 -->
+        <div class="package-notice-banner">
+            <div class="notice-content">
+                <span class="notice-icon">📚</span>
+                <span class="notice-text">패키지도서 정보는 <strong>페이지 하단</strong>을 참고해주세요</span>
+                <a href="#package-section" class="notice-link">바로가기</a>
+            </div>
+        </div>
+
         <!-- 검색 결과 표시 -->
         <div th:if="${isSearch}" class="search-results">
             <div class="search-header">
@@ -63,7 +72,7 @@
             <!-- 서양 카테고리 -->
             <div class="book-display subtle-shadow" id="category-western" style="display: block;">
                 <div class="books-grid">
-                    <div class="book-item" th:each="book : ${westernBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                    <div class="book-item" th:each="book : ${westernBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" th:data-book-id="${book.bookId}" style="cursor: pointer;">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -80,7 +89,7 @@
             <!-- 동서양 카테고리 -->
             <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
                 <div class="books-grid">
-                    <div class="book-item" th:each="book : ${eastWestBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                    <div class="book-item" th:each="book : ${eastWestBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" th:data-book-id="${book.bookId}" style="cursor: pointer;">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -97,7 +106,7 @@
             <!-- 동양 카테고리 -->
             <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
                 <div class="books-grid">
-                    <div class="book-item" th:each="book : ${easternBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                    <div class="book-item" th:each="book : ${easternBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" th:data-book-id="${book.bookId}" style="cursor: pointer;">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -114,7 +123,7 @@
             <!-- 과학사 카테고리 -->
             <div class="book-display subtle-shadow" id="category-science" style="display: none;">
                 <div class="books-grid">
-                    <div class="book-item" th:each="book : ${scienceBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" style="cursor: pointer;">
+                    <div class="book-item" th:each="book : ${scienceBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" th:data-book-id="${book.bookId}" style="cursor: pointer;">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -128,8 +137,40 @@
                 </div>
             </div>
         </div>
+
+        <!-- 패키지도서 섹션 -->
+        <div class="package-section" id="package-section">
+            <div class="package-header">
+                <h2>📚 패키지도서</h2>
+                <p class="package-description">상대적으로 분량이 적은 두 권의 도서를 묶어 한 권처럼 시험을 진행하는 도서</p>
+            </div>
+            <div class="package-content">
+                <div class="package-item">
+                    <div class="package-info">
+                        <h3>2023-1학기 기준 패키지도서</h3>
+                        <div class="package-books">
+                            <div class="package-book">
+                                <span class="book-number">①</span>
+                                <span class="book-category">동서양</span>
+                                <span class="book-title">서유견문 / 파한집</span>
+                            </div>
+                        </div>
+                        <p class="package-note">* 패키지도서는 두 권을 함께 학습하시면 됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
 <script th:src="@{/js/script.js}"></script>
+
+    <!-- SSE 실시간 족보 승인 알림 기능 -->
+    <script src="/js/sse.js"></script>
+    <script>
+        // 페이지 로드 시 사용자용 SSE 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initSSE('user');
+        });
+    </script>
 </body>
 </html>

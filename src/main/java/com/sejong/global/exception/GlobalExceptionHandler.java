@@ -27,6 +27,14 @@ public class GlobalExceptionHandler {
         response.put("error", "서버 오류가 발생했습니다.");
         response.put("message", e.getMessage());
         
+        // SSE 관련 예외는 별도 처리
+        if (e.getMessage() != null && e.getMessage().contains("로그인이 필요합니다")) {
+            response.put("error", "인증 오류");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(response);
+        }
+        
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
