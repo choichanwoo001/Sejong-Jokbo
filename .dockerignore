@@ -1,12 +1,38 @@
-.gradle
-.idea
-build/
+# Git
 .git
 .gitignore
-*.bat
-*.md
-dummy_data.sql
-init.sql
-update_schema.sql
+
+# IDE
+.idea
+.vscode
+*.iml
+
+# Build
+build/
+target/
+out/
+
+# Environment
+.env
+.env.*
+*.env
+
+# Uploads (로컬 파일, R2 사용으로 불필요)
 uploads/
 
+# Credentials
+*-credentials.json
+gcp-credentials.json
+r2-credentials.json
+
+# Documentation
+*.md
+!README.md
+
+# Gradle
+.gradle
+!gradle/
+
+# Logs
+*.log
+logs/
