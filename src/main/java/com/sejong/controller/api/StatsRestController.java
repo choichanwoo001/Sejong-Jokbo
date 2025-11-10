@@ -2,7 +2,6 @@ package com.sejong.controller.api;
 
 import com.sejong.global.dto.ApiResponse;
 import com.sejong.service.BookService;
-import com.sejong.service.InquiryService;
 import com.sejong.service.JokboService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ public class StatsRestController {
     
     private final BookService bookService;
     private final JokboService jokboService;
-    private final InquiryService inquiryService;
     
     /**
      * 메인 페이지 통계 정보
