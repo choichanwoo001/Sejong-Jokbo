@@ -34,7 +34,7 @@ public interface JokboApprovalHistoryRepository extends JpaRepository<JokboAppro
     /**
      * 특정 액션 타입별 이력 조회
      */
-    List<JokboApprovalHistory> findByActionOrderByCreatedAtDesc(JokboApprovalHistory.ApprovalAction action);
+    Page<JokboApprovalHistory> findByActionOrderByCreatedAtDesc(JokboApprovalHistory.ApprovalAction action, Pageable pageable);
     
     /**
      * 족보별 승인 이력 통계 (승인/반려 횟수)

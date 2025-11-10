@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption;
  * 로컬 파일 시스템을 사용한 파일 저장 서비스
  */
 @Service("localStorageService")
-@ConditionalOnProperty(name = "app.development.use-local-storage", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "local", matchIfMissing = true)
 @Slf4j
 public class LocalStorageService implements FileStorageService {
 
