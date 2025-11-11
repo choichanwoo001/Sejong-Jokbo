@@ -6,7 +6,7 @@
     <title>관리자 대시보드 - 세종족보</title>
     
     <!-- 공통 헤더 CSS -->
-    <div th:replace="admin/fragments/header :: admin-header-css"></div>
+    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
     
     <style>
         /* 대시보드 전용 스타일 */
@@ -236,21 +236,6 @@
     
     <!-- SSE 알림 기능 -->
     <script src="/js/sse.js"></script>
-    <script>
-        // 페이지 로드 시 관리자용 SSE 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            // 관리자 로그인 상태 확인 후 SSE 초기화
-            if (document.querySelector('.admin-header')) {
-                initSSE('admin');
-                
-                // 동기화 버튼 이벤트 리스너
-                document.getElementById('syncBtn').addEventListener('click', function() {
-                    handleSyncButton(this);
-                });
-            } else {
-                console.log('관리자 로그인이 필요합니다.');
-            }
-        });
-    </script>
+    <script src="/js/admin-sse.js"></script>
 </body>
 </html>

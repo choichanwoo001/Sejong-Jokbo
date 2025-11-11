@@ -6,7 +6,7 @@
     <title th:text="${book.title} + ' - 관리자 뷰 - 세종족보'">책 제목 - 관리자 뷰 - 세종족보</title>
     
     <!-- 공통 헤더 CSS -->
-    <div th:replace="admin/fragments/header :: admin-header-css"></div>
+    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
     
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
