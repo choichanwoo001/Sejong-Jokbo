@@ -7,88 +7,10 @@
     
     <!-- 공통 헤더 CSS -->
     <div th:replace="admin/fragments/header :: admin-header-css"></div>
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     
     <style>
-        /* 검색 영역 스타일 */
-        .search-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .search-form {
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-        
-        .search-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .search-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .search-input {
-            padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .reset-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .reset-btn:hover {
-            background: #4b5563;
-        }
-        
         /* 승인 대기 족보 페이지 전용 스타일 */
         
         .back-btn {
@@ -275,12 +197,6 @@
         }
         
         /* 검색 결과 없음 메시지 */
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-            font-size: 16px;
-        }
     </style>
 </head>
 <body>
@@ -293,8 +209,8 @@
         </div>
         
         <!-- 검색 영역 -->
-        <div class="search-section">
-            <form class="search-form" id="searchForm">
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <div th:fragment="searchFields">
                 <div class="search-group">
                     <label for="bookTitle">책 이름</label>
                     <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 이름을 입력하세요">
@@ -308,8 +224,8 @@
                     <input type="date" id="uploadDate" name="uploadDate" class="search-input">
                 </div>
                 <button type="submit" class="search-btn">검색</button>
-                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
-            </form>
+                <button type="button" class="reset-btn" data-search-reset>초기화</button>
+            </div>
         </div>
         
         <div class="jokbo-list" th:if="${jokbos.size() > 0}" id="jokboList">
@@ -367,122 +283,9 @@
             <p>새로운 족보가 등록되면 여기에 표시됩니다.</p>
         </div>
     </div>
-    
-    <script>
-        // 검색 기능
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-        
-        function performSearch() {
-            const bookTitle = document.getElementById('bookTitle').value.toLowerCase();
-            const uploaderName = document.getElementById('uploaderName').value.toLowerCase();
-            const uploadDate = document.getElementById('uploadDate').value;
-            
-            const jokboItems = document.querySelectorAll('.jokbo-item');
-            let hasVisibleItems = false;
-            
-            jokboItems.forEach(item => {
-                const title = item.getAttribute('data-book-title').toLowerCase();
-                const uploader = item.getAttribute('data-uploader').toLowerCase();
-                const date = item.getAttribute('data-date');
-                
-                let titleMatch = true;
-                let uploaderMatch = true;
-                let dateMatch = true;
-                
-                if (bookTitle && !title.includes(bookTitle)) {
-                    titleMatch = false;
-                }
-                
-                if (uploaderName && !uploader.includes(uploaderName)) {
-                    uploaderMatch = false;
-                }
-                
-                if (uploadDate && date !== uploadDate) {
-                    dateMatch = false;
-                }
-                
-                if (titleMatch && uploaderMatch && dateMatch) {
-                    item.style.display = 'block';
-                    hasVisibleItems = true;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // 검색 결과가 없을 때 메시지 표시
-            const noResultsMessage = document.querySelector('.no-results');
-            if (!hasVisibleItems) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.className = 'no-results';
-                    message.textContent = '검색 결과가 없습니다.';
-                    document.getElementById('jokboList').appendChild(message);
-                }
-            } else {
-                if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-            }
-        }
-        
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            
-            // 모든 족보 아이템 표시
-            const jokboItems = document.querySelectorAll('.jokbo-item');
-            jokboItems.forEach(item => {
-                item.style.display = 'block';
-            });
-            
-            // no-results 메시지 제거
-            const noResultsMessage = document.querySelector('.no-results');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-        
-        function approveJokbo(jokboId) {
-            if (confirm('이 족보를 승인하시겠습니까?')) {
-                fetch(`/admin/jokbo/${jokboId}/approve`, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'success') {
-                        alert('족보가 승인되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('승인 중 오류가 발생했습니다: ' + result);
-                    }
-                })
-                .catch(error => {
-                    alert('승인 중 오류가 발생했습니다.');
-                });
-            }
-        }
-        
-        function rejectJokbo(jokboId) {
-            if (confirm('이 족보를 반려하시겠습니까?')) {
-                fetch(`/admin/jokbo/${jokboId}/reject`, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'success') {
-                        alert('족보가 반려되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('반려 중 오류가 발생했습니다: ' + result);
-                    }
-                })
-                .catch(error => {
-                    alert('반려 중 오류가 발생했습니다.');
-                });
-            }
-        }
-    </script>
+    <script src="/js/admin-search.js"></script>
+    <script src="/js/admin-pending-jokbos.js"></script>
+    <script src="/js/sse.js"></script>
+    <script src="/js/admin-sse.js"></script>
 </body>
 </html>

@@ -7,88 +7,9 @@
     
     <!-- 공통 헤더 CSS -->
     <div th:replace="admin/fragments/header :: admin-header-css"></div>
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
     
     <style>
-        /* 검색 영역 스타일 */
-        .search-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .search-form {
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-        
-        .search-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .search-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .search-input {
-            padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .reset-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .reset-btn:hover {
-            background: #4b5563;
-        }
-        
         /* 승인 이력 페이지 전용 스타일 */
         
         .history-table {
@@ -282,12 +203,6 @@
         }
         
         /* 검색 결과 없음 메시지 */
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-            font-size: 16px;
-        }
     </style>
 </head>
 <body>
@@ -417,7 +332,8 @@
             </div>
         </div>
     </div>
-    
+    <script src="/js/sse.js"></script>
+    <script src="/js/admin-sse.js"></script>
     <script>
         // 검색 기능
         document.getElementById('searchForm').addEventListener('submit', function(e) {
