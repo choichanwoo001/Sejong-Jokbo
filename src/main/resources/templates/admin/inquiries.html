@@ -209,7 +209,7 @@
                     <input type="date" id="creationDate" name="creationDate" class="search-input">
                 </div>
                 <button type="submit" class="search-btn">검색</button>
-                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+                <button type="button" class="reset-btn" id="resetInquirySearchBtn">초기화</button>
             </form>
         </div>
         
@@ -258,74 +258,6 @@
     </div>
     <script src="/js/sse.js"></script>
     <script src="/js/admin-sse.js"></script>
-    <script>
-        // 검색 기능
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-        
-        function performSearch() {
-            const studentName = document.getElementById('studentName').value.toLowerCase();
-            const creationDate = document.getElementById('creationDate').value;
-            
-            const inquiryItems = document.querySelectorAll('.inquiry-item');
-            let hasVisibleItems = false;
-            
-            inquiryItems.forEach(item => {
-                const name = item.getAttribute('data-student-name').toLowerCase();
-                const date = item.getAttribute('data-creation-date');
-                
-                let nameMatch = true;
-                let dateMatch = true;
-                
-                if (studentName && !name.includes(studentName)) {
-                    nameMatch = false;
-                }
-                
-                if (creationDate && date !== creationDate) {
-                    dateMatch = false;
-                }
-                
-                if (nameMatch && dateMatch) {
-                    item.style.display = 'block';
-                    hasVisibleItems = true;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // 검색 결과가 없을 때 메시지 표시
-            const noResultsMessage = document.querySelector('.no-results');
-            if (!hasVisibleItems) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.className = 'no-results';
-                    message.textContent = '검색 결과가 없습니다.';
-                    document.getElementById('inquiryList').appendChild(message);
-                }
-            } else {
-                if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-            }
-        }
-        
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            
-            // 모든 문의 아이템 표시
-            const inquiryItems = document.querySelectorAll('.inquiry-item');
-            inquiryItems.forEach(item => {
-                item.style.display = 'block';
-            });
-            
-            // no-results 메시지 제거
-            const noResultsMessage = document.querySelector('.no-results');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-    </script>
+    <script src="/js/admin-inquiries.js"></script>
 </body>
 </html>

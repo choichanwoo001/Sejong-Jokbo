@@ -77,6 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (searchResults) {
         searchInput.focus();
     }
+
+    document.querySelectorAll('.book-item[data-book-url]').forEach((item) => {
+        item.addEventListener('click', () => {
+            const url = item.getAttribute('data-book-url');
+            if (url) {
+                window.location.href = url;
+            }
+        });
+
+        item.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const url = item.getAttribute('data-book-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            }
+        });
+    });
 });
 
 // 카테고리 탭 클릭 효과

@@ -47,6 +47,23 @@ window.rejectJokbo = function (jokboId) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.jokbo-actions [data-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const jokboId = button.getAttribute('data-jokbo-id');
+            const action = button.getAttribute('data-action');
+
+            if (!jokboId || !action) {
+                return;
+            }
+
+            if (action === 'approve') {
+                window.approveJokbo(jokboId);
+            } else if (action === 'reject') {
+                window.rejectJokbo(jokboId);
+            }
+        });
+    });
+
     if (!window.AdminSearch) {
         return;
     }

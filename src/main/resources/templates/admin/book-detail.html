@@ -114,7 +114,9 @@
                 <p class="admin-info">이 페이지는 관리자 전용 책 상세 페이지입니다. 사용자와 동일한 정보를 보여주지만 족보 등록 기능은 제외됩니다.</p>
             </div>
             
-            <div class="book-detail" th:data-book-id="${book.bookId}">
+            <div class="book-detail"
+                 th:data-book-id="${book.bookId}"
+                 data-active-tab="list">
                 <a href="/admin/books" class="back-link">← 모든 책 관리로 돌아가기</a>
                 
                 <div class="main-layout">
@@ -158,7 +160,9 @@
                         
                         <!-- 족보 탭 (목록만) -->
                         <div class="jokbo-tabs">
-                            <button class="jokbo-tab active" onclick="showJokboTab('list')">족보 목록</button>
+                            <button class="jokbo-tab active"
+                                    type="button"
+                                    data-tab-target="list">족보 목록</button>
                         </div>
                         
                         <!-- 족보 목록 탭 -->
@@ -269,19 +273,9 @@
             </div>
         </main>
     </div>
-    
-    <script th:inline="javascript">
-        const bookId = /*[[${book.bookId}]]*/ 0;
-        const activeTab = 'list'; // 관리자 페이지에서는 항상 목록 탭
-        
-        // 탭 전환 함수 (목록만 활성화)
-        function showJokboTab(tabName) {
-            if (tabName === 'list') {
-                document.getElementById('list').style.display = 'block';
-            }
-        }
-    </script>
     <script th:src="@{/js/detail.js}"></script>
+    <script src="/js/sse.js"></script>
+    <script src="/js/admin-sse.js"></script>
     
     <style>
         /* 족보 상태별 스타일 */

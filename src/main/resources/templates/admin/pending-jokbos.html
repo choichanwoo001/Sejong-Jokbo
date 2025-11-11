@@ -271,8 +271,12 @@
                        target="_blank" 
                        class="action-btn preview-btn">미리보기</a>
                     
-                    <button class="action-btn approve-btn" th:onclick="'approveJokbo(' + ${jokbo.jokboId} + ')'">승인</button>
-                    <button class="action-btn reject-btn" th:onclick="'rejectJokbo(' + ${jokbo.jokboId} + ')'">반려</button>
+                    <button class="action-btn approve-btn"
+                            data-action="approve"
+                            th:data-jokbo-id="${jokbo.jokboId}">승인</button>
+                    <button class="action-btn reject-btn"
+                            data-action="reject"
+                            th:data-jokbo-id="${jokbo.jokboId}">반려</button>
                     <a th:href="'/admin/book/' + ${jokbo.book.bookId}" class="action-btn view-book-btn">책 상세보기</a>
                 </div>
             </div>

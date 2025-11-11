@@ -228,7 +228,7 @@
                     <input type="text" id="registrant" name="registrant" class="search-input" placeholder="등록자를 입력하세요">
                 </div>
                 <button type="submit" class="search-btn">검색</button>
-                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+                <button type="button" class="reset-btn" id="resetSearchBtn">초기화</button>
             </form>
         </div>
         
@@ -237,7 +237,7 @@
             <div class="filter-row">
                 <div class="filter-item">
                     <label for="actionFilter">처리 액션:</label>
-                    <select id="actionFilter" onchange="applyFilters()">
+                    <select id="actionFilter" class="filter-select">
                         <option value="" th:selected="${selectedAction == null}">전체</option>
                         <option value="승인" th:selected="${selectedAction == '승인'}">승인</option>
                         <option value="반려" th:selected="${selectedAction == '반려'}">반려</option>
@@ -246,7 +246,7 @@
                 </div>
                 <div class="filter-item">
                     <label for="previousStatusFilter">이전 상태:</label>
-                    <select id="previousStatusFilter" onchange="applyFilters()">
+                    <select id="previousStatusFilter" class="filter-select">
                         <option value="" th:selected="${selectedPreviousStatus == null}">전체</option>
                         <option value="대기" th:selected="${selectedPreviousStatus == '대기'}">대기</option>
                         <option value="승인" th:selected="${selectedPreviousStatus == '승인'}">승인</option>
@@ -255,7 +255,7 @@
                 </div>
                 <div class="filter-item">
                     <label for="newStatusFilter">새 상태:</label>
-                    <select id="newStatusFilter" onchange="applyFilters()">
+                    <select id="newStatusFilter" class="filter-select">
                         <option value="" th:selected="${selectedNewStatus == null}">전체</option>
                         <option value="대기" th:selected="${selectedNewStatus == '대기'}">대기</option>
                         <option value="승인" th:selected="${selectedNewStatus == '승인'}">승인</option>
@@ -334,96 +334,6 @@
     </div>
     <script src="/js/sse.js"></script>
     <script src="/js/admin-sse.js"></script>
-    <script>
-        // 검색 기능
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-        
-        function performSearch() {
-            const processDate = document.getElementById('processDate').value;
-            const bookTitle = document.getElementById('bookTitle').value.toLowerCase();
-            const registrant = document.getElementById('registrant').value.toLowerCase();
-            
-            const tableRows = document.querySelectorAll('#historyTable tbody tr');
-            let hasVisibleRows = false;
-            
-            tableRows.forEach(row => {
-                const date = row.getAttribute('data-process-date');
-                const title = row.getAttribute('data-book-title').toLowerCase();
-                const uploader = row.getAttribute('data-registrant').toLowerCase();
-                
-                let dateMatch = true;
-                let titleMatch = true;
-                let registrantMatch = true;
-                
-                if (processDate && date !== processDate) {
-                    dateMatch = false;
-                }
-                
-                if (bookTitle && !title.includes(bookTitle)) {
-                    titleMatch = false;
-                }
-                
-                if (registrant && !uploader.includes(registrant)) {
-                    registrantMatch = false;
-                }
-                
-                if (dateMatch && titleMatch && registrantMatch) {
-                    row.style.display = 'table-row';
-                    hasVisibleRows = true;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            // 검색 결과가 없을 때 메시지 표시
-            const noResultsMessage = document.querySelector('.no-results');
-            if (!hasVisibleRows) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.className = 'no-results';
-                    message.textContent = '검색 결과가 없습니다.';
-                    document.getElementById('historyTableContainer').appendChild(message);
-                }
-            } else {
-                if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-            }
-        }
-        
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            
-            // 모든 테이블 행 표시
-            const tableRows = document.querySelectorAll('#historyTable tbody tr');
-            tableRows.forEach(row => {
-                row.style.display = 'table-row';
-            });
-            
-            // no-results 메시지 제거
-            const noResultsMessage = document.querySelector('.no-results');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-        
-        function applyFilters() {
-            const actionFilter = document.getElementById('actionFilter').value;
-            const previousStatusFilter = document.getElementById('previousStatusFilter').value;
-            const newStatusFilter = document.getElementById('newStatusFilter').value;
-            
-            const params = new URLSearchParams();
-            params.append('page', '0'); // 필터 적용 시 첫 페이지로
-            
-            if (actionFilter) params.append('action', actionFilter);
-            if (previousStatusFilter) params.append('previousStatus', previousStatusFilter);
-            if (newStatusFilter) params.append('newStatus', newStatusFilter);
-            
-            window.location.href = `/admin/approval-history?${params.toString()}`;
-        }
-    </script>
+    <script src="/js/admin-approval-history.js"></script>
 </body>
 </html>

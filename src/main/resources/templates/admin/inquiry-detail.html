@@ -196,7 +196,7 @@
     <div class="container">
         <a href="/admin/inquiries" class="back-btn">문의 목록으로 돌아가기</a>
         
-        <div class="inquiry-detail">
+        <div class="inquiry-detail" th:data-inquiry-id="${inquiry.inquiryId}">
             <div class="inquiry-header">
                 <div class="inquiry-info">
                     <h2 th:text="${inquiry.name}">사용자명</h2>
@@ -238,39 +238,8 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        document.getElementById('replyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const content = document.getElementById('content').value;
-            const inquiryId = /*[[${inquiry.inquiryId}]]*/ 0; // 문의 ID
-            
-            if (!content.trim()) {
-                alert('답변 내용을 입력해주세요.');
-                return;
-            }
-            
-            fetch(`/admin/inquiry/${inquiryId}/comment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `content=${encodeURIComponent(content)}`
-            })
-            .then(response => response.text())
-            .then(result => {
-                if (result === 'success') {
-                    alert('답변이 등록되었습니다.');
-                    location.reload();
-                } else {
-                    alert('답변 등록 중 오류가 발생했습니다: ' + result);
-                }
-            })
-            .catch(error => {
-                alert('답변 등록 중 오류가 발생했습니다.');
-            });
-        });
-    </script>
+    <script src="/js/sse.js"></script>
+    <script src="/js/admin-sse.js"></script>
+    <script src="/js/admin-inquiry-detail.js"></script>
 </body>
 </html>

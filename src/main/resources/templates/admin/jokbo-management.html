@@ -41,7 +41,7 @@
         <!-- 상태별 필터 -->
         <div class="filter-section">
             <label for="statusFilter">상태별 필터:</label>
-            <select id="statusFilter" onchange="filterByStatus()">
+            <select id="statusFilter">
                 <option value="" th:selected="${selectedStatus == null}">전체</option>
                 <option value="대기" th:selected="${selectedStatus == '대기'}">대기 중</option>
                 <option value="승인" th:selected="${selectedStatus == '승인'}">승인됨</option>
@@ -89,16 +89,19 @@
                             <div class="action-buttons">
                                 <!-- 승인 대기 중인 경우 -->
                                 <div th:if="${jokbo.status.name() == '대기'}">
-                                    <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'approve\')'" 
-                                            class="btn-approve">승인</button>
-                                    <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'reject\')'" 
-                                            class="btn-reject">반려</button>
+                                    <button class="btn-approve approval-trigger"
+                                            data-approval-action="approve"
+                                            th:data-jokbo-id="${jokbo.jokboId}">승인</button>
+                                    <button class="btn-reject approval-trigger"
+                                            data-approval-action="reject"
+                                            th:data-jokbo-id="${jokbo.jokboId}">반려</button>
                                 </div>
                                 
                                 <!-- 승인된 경우 -->
                                 <div th:if="${jokbo.status.name() == '승인'}">
-                                    <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'cancel\')'" 
-                                            class="btn-cancel">승인취소</button>
+                                    <button class="btn-cancel approval-trigger"
+                                            data-approval-action="cancel"
+                                            th:data-jokbo-id="${jokbo.jokboId}">승인취소</button>
                                 </div>
                                 
                                 <!-- 승인된 족보 보기/다운로드 -->
@@ -136,7 +139,7 @@
     <!-- 승인/반려 모달 -->
     <div id="approvalModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close" onclick="closeApprovalModal()">&times;</span>
+            <span class="close" data-close-approval-modal>&times;</span>
             <h3 id="modalTitle">족보 처리</h3>
             <form id="approvalForm">
                 <input type="hidden" id="jokboId" name="jokboId">
@@ -148,7 +151,7 @@
                 </div>
                 
                 <div class="modal-buttons">
-                    <button type="button" onclick="closeApprovalModal()" class="btn-cancel">취소</button>
+                    <button type="button" class="btn-cancel" data-close-approval-modal>취소</button>
                     <button type="submit" id="confirmButton" class="btn-primary">확인</button>
                 </div>
             </form>

@@ -56,7 +56,6 @@
             <a href="/admin/jokbos/pending" class="nav-link">대기 족보</a>
             <a href="/admin/jokbos" class="nav-link">전체 족보</a>
             <a href="/admin/approval-history" class="nav-link">승인 이력</a>
-            <a href="/admin/logout" class="nav-link">로그아웃</a>
         </nav>
         
         <h1>족보 상세 이력</h1>
@@ -66,7 +65,7 @@
             <div class="filter-row">
                 <div class="filter-item">
                     <label for="actionFilter">액션:</label>
-                    <select id="actionFilter" onchange="applyFilters()">
+                    <select id="actionFilter" class="jokbo-filter-select">
                         <option value="" th:selected="${selectedAction == null}">전체</option>
                         <option value="승인" th:selected="${selectedAction == '승인'}">승인</option>
                         <option value="반려" th:selected="${selectedAction == '반려'}">반려</option>
@@ -75,7 +74,7 @@
                 </div>
                 <div class="filter-item">
                     <label for="previousStatusFilter">이전 상태:</label>
-                    <select id="previousStatusFilter" onchange="applyFilters()">
+                    <select id="previousStatusFilter" class="jokbo-filter-select">
                         <option value="" th:selected="${selectedPreviousStatus == null}">전체</option>
                         <option value="대기" th:selected="${selectedPreviousStatus == '대기'}">대기</option>
                         <option value="승인" th:selected="${selectedPreviousStatus == '승인'}">승인</option>
@@ -84,7 +83,7 @@
                 </div>
                 <div class="filter-item">
                     <label for="newStatusFilter">새 상태:</label>
-                    <select id="newStatusFilter" onchange="applyFilters()">
+                    <select id="newStatusFilter" class="jokbo-filter-select">
                         <option value="" th:selected="${selectedNewStatus == null}">전체</option>
                         <option value="대기" th:selected="${selectedNewStatus == '대기'}">대기</option>
                         <option value="승인" th:selected="${selectedNewStatus == '승인'}">승인</option>
@@ -201,23 +200,8 @@
             <a href="/admin/approval-history" class="btn-secondary">승인 이력으로 돌아가기</a>
         </div>
     </div>
-    
-    <script>
-        function applyFilters() {
-            const actionFilter = document.getElementById('actionFilter').value;
-            const previousStatusFilter = document.getElementById('previousStatusFilter').value;
-            const newStatusFilter = document.getElementById('newStatusFilter').value;
-            
-            const params = new URLSearchParams();
-            params.append('page', '0'); // 필터 적용 시 첫 페이지로
-            
-            if (actionFilter) params.append('action', actionFilter);
-            if (previousStatusFilter) params.append('previousStatus', previousStatusFilter);
-            if (newStatusFilter) params.append('newStatus', newStatusFilter);
-            
-            const jokboId = window.location.pathname.split('/')[3]; // /admin/jokbo/{jokboId}/history에서 jokboId 추출
-            window.location.href = `/admin/jokbo/${jokboId}/history?${params.toString()}`;
-        }
-    </script>
+    <script src="/js/sse.js"></script>
+    <script src="/js/admin-sse.js"></script>
+    <script src="/js/admin-jokbo-history.js"></script>
 </body>
 </html>
