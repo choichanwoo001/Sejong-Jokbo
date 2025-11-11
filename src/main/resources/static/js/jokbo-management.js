@@ -195,4 +195,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    if (window.AdminSearch) {
+        window.AdminSearch.init({
+            formId: 'searchForm',
+            itemSelector: '#jokboTable tbody tr',
+            fieldConfigs: [
+                { name: 'bookTitle', datasetKey: 'bookTitle', matchType: 'includes' },
+                { name: 'registrant', datasetKey: 'registrant', matchType: 'includes' },
+                { name: 'registrationDate', datasetKey: 'registrationDate', matchType: 'equals' }
+            ],
+            visibleDisplayStyle: 'table-row',
+            noResult: {
+                targetSelector: '#jokboTableContainer',
+                text: '검색 결과가 없습니다.'
+            }
+        });
+    }
 }); 
