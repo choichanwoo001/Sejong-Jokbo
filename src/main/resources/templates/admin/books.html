@@ -120,7 +120,7 @@
                             <option value="서양">서양</option>
                             <option value="동서양">동서양</option>
                             <option value="동양">동양</option>
-                            <option value="과학">과학사</option>
+                            <option value="과학">과학</option>
                         </select>
                     </div>
                     <button type="submit" class="search-btn">검색</button>
@@ -138,7 +138,7 @@
                         <button class="category-tab active" data-category="서양">서양</button>
                         <button class="category-tab" data-category="동서양">동서양</button>
                         <button class="category-tab" data-category="동양">동양</button>
-                        <button class="category-tab" data-category="과학사">과학사</button>
+                        <button class="category-tab" data-category="과학">과학</button>
                     </div>
                     <div class="right-controls">
                         <!-- 빈 공간 (정렬 필터 자리) -->
@@ -218,7 +218,7 @@
                 </div>
             </div>
 
-            <!-- 과학사 카테고리 -->
+            <!-- 과학 카테고리 -->
             <div class="book-display subtle-shadow" id="category-science" style="display: none;">
                 <div class="books-grid" id="science-books">
                     <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"

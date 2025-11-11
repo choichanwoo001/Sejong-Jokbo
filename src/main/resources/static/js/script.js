@@ -54,7 +54,7 @@ document.querySelectorAll('.category-tab').forEach(tab => {
             case '동양':
                 targetCategory = 'category-eastern';
                 break;
-            case '과학사':
+            case '과학':
                 targetCategory = 'category-science';
                 break;
         }
@@ -119,7 +119,7 @@ function sortBooks(sortType) {
         case '동양':
             targetCategory = 'category-eastern';
             break;
-        case '과학사':
+        case '과학':
             targetCategory = 'category-science';
             break;
     }

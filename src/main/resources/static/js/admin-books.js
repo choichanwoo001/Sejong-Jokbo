@@ -28,7 +28,7 @@ function setupCategoryTabs() {
                 case '동양':
                     targetDisplay = document.getElementById('category-eastern');
                     break;
-                case '과학사':
+                case '과학':
                     targetDisplay = document.getElementById('category-science');
                     break;
                 default:

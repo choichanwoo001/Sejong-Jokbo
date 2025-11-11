@@ -60,7 +60,7 @@
                         <button class="category-tab active">서양</button>
                         <button class="category-tab">동서양</button>
                         <button class="category-tab">동양</button>
-                        <button class="category-tab">과학사</button>
+                        <button class="category-tab">과학</button>
                     </div>
                     <select id="sortFilter" class="filter-dropdown">
                         <option value="name">이름순</option>
@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <!-- 과학사 카테고리 -->
+            <!-- 과학 카테고리 -->
             <div class="book-display subtle-shadow" id="category-science" style="display: none;">
                 <div class="books-grid">
                     <div class="book-item" th:each="book : ${scienceBooks}" th:onclick="'location.href=\'/book/' + ${book.bookId} + '\''" th:data-book-id="${book.bookId}" style="cursor: pointer;">
@@ -166,11 +166,6 @@
 
     <!-- SSE 실시간 족보 승인 알림 기능 -->
     <script src="/js/sse.js"></script>
-    <script>
-        // 페이지 로드 시 사용자용 SSE 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            initSSE('user');
-        });
-    </script>
+<script src="/js/user-sse-init.js"></script>
 </body>
 </html>
