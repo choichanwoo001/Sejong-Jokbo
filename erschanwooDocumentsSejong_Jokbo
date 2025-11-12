@@ -1,0 +1,134 @@
+[1mdiff --git a/src/main/java/com/sejong/controller/api/AdminRestController.java b/src/main/java/com/sejong/controller/api/AdminRestController.java[m
+[1mindex d4ac126..e8e1fae 100644[m
+[1m--- a/src/main/java/com/sejong/controller/api/AdminRestController.java[m
+[1m+++ b/src/main/java/com/sejong/controller/api/AdminRestController.java[m
+[36m@@ -1,6 +1,5 @@[m
+ package com.sejong.controller.api;[m
+ [m
+[31m-import com.sejong.entity.Admin;[m
+ import com.sejong.service.AdminService;[m
+ import com.sejong.service.InquiryService;[m
+ import com.sejong.service.JokboService;[m
+[36m@@ -13,8 +12,6 @@[m [mimport io.swagger.v3.oas.annotations.tags.Tag;[m
+ import io.swagger.v3.oas.annotations.responses.ApiResponse;[m
+ import io.swagger.v3.oas.annotations.responses.ApiResponses;[m
+ [m
+[31m-import jakarta.servlet.http.HttpSession;[m
+[31m-[m
+ @RestController[m
+ @RequestMapping("/admin")[m
+ @RequiredArgsConstructor[m
+[36m@@ -25,27 +22,6 @@[m [mpublic class AdminRestController {[m
+     private final InquiryService inquiryService;[m
+     private final JokboService jokboService;[m
+     [m
+[31m-    /**[m
+[31m-     * 관리자 로그인 처리[m
+[31m-     */[m
+[31m-    @Operation(summary = "관리자 로그인", description = "관리자 로그인을 처리합니다")[m
+[31m-    @ApiResponses(value = {[m
+[31m-        @ApiResponse(responseCode = "200", description = "로그인 성공/실패 메시지")[m
+[31m-    })[m
+[31m-    @PostMapping("/login")[m
+[31m-    public String login(@Parameter(description = "관리자 이름") @RequestParam String adminName, [m
+[31m-                       @Parameter(description = "비밀번호") @RequestParam String password,[m
+[31m-                       HttpSession session) {[m
+[31m-        Admin admin = adminService.login(adminName, password);[m
+[31m-        if (admin != null) {[m
+[31m-            session.setAttribute("adminId", admin.getAdminId());[m
+[31m-            session.setAttribute("adminName", admin.getAdminName());[m
+[31m-            return "success";[m
+[31m-        } else {[m
+[31m-            return "error: 로그인 정보가 올바르지 않습니다.";[m
+[31m-        }[m
+[31m-    }[m
+[31m-    [m
+     /**[m
+      * 문의에 답변 추가[m
+      */[m
+[36m@@ -55,15 +31,9 @@[m [mpublic class AdminRestController {[m
+     })[m
+     @PostMapping("/inquiry/{inquiryId}/comment")[m
+     public String addComment(@Parameter(description = "문의 ID") @PathVariable Integer inquiryId,[m
+[31m-                           @Parameter(description = "답변 내용") @RequestParam String content,[m
+[31m-                           HttpSession session) {[m
+[31m-        Integer adminId = (Integer) session.getAttribute("adminId");[m
+[31m-        if (adminId == null) {[m
+[31m-            return "error: 로그인이 필요합니다.";[m
+[31m-        }[m
+[31m-        [m
+[32m+[m[32m                           @Parameter(description = "답변 내용") @RequestParam String content) {[m
+         try {[m
+[31m-            inquiryService.addComment(inquiryId, adminId, content);[m
+[32m+[m[32m            inquiryService.addComment(inquiryId, content);[m
+             return "success";[m
+         } catch (Exception e) {[m
+             return "error: 답변 등록 중 오류가 발생했습니다. - " + e.getMessage();[m
+[36m@@ -79,15 +49,9 @@[m [mpublic class AdminRestController {[m
+     })[m
+     @PostMapping("/jokbo/{jokboId}/approve")[m
+     public String approveJokbo(@Parameter(description = "족보 ID") @PathVariable Integer jokboId,[m
+[31m-                              @Parameter(description = "승인 코멘트") @RequestParam(required = false) String comment,[m
+[31m-                              HttpSession session) {[m
+[31m-        Integer adminId = (Integer) session.getAttribute("adminId");[m
+[31m-        if (adminId == null) {[m
+[31m-            return "error: 로그인이 필요합니다.";[m
+[31m-        }[m
+[31m-        [m
+[32m+[m[32m                              @Parameter(description = "승인 코멘트") @RequestParam(required = false) String comment) {[m
+         try {[m
+[31m-            adminService.approveJokbo(jokboId, adminId, comment);[m
+[32m+[m[32m            adminService.approveJokbo(jokboId, comment);[m
+             return "success";[m
+         } catch (Exception e) {[m
+             return "error: 족보 승인 중 오류가 발생했습니다. - " + e.getMessage();[m
+[36m@@ -103,15 +67,9 @@[m [mpublic class AdminRestController {[m
+     })[m
+     @PostMapping("/jokbo/{jokboId}/reject")[m
+     public String rejectJokbo(@Parameter(description = "족보 ID") @PathVariable Integer jokboId,[m
+[31m-                             @Parameter(description = "반려 코멘트") @RequestParam(required = false) String comment,[m
+[31m-                             HttpSession session) {[m
+[31m-        Integer adminId = (Integer) session.getAttribute("adminId");[m
+[31m-        if (adminId == null) {[m
+[31m-            return "error: 로그인이 필요합니다.";[m
+[31m-        }[m
+[31m-        [m
+[32m+[m[32m                             @Parameter(description = "반려 코멘트") @RequestParam(required = false) String comment) {[m
+         try {[m
+[31m-            adminService.rejectJokbo(jokboId, adminId, comment);[m
+[32m+[m[32m            adminService.rejectJokbo(jokboId, comment);[m
+             return "success";[m
+         } catch (Exception e) {[m
+             return "error: 족보 반려 중 오류가 발생했습니다. - " + e.getMessage();[m
+[36m@@ -127,15 +85,9 @@[m [mpublic class AdminRestController {[m
+     })[m
+     @PostMapping("/jokbo/{jokboId}/cancel-approval")[m
+     public String cancelApproval(@Parameter(description = "족보 ID") @PathVariable Integer jokboId,[m
+[31m-                                @Parameter(description = "취소 코멘트") @RequestParam(required = false) String comment,[m
+[31m-                                HttpSession session) {[m
+[31m-        Integer adminId = (Integer) session.getAttribute("adminId");[m
+[31m-        if (adminId == null) {[m
+[31m-            return "error: 로그인이 필요합니다.";[m
+[31m-        }[m
+[31m-        [m
+[32m+[m[32m                                @Parameter(description = "취소 코멘트") @RequestParam(required = false) String comment) {[m
+         try {[m
+[31m-            adminService.cancelApproval(jokboId, adminId, comment);[m
+[32m+[m[32m            adminService.cancelApproval(jokboId, comment);[m
+             return "success";[m
+         } catch (Exception e) {[m
+             return "error: 족보 승인 취소 중 오류가 발생했습니다. - " + e.getMessage();[m
+[36m@@ -150,12 +102,7 @@[m [mpublic class AdminRestController {[m
+         @ApiResponse(responseCode = "200", description = "족보 수 반환 성공")[m
+     })[m
+     @GetMapping("/jokbos/pending/count")[m
+[31m-    public java.util.Map<String, Object> getPendingJokbosCount(HttpSession session) {[m
+[31m-        Integer adminId = (Integer) session.getAttribute("adminId");[m
+[31m-        if (adminId == null) {[m
+[31m-            throw new RuntimeException("관리자 로그인이 필요합니다.");[m
+[31m-        }[m
+[31m-        [m
+[32m+[m[32m    public java.util.Map<String, Object> getPendingJokbosCount() {[m
+         long count = jokboService.getPendingJokbosCount();[m
+         return java.util.Map.of("count", count);[m
+     }[m

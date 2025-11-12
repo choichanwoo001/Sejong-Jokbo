@@ -73,12 +73,6 @@ class SSEManager {
                 console.error('SSE 오류 이벤트:', event.data);
                 this.showNotification('연결 오류', event.data, 'error');
                 
-                // 로그인 페이지로 리다이렉트
-                if (event.data && event.data.includes('로그인이 필요합니다')) {
-                    setTimeout(() => {
-                        window.location.href = '/admin/login';
-                    }, 2000);
-                }
             });
         }
         
