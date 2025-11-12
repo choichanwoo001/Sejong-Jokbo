@@ -1,30 +1,28 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>책 관리 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
-    
-    <!-- 홈페이지 스타일 재사용 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'책 관리 - 세종족보'},
+        currentPage=${'books'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/admin-search.css}">
-    
     <style>
-        /* 관리자 페이지 전용 오버라이드 */
-        .main-content {
+        .admin-books {
             padding: 20px 40px;
         }
-        
-        .admin-actions {
+
+        .admin-books .admin-actions {
             display: flex;
             gap: 10px;
             margin-top: 10px;
         }
-        
-        .admin-btn {
+
+        .admin-books .admin-btn {
             flex: 1;
             padding: 8px 12px;
             border: none;
@@ -36,215 +34,186 @@
             text-decoration: none;
             text-align: center;
         }
-        
-        .view-btn {
-            background: #667eea;
-            color: white;
-        }
-        
-        .view-btn:hover {
-            background: #5a6fd8;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .manage-btn {
+
+        .admin-books .manage-btn {
             background: #dc2626;
             color: white;
         }
-        
-        .manage-btn:hover {
+
+        .admin-books .manage-btn:hover {
             background: #b91c1c;
             color: white;
             text-decoration: none;
         }
-        
-        /* 관리자 페이지 카테고리 섹션 스타일 조정 */
-        .category-section {
+
+        .admin-books .category-section {
             margin-bottom: 40px;
         }
-        
-        .category-header {
-            justify-content: center !important; /* 중앙 정렬 */
+
+        .admin-books .category-header {
+            justify-content: center !important;
         }
-        
-        .left-controls, .right-controls {
-            display: none; /* 좌우 공간 제거하여 완전히 중앙 정렬 */
+
+        .admin-books .left-controls,
+        .admin-books .right-controls {
+            display: none;
         }
-        
-        .site-title h1 {
-            font-size: 2rem;
-        }
-        
-        .page-title {
+
+        .admin-books .page-title {
             text-align: center;
             margin-bottom: 30px;
             padding: 20px 0;
         }
-        
-        .page-title h1 {
+
+        .admin-books .page-title h1 {
             color: #000000;
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -1px;
         }
-        
     </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="admin/fragments/header :: admin-header('books')"></div>
-    
-    <div class="container">
-        <main class="main-content">
-            <div class="page-title">
-                <h1>모든 책 관리</h1>
-            </div>
-            
-            <!-- 검색 영역 -->
-            <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
-                <div th:fragment="searchFields">
-                    <div class="search-group">
-                        <label for="bookTitle">책 이름</label>
-                        <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 이름을 입력하세요">
-                    </div>
-                    <div class="search-group">
-                        <label for="author">저자</label>
-                        <input type="text" id="author" name="author" class="search-input" placeholder="저자를 입력하세요">
-                    </div>
-                    <div class="search-group">
-                        <label for="category">카테고리</label>
-                        <select id="category" name="category" class="search-input">
-                            <option value="">전체</option>
-                            <option value="서양">서양</option>
-                            <option value="동서양">동서양</option>
-                            <option value="동양">동양</option>
-                            <option value="과학">과학</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="search-btn">검색</button>
-                    <button type="button" class="reset-btn" data-search-reset>초기화</button>
-                </div>
-            </div>
-            
-            <!-- 카테고리 섹션 -->
-            <div class="category-section">
-                <div class="category-header">
-                    <div class="left-controls">
-                        <!-- 빈 공간 (문의 게시판 버튼 자리) -->
-                    </div>
-                    <div class="category-tabs subtle-shadow">
-                        <button class="category-tab active" data-category="서양">서양</button>
-                        <button class="category-tab" data-category="동서양">동서양</button>
-                        <button class="category-tab" data-category="동양">동양</button>
-                        <button class="category-tab" data-category="과학">과학</button>
-                    </div>
-                    <div class="right-controls">
-                        <!-- 빈 공간 (정렬 필터 자리) -->
-                    </div>
-                </div>
-            </div>
+</th:block>
 
-            <!-- 서양 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-western" style="display: block;">
-                <div class="books-grid" id="western-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '서양'}" 
-                         th:data-title="${book.title}" th:data-author="${book.author}"
-                         th:data-category="${book.category}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<th:block th:fragment="content">
+    <div class="admin-books container">
+        <div class="page-title">
+            <h1>모든 책 관리</h1>
+        </div>
 
-            <!-- 동서양 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
-                <div class="books-grid" id="eastwest-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동서양'}"
-                         th:data-title="${book.title}" th:data-author="${book.author}"
-                         th:data-category="${book.category}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
-                        </div>
-                    </div>
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <div th:fragment="searchFields">
+                <div class="search-group">
+                    <label for="bookTitle">책 이름</label>
+                    <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 이름을 입력하세요">
                 </div>
+                <div class="search-group">
+                    <label for="author">저자</label>
+                    <input type="text" id="author" name="author" class="search-input" placeholder="저자를 입력하세요">
+                </div>
+                <div class="search-group">
+                    <label for="category">카테고리</label>
+                    <select id="category" name="category" class="search-input">
+                        <option value="">전체</option>
+                        <option value="서양">서양</option>
+                        <option value="동서양">동서양</option>
+                        <option value="동양">동양</option>
+                        <option value="과학">과학</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-btn">검색</button>
+                <button type="button" class="reset-btn" data-search-reset>초기화</button>
             </div>
+        </div>
 
-            <!-- 동양 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
-                <div class="books-grid" id="eastern-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동양'}"
-                         th:data-title="${book.title}" th:data-author="${book.author}"
-                         th:data-category="${book.category}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="category-section">
+            <div class="category-header">
+                <div class="left-controls"></div>
+                <div class="category-tabs subtle-shadow">
+                    <button class="category-tab active" data-category="서양">서양</button>
+                    <button class="category-tab" data-category="동서양">동서양</button>
+                    <button class="category-tab" data-category="동양">동양</button>
+                    <button class="category-tab" data-category="과학">과학</button>
                 </div>
+                <div class="right-controls"></div>
             </div>
+        </div>
 
-            <!-- 과학 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-science" style="display: none;">
-                <div class="books-grid" id="science-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"
-                         th:data-title="${book.title}" th:data-author="${book.author}"
-                         th:data-category="${book.category}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
+        <div class="book-display subtle-shadow" id="category-western" style="display: block;">
+            <div class="books-grid" id="western-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '서양'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
+            <div class="books-grid" id="eastwest-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동서양'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
+            <div class="books-grid" id="eastern-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동양'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-display subtle-shadow" id="category-science" style="display: none;">
+            <div class="books-grid" id="science-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="/js/admin-search.js"></script>
-    <script src="/js/admin-books.js"></script>
-    <script src="/js/sse.js"></script>
-    <script src="/js/admin-sse.js"></script>
-</body>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-search.js}"></script>
+    <script th:src="@{/js/admin-books.js}"></script>
+</th:block>
 </html>

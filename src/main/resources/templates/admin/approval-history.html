@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>족보 승인 이력 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
-    
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'족보 승인 이력 - 세종족보'},
+        currentPage=${'history'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <style>
-        /* 승인 이력 페이지 전용 스타일 */
-        
-        .history-table {
+        .approval-history {
+            padding: 20px 40px;
+        }
+
+        .approval-history .history-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -20,8 +23,8 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
-        .history-table th {
+
+        .approval-history .history-table th {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 15px 12px;
@@ -29,19 +32,20 @@
             font-weight: 600;
             font-size: 14px;
         }
-        
-        .history-table td {
+
+        .approval-history .history-table td {
             padding: 15px 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
             vertical-align: middle;
         }
-        
-        .history-table tr:hover {
+
+        .approval-history .history-table tr:hover {
             background-color: #f8f9fa;
         }
-        
-        .status-badge {
+
+        .approval-history .status-badge,
+        .approval-history .action-badge {
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -49,71 +53,62 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
-        .action-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .action-승인 {
+
+        .approval-history .action-승인 {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
-        
-        .action-반려 {
+
+        .approval-history .action-반려 {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
         }
-        
-        .action-승인취소 {
+
+        .approval-history .action-승인취소 {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
         }
-        
-        .action-재심사요청 {
+
+        .approval-history .action-재심사요청 {
             background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
             color: white;
         }
-        
-        .status-대기 {
+
+        .approval-history .status-대기 {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
             color: white;
         }
-        
-        .status-승인 {
+
+        .approval-history .status-승인 {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
-        
-        .status-반려 {
+
+        .approval-history .status-반려 {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
         }
-        
-        .jokbo-link {
+
+        .approval-history .jokbo-link {
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
-        
-        .jokbo-link:hover {
+
+        .approval-history .jokbo-link:hover {
             color: #764ba2;
             text-decoration: underline;
         }
-        
-        .comment-cell {
+
+        .approval-history .comment-cell {
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        
-        .no-data {
+
+        .approval-history .no-data {
             text-align: center;
             padding: 60px 20px;
             color: #6c757d;
@@ -121,21 +116,21 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
-        .no-data p {
+
+        .approval-history .no-data p {
             font-size: 18px;
             margin: 0;
         }
-        
-        .pagination {
+
+        .approval-history .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-top: 30px;
             gap: 15px;
         }
-        
-        .page-link {
+
+        .approval-history .page-link {
             padding: 10px 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -144,13 +139,13 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
-        .page-link:hover {
+
+        .approval-history .page-link:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
-        
-        .page-info {
+
+        .approval-history .page-info {
             font-weight: 600;
             color: #495057;
             background: white;
@@ -158,60 +153,54 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        /* 필터 섹션 스타일 */
-        .filter-section {
+
+        .approval-history .filter-section {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        .filter-row {
+
+        .approval-history .filter-row {
             display: flex;
             gap: 20px;
             align-items: end;
             flex-wrap: wrap;
         }
-        
-        .filter-item {
+
+        .approval-history .filter-item {
             display: flex;
             flex-direction: column;
             min-width: 150px;
         }
-        
-        .filter-item label {
+
+        .approval-history .filter-item label {
             font-weight: 600;
             margin-bottom: 5px;
             color: #495057;
         }
-        
-        .filter-item select {
+
+        .approval-history .filter-item select {
             padding: 8px 12px;
             border: 1px solid #ced4da;
             border-radius: 4px;
             background: white;
             font-size: 14px;
         }
-        
-        .filter-item select:focus {
+
+        .approval-history .filter-item select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
-        
-        /* 검색 결과 없음 메시지 */
     </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="admin/fragments/header :: admin-header('history')"></div>
-    
-    <div class="main-content">
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="approval-history">
         <h1 class="page-title">족보 승인 이력</h1>
-        
-        <!-- 검색 영역 -->
+
         <div class="search-section">
             <form class="search-form" id="searchForm">
                 <div class="search-group">
@@ -230,8 +219,7 @@
                 <button type="button" class="reset-btn" id="resetSearchBtn">초기화</button>
             </form>
         </div>
-        
-        <!-- 필터 섹션 -->
+
         <div class="filter-section">
             <div class="filter-row">
                 <div class="filter-item">
@@ -263,11 +251,11 @@
                 </div>
             </div>
         </div>
-        
+
         <div th:if="${#lists.isEmpty(history)}" class="no-data">
             <p>승인 이력이 없습니다.</p>
         </div>
-        
+
         <div th:if="${!#lists.isEmpty(history)}" id="historyTableContainer">
             <table class="history-table" id="historyTable">
                 <thead>
@@ -284,29 +272,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="h : ${history}" 
+                    <tr th:each="h : ${history}"
                         th:data-process-date="${#temporals.format(h.createdAt, 'yyyy-MM-dd')}"
                         th:data-book-title="${h.jokbo.book.title}"
                         th:data-registrant="${h.jokbo.uploaderName}">
                         <td th:text="${#temporals.format(h.createdAt, 'yyyy-MM-dd HH:mm:ss')}">처리일시</td>
                         <td>
-                            <a th:href="@{'/admin/jokbo/' + ${h.jokbo.jokboId} + '/history'}" 
-                               th:text="${h.jokbo.jokboId}" 
+                            <a th:href="@{'/admin/jokbo/' + ${h.jokbo.jokboId} + '/history'}"
+                               th:text="${h.jokbo.jokboId}"
                                class="jokbo-link">족보 ID</a>
                         </td>
                         <td th:text="${h.jokbo.book.title}">책 제목</td>
                         <td th:text="${h.jokbo.uploaderName}">등록자</td>
                         <td>
-                            <span th:class="${'action-badge action-' + h.action.name().toLowerCase()}" 
+                            <span th:class="${'action-badge action-' + h.action.name().toLowerCase()}"
                                   th:text="${h.action.name()}">액션</span>
                         </td>
                         <td>
-                            <span th:if="${h.previousStatus}" 
-                                  th:class="${'status-badge status-' + h.previousStatus.name().toLowerCase()}" 
+                            <span th:if="${h.previousStatus}"
+                                  th:class="${'status-badge status-' + h.previousStatus.name().toLowerCase()}"
                                   th:text="${h.previousStatus.name()}">이전 상태</span>
                         </td>
                         <td>
-                            <span th:class="${'status-badge status-' + h.newStatus.name().toLowerCase()}" 
+                            <span th:class="${'status-badge status-' + h.newStatus.name().toLowerCase()}"
                                   th:text="${h.newStatus.name()}">새 상태</span>
                         </td>
                         <td th:text="${h.admin.adminName}">관리자</td>
@@ -314,25 +302,25 @@
                     </tr>
                 </tbody>
             </table>
-            
-            <!-- 페이징 -->
+
             <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${hasPrevious}" 
-                   th:href="@{/admin/approval-history(page=${currentPage - 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}" 
+                <a th:if="${hasPrevious}"
+                   th:href="@{/admin/approval-history(page=${currentPage - 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}"
                    class="page-link">이전</a>
-                
+
                 <span class="page-info">
                     <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
                 </span>
-                
-                <a th:if="${hasNext}" 
-                   th:href="@{/admin/approval-history(page=${currentPage + 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}" 
+
+                <a th:if="${hasNext}"
+                   th:href="@{/admin/approval-history(page=${currentPage + 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}"
                    class="page-link">다음</a>
             </div>
         </div>
-    </div>
-    <script src="/js/sse.js"></script>
-    <script src="/js/admin-sse.js"></script>
-    <script src="/js/admin-approval-history.js"></script>
-</body>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-approval-history.js}"></script>
+</th:block>
 </html>

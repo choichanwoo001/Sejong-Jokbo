@@ -1,88 +1,72 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의 관리 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
-    
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'문의 관리 - 세종족보'},
+        currentPage=${'inquiries'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <style>
-        /* 문의 관리 페이지 전용 스타일 */
-        
-        /* .back-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            text-decoration: none;
-            display: inline-block;
+        .admin-inquiries {
+            padding: 20px 40px;
         }
-        
-        .back-btn:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
-        } */
-        
-        .inquiry-list {
+
+        .admin-inquiries .inquiry-list {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
-        .inquiry-header {
+
+        .admin-inquiries .inquiry-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 15px;
         }
-        
-        .inquiry-info {
+
+        .admin-inquiries .inquiry-info {
             flex: 1;
         }
-        
-        .inquiry-name {
+
+        .admin-inquiries .inquiry-name {
             font-size: 18px;
             font-weight: 600;
             color: #333;
             margin: 0 0 5px 0;
         }
-        
-        .inquiry-email {
+
+        .admin-inquiries .inquiry-email {
             color: #666;
             font-size: 14px;
             margin-bottom: 10px;
         }
-        
-        .inquiry-date {
+
+        .admin-inquiries .inquiry-date {
             color: #999;
             font-size: 12px;
         }
-        
-        .inquiry-status {
+
+        .admin-inquiries .inquiry-status {
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
         }
-        
-        .status-answered {
+
+        .admin-inquiries .status-answered {
             background: #d4edda;
             color: #155724;
         }
-        
-        .status-unanswered {
+
+        .admin-inquiries .status-unanswered {
             background: #f8d7da;
             color: #721c24;
         }
-        
-        .inquiry-message {
+
+        .admin-inquiries .inquiry-message {
             margin: 15px 0;
             padding: 15px;
             background: #f8f9fa;
@@ -92,34 +76,33 @@
             line-height: 1.6;
             white-space: pre-wrap;
         }
-        
-        .inquiry-actions {
+
+        .admin-inquiries .inquiry-actions {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        
-        .no-inquiries {
+
+        .admin-inquiries .no-inquiries {
             text-align: center;
             padding: 60px 20px;
             color: #666;
         }
-        
-        .no-inquiries h3 {
+
+        .admin-inquiries .no-inquiries h3 {
             margin: 0 0 10px 0;
             color: #333;
         }
-        
-        /* 페이징 스타일 */
-        .pagination {
+
+        .admin-inquiries .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-top: 30px;
             gap: 15px;
         }
-        
-        .page-link {
+
+        .admin-inquiries .page-link {
             padding: 10px 20px;
             background: #667eea;
             color: white;
@@ -128,31 +111,26 @@
             font-weight: 500;
             transition: all 0.3s ease;
         }
-        
-        .page-link:hover {
+
+        .admin-inquiries .page-link:hover {
             background: #5a6fd8;
             color: white;
             text-decoration: none;
             transform: translateY(-1px);
         }
-        
-        .page-info {
+
+        .admin-inquiries .page-info {
             color: #666;
             font-weight: 500;
             padding: 0 10px;
         }
-        
     </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="admin/fragments/header :: admin-header('inquiries')"></div>
-    
-    <div class="main-content">
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-inquiries">
         <h1 class="page-title">문의 관리</h1>
-        <!-- <a href="/admin/dashboard" class="back-btn">대시보드로 돌아가기</a> -->
-        
-        <!-- 검색 영역 -->
+
         <div class="search-section">
             <form class="search-form" id="searchForm">
                 <div class="search-group">
@@ -167,9 +145,9 @@
                 <button type="button" class="reset-btn" id="resetInquirySearchBtn">초기화</button>
             </form>
         </div>
-        
+
         <div class="inquiry-list" th:if="${inquiries.size() > 0}" id="inquiryList">
-            <div class="admin-card admin-card--hover inquiry-item" th:each="inquiry : ${inquiries}" 
+            <div class="admin-card admin-card--hover inquiry-item" th:each="inquiry : ${inquiries}"
                  th:data-student-name="${inquiry.name}"
                  th:data-creation-date="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd')}">
                 <div class="inquiry-header">
@@ -178,41 +156,41 @@
                         <p class="inquiry-email" th:text="${inquiry.email}">이메일</p>
                         <p class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">문의 날짜</p>
                     </div>
-                    <span class="inquiry-status" 
-                          th:class="${inquiry.comments.size() > 0 ? 'status-answered' : 'status-unanswered'}"
+                    <span class="inquiry-status"
+                          th:class="${inquiry.comments.size() > 0 ? 'inquiry-status status-answered' : 'inquiry-status status-unanswered'}"
                           th:text="${inquiry.comments.size() > 0 ? '답변완료' : '답변대기'}">상태</span>
                 </div>
-                
+
                 <div class="inquiry-message" th:text="${inquiry.message}">문의 내용</div>
-                
+
                 <div class="inquiry-actions">
                     <a th:href="'/admin/inquiry/' + ${inquiry.inquiryId}" class="admin-btn admin-btn--primary">답변하기</a>
                 </div>
             </div>
         </div>
-        
+
         <div class="no-inquiries" th:if="${inquiries.size() == 0}">
             <h3>등록된 문의가 없습니다</h3>
             <p>새로운 문의가 등록되면 여기에 표시됩니다.</p>
         </div>
-        
-        <!-- 페이징 -->
+
         <div class="pagination" th:if="${totalPages > 1}">
-            <a th:if="${hasPrevious}" 
-               th:href="@{/admin/inquiries(page=${currentPage - 1})}" 
+            <a th:if="${hasPrevious}"
+               th:href="@{/admin/inquiries(page=${currentPage - 1})}"
                class="page-link">이전</a>
-            
+
             <span class="page-info">
                 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
             </span>
-            
-            <a th:if="${hasNext}" 
-               th:href="@{/admin/inquiries(page=${currentPage + 1})}" 
+
+            <a th:if="${hasNext}"
+               th:href="@{/admin/inquiries(page=${currentPage + 1})}"
                class="page-link">다음</a>
         </div>
-    </div>
-    <script src="/js/sse.js"></script>
-    <script src="/js/admin-sse.js"></script>
-    <script src="/js/admin-inquiries.js"></script>
-</body>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-inquiries.js}"></script>
+</th:block>
 </html>

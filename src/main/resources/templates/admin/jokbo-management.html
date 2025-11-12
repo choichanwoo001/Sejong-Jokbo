@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>족보 관리 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'족보 관리 - 세종족보'},
+        currentPage=${'jokbos'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="~{admin/fragments/header :: admin-header('jokbos')}"></div>
-    
-    <div class="main-content">
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-jokbo-management">
         <h1 class="page-title">족보 관리</h1>
-        
-        <!-- 검색 영역 -->
+
         <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
             <div th:fragment="searchFields">
                 <div class="search-group">
@@ -36,8 +35,7 @@
                 <button type="button" class="reset-btn" data-search-reset>초기화</button>
             </div>
         </div>
-        
-        <!-- 상태별 필터 -->
+
         <div class="filter-section">
             <label for="statusFilter">상태별 필터:</label>
             <select id="statusFilter">
@@ -47,11 +45,11 @@
                 <option value="반려" th:selected="${selectedStatus == '반려'}">반려됨</option>
             </select>
         </div>
-        
+
         <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
             <p>등록된 족보가 없습니다.</p>
         </div>
-        
+
         <div th:if="${!#lists.isEmpty(jokbos)}" id="jokboTableContainer">
             <table class="jokbo-table" id="jokboTable">
                 <thead>
@@ -67,7 +65,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="jokbo : ${jokbos}" 
+                    <tr th:each="jokbo : ${jokbos}"
                         th:data-book-title="${jokbo.book.title}"
                         th:data-registrant="${jokbo.uploaderName}"
                         th:data-registration-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}">
@@ -80,13 +78,12 @@
                             <span th:if="${jokbo.contentType == 'file'}" class="content-type-badge file">파일</span>
                         </td>
                         <td>
-                            <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}" 
+                            <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}"
                                   th:text="${jokbo.status.name()}">상태</span>
                         </td>
                         <td class="comment-cell" th:text="${jokbo.comment}">코멘트</td>
                         <td>
                             <div class="action-buttons">
-                                <!-- 승인 대기 중인 경우 -->
                                 <div th:if="${jokbo.status.name() == '대기'}">
                                     <button class="btn-approve approval-trigger"
                                             data-approval-action="approve"
@@ -95,21 +92,19 @@
                                             data-approval-action="reject"
                                             th:data-jokbo-id="${jokbo.jokboId}">반려</button>
                                 </div>
-                                
-                                <!-- 승인된 경우 -->
+
                                 <div th:if="${jokbo.status.name() == '승인'}">
                                     <button class="btn-cancel approval-trigger"
                                             data-approval-action="cancel"
                                             th:data-jokbo-id="${jokbo.jokboId}">승인취소</button>
                                 </div>
-                                
-                                <!-- 승인된 족보 보기/다운로드 -->
+
                                 <div th:if="${jokbo.status.name() == '승인'}">
-                                    <a th:if="${jokbo.contentType == 'text'}" 
-                                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                                    <a th:if="${jokbo.contentType == 'text'}"
+                                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}"
                                        target="_blank" class="btn-view">보기</a>
-                                    <a th:if="${jokbo.contentType == 'file'}" 
-                                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
+                                    <a th:if="${jokbo.contentType == 'file'}"
+                                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}"
                                        target="_blank" class="btn-view">보기</a>
                                 </div>
                             </div>
@@ -117,49 +112,47 @@
                     </tr>
                 </tbody>
             </table>
-            
-            <!-- 페이징 -->
+
             <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${hasPrevious}" 
-                   th:href="@{/admin/jokbos(page=${currentPage - 1}, status=${selectedStatus})}" 
+                <a th:if="${hasPrevious}"
+                   th:href="@{/admin/jokbos(page=${currentPage - 1}, status=${selectedStatus})}"
                    class="page-link">이전</a>
-                
+
                 <span class="page-info">
                     <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
                 </span>
-                
-                <a th:if="${hasNext}" 
-                   th:href="@{/admin/jokbos(page=${currentPage + 1}, status=${selectedStatus})}" 
+
+                <a th:if="${hasNext}"
+                   th:href="@{/admin/jokbos(page=${currentPage + 1}, status=${selectedStatus})}"
                    class="page-link">다음</a>
             </div>
         </div>
-    </div>
-    
-    <!-- 승인/반려 모달 -->
-    <div id="approvalModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" data-close-approval-modal>&times;</span>
-            <h3 id="modalTitle">족보 처리</h3>
-            <form id="approvalForm">
-                <input type="hidden" id="jokboId" name="jokboId">
-                <input type="hidden" id="actionType" name="actionType">
-                
-                <div class="form-group">
-                    <label for="comment">처리 사유 (선택사항):</label>
-                    <textarea id="comment" name="comment" rows="4" placeholder="승인/반려/취소 사유를 입력하세요"></textarea>
-                </div>
-                
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancel" data-close-approval-modal>취소</button>
-                    <button type="submit" id="confirmButton" class="btn-primary">확인</button>
-                </div>
-            </form>
+
+        <div id="approvalModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" data-close-approval-modal>&times;</span>
+                <h3 id="modalTitle">족보 처리</h3>
+                <form id="approvalForm">
+                    <input type="hidden" id="jokboId" name="jokboId">
+                    <input type="hidden" id="actionType" name="actionType">
+
+                    <div class="form-group">
+                        <label for="comment">처리 사유 (선택사항):</label>
+                        <textarea id="comment" name="comment" rows="4" placeholder="승인/반려/취소 사유를 입력하세요"></textarea>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel" data-close-approval-modal>취소</button>
+                        <button type="submit" id="confirmButton" class="btn-primary">확인</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    
-    <script src="/js/admin-search.js"></script>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-search.js}"></script>
     <script th:src="@{/js/jokbo-management.js}"></script>
-    <script src="/js/sse.js"></script>
-    <script src="/js/admin-sse.js"></script>
-</body>
+</th:block>
 </html> 

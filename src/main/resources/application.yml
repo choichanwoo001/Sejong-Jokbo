@@ -15,6 +15,14 @@ spring:
     suffix: .html
     encoding: UTF-8
     mode: HTML
+  
+  web:
+    resources:
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /css/**,/js/**
     
   servlet:
     multipart:

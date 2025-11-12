@@ -1,37 +1,41 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의 작성 - 고전독서 족보</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/site-layout :: layout(
+        pageTitle=${'문의 작성 - 고전독서 족보'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/inquiry.css}">
-</head>
-<body>
-<div class="container fade-in">
-    <main class="main-content">
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="container fade-in">
         <div class="inquiry-header">
             <h1>문의 작성</h1>
             <a href="/inquiry" class="home-button">목록으로</a>
         </div>
-        
+
         <div class="inquiry-form-container">
             <form id="inquiryForm" class="inquiry-form">
                 <div class="form-group">
                     <label for="name">이름 *</label>
                     <input type="text" id="name" name="name" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="email">이메일 (선택)</label>
                     <input type="email" id="email" name="email">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="message">문의 내용 *</label>
                     <textarea id="message" name="message" rows="8" required placeholder="문의하실 내용을 자세히 작성해주세요."></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="isPublic" name="isPublic" checked>
@@ -40,16 +44,17 @@
                     </label>
                     <p class="form-help">체크 해제 시 비공개로 설정됩니다. 비공개 문의는 목록에는 표시되지만 내용은 숨겨집니다.</p>
                 </div>
-                
+
                 <div class="form-actions">
                     <button type="submit" class="submit-button">문의 등록</button>
                     <a href="/inquiry" class="cancel-button">취소</a>
                 </div>
             </form>
         </div>
-    </main>
-</div>
+    </div>
+</th:block>
 
-<script th:src="@{/js/inquiry.js}"></script>
-</body>
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/inquiry.js}"></script>
+</th:block>
 </html>
