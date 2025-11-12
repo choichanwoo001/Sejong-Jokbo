@@ -19,15 +19,7 @@
         }
         
         .dashboard-card {
-            background: white;
-            border-radius: 10px;
             padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-        
-        .dashboard-card:hover {
-            transform: translateY(-5px);
         }
         
         .card-header {
@@ -85,36 +77,8 @@
             justify-content: center;
         }
         
-        .action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            white-space: nowrap;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-2px);
-            text-decoration: none;
-            color: white;
-        }
-        
         .recent-inquiries {
-            background: white;
-            border-radius: 10px;
             padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
         .recent-inquiries h3 {
@@ -177,7 +141,7 @@
                 align-items: stretch;
             }
             
-            .action-btn {
+            .admin-btn {
                 flex: none;
                 margin-bottom: 10px;
             }
@@ -191,7 +155,7 @@
     <div class="main-content">
         <h1 class="page-title">관리자 대시보드</h1>
         <div class="dashboard-grid">
-            <div class="dashboard-card pending-jokbos">
+            <div class="admin-card admin-card--hover dashboard-card pending-jokbos">
                 <div class="card-header">
                     <div class="card-icon">📚</div>
                     <h3 class="card-title">승인 대기 족보</h3>
@@ -200,7 +164,7 @@
                 <p class="card-description">승인을 기다리는 족보가 있습니다</p>
             </div>
             
-            <div class="dashboard-card unanswered-inquiries">
+            <div class="admin-card admin-card--hover dashboard-card unanswered-inquiries">
                 <div class="card-header">
                     <div class="card-icon">💬</div>
                     <h3 class="card-title">답변 대기 문의</h3>
@@ -211,15 +175,15 @@
         </div>
         
         <div class="action-buttons">
-            <a href="/admin/books" class="action-btn">📖 모든 책 관리</a>
-            <a href="/admin/jokbos/pending" class="action-btn">⏳ 승인 대기 족보</a>
-            <a href="/admin/jokbos" class="action-btn">🗂️ 전체 족보</a>
-            <a href="/admin/approval-history" class="action-btn">📊 승인 이력</a>
-            <a href="/admin/inquiries" class="action-btn">💬 문의 관리</a>
-            <button id="syncBtn" class="action-btn" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">🔄 동기화</button>
+            <a href="/admin/books" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">📖 모든 책 관리</a>
+            <a href="/admin/jokbos/pending" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">⏳ 승인 대기 족보</a>
+            <a href="/admin/jokbos" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">🗂️ 전체 족보</a>
+            <a href="/admin/approval-history" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">📊 승인 이력</a>
+            <a href="/admin/inquiries" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">💬 문의 관리</a>
+            <button id="syncBtn" class="admin-btn admin-btn--success admin-btn--full admin-btn--lg">🔄 동기화</button>
         </div>
         
-        <div class="recent-inquiries" th:if="${unansweredInquiries.size() > 0}">
+        <div class="admin-card recent-inquiries" th:if="${unansweredInquiries.size() > 0}">
             <h3>최근 답변 대기 문의</h3>
             <div class="inquiry-item" th:each="inquiry : ${unansweredInquiries}">
                 <div class="inquiry-header">

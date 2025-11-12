@@ -12,36 +12,10 @@
     <style>
         /* 승인 대기 족보 페이지 전용 스타일 */
         
-        .back-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .back-btn:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-        
         .jokbo-list {
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }
-        
-        .jokbo-item {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
         .jokbo-header {
@@ -130,58 +104,7 @@
             display: flex;
             gap: 10px;
             margin-top: 20px;
-        }
-        
-        .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .approve-btn {
-            background: #28a745;
-            color: white;
-        }
-        
-        .approve-btn:hover {
-            background: #218838;
-        }
-        
-        .reject-btn {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .reject-btn:hover {
-            background: #c82333;
-        }
-        
-        .view-book-btn {
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .view-book-btn:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .preview-btn {
-            background: #17a2b8;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .preview-btn:hover {
-            background: #138496;
-            color: white;
-            text-decoration: none;
+            flex-wrap: wrap;
         }
         
         .no-jokbos {
@@ -228,7 +151,7 @@
         </div>
         
         <div class="jokbo-list" th:if="${jokbos.size() > 0}" id="jokboList">
-            <div class="jokbo-item" th:each="jokbo : ${jokbos}" 
+            <div class="admin-card jokbo-item" th:each="jokbo : ${jokbos}" 
                  th:data-book-title="${jokbo.book.title}" 
                  th:data-uploader="${jokbo.uploaderName}"
                  th:data-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}">
@@ -264,19 +187,19 @@
                     <a th:if="${jokbo.contentType == 'text'}" 
                        th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
                        target="_blank" 
-                       class="action-btn preview-btn">PDF 미리보기</a>
+                       class="admin-btn admin-btn--info">PDF 미리보기</a>
                     <a th:if="${jokbo.contentType == 'file'}" 
                        th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
                        target="_blank" 
-                       class="action-btn preview-btn">미리보기</a>
+                       class="admin-btn admin-btn--info">미리보기</a>
                     
-                    <button class="action-btn approve-btn"
+                    <button class="admin-btn admin-btn--success"
                             data-action="approve"
                             th:data-jokbo-id="${jokbo.jokboId}">승인</button>
-                    <button class="action-btn reject-btn"
+                    <button class="admin-btn admin-btn--danger"
                             data-action="reject"
                             th:data-jokbo-id="${jokbo.jokboId}">반려</button>
-                    <a th:href="'/admin/book/' + ${jokbo.book.bookId}" class="action-btn view-book-btn">책 상세보기</a>
+                    <a th:href="'/admin/book/' + ${jokbo.book.bookId}" class="admin-btn admin-btn--secondary">책 상세보기</a>
                 </div>
             </div>
         </div>
