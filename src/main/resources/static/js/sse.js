@@ -116,77 +116,24 @@ class SSEManager {
         
         // 페이지 내 알림 표시
         const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
+        const notificationType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+        notification.className = `notification notification-${notificationType}`;
         notification.innerHTML = `
             <strong>${title}</strong><br>
             ${message}
         `;
-        
-        // 스타일 적용
-        const backgroundColor = type === 'success' ? '#4CAF50' : 
-                              type === 'error' ? '#f44336' : '#2196F3';
-        
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${backgroundColor};
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            max-width: 300px;
-            font-size: 14px;
-            line-height: 1.4;
-            animation: slideIn 0.3s ease-out;
-        `;
-        
-        // 애니메이션 스타일 추가
-        if (!document.getElementById('sse-notification-styles')) {
-            const style = document.createElement('style');
-            style.id = 'sse-notification-styles';
-            style.textContent = `
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-                
-                @keyframes highlight {
-                    0% {
-                        background-color: transparent;
-                    }
-                    50% {
-                        background-color: #4CAF50;
-                        color: white;
-                        border-radius: 4px;
-                        padding: 2px 6px;
-                    }
-                    100% {
-                        background-color: transparent;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        }
         
         document.body.appendChild(notification);
         
         // 5초 후 제거
         setTimeout(() => {
             if (notification.parentNode) {
-                notification.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
+                notification.classList.add('notification-exit');
+                notification.addEventListener('animationend', () => {
                     if (notification.parentNode) {
                         notification.parentNode.removeChild(notification);
                     }
-                }, 300);
+                }, { once: true });
             }
         }, 5000);
     }
@@ -506,10 +453,12 @@ class SSEManager {
                             if (countElement) {
                                 countElement.textContent = `족보: ${data.count}개`;
                                 // 업데이트 효과 추가
-                                countElement.style.animation = 'highlight 0.5s ease-in-out';
-                                setTimeout(() => {
-                                    countElement.style.animation = '';
-                                }, 500);
+                                countElement.classList.remove('highlight-animation');
+                                void countElement.offsetWidth;
+                                countElement.classList.add('highlight-animation');
+                                countElement.addEventListener('animationend', () => {
+                                    countElement.classList.remove('highlight-animation');
+                                }, { once: true });
                             }
                         })
                         .catch(error => {
