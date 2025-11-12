@@ -15,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -28,32 +26,31 @@ public class AdminService {
     private final JokboApprovalHistoryRepository jokboApprovalHistoryRepository;
     private final BookRepository bookRepository;
     private final SseService sseService;
+    private static final String DEFAULT_ADMIN_NAME = "기본 관리자";
+    private static final String DEFAULT_ADMIN_PASSWORD = "";
     
     /**
-     * 관리자 로그인을 처리합니다
+     * 기본 관리자 계정을 조회하거나 없으면 생성합니다.
      */
-    public Admin login(String adminName, String password) {
-        String hashedPassword = hashPassword(password);
-        return adminRepository.findByAdminNameAndPassword(adminName, hashedPassword)
-                .orElse(null);
-    }
-    
-    /**
-     * 관리자 ID로 관리자를 조회합니다
-     */
-    public Admin getAdminById(Integer adminId) {
-        return adminRepository.findById(adminId).orElse(null);
+    @Transactional
+    public Admin getOrCreateDefaultAdmin() {
+        return adminRepository.findByAdminName(DEFAULT_ADMIN_NAME)
+                .orElseGet(() -> {
+                    Admin admin = new Admin();
+                    admin.setAdminName(DEFAULT_ADMIN_NAME);
+                    admin.setPassword(DEFAULT_ADMIN_PASSWORD);
+                    return adminRepository.save(admin);
+                });
     }
     
     /**
      * 족보를 승인합니다
      */
     @Transactional
-    public void approveJokbo(Integer jokboId, Integer adminId, String comment) {
+    public void approveJokbo(Integer jokboId, String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관리자입니다."));
+        Admin admin = getOrCreateDefaultAdmin();
         
         Jokbo.JokboStatus previousStatus = jokbo.getStatus();
         jokbo.setStatus(Jokbo.JokboStatus.승인);
@@ -89,11 +86,10 @@ public class AdminService {
      * 족보를 반려합니다
      */
     @Transactional
-    public void rejectJokbo(Integer jokboId, Integer adminId, String comment) {
+    public void rejectJokbo(Integer jokboId, String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관리자입니다."));
+        Admin admin = getOrCreateDefaultAdmin();
         
         Jokbo.JokboStatus previousStatus = jokbo.getStatus();
         jokbo.setStatus(Jokbo.JokboStatus.반려);
@@ -119,11 +115,10 @@ public class AdminService {
      * 족보 승인을 취소합니다 (승인 -> 대기)
      */
     @Transactional
-    public void cancelApproval(Integer jokboId, Integer adminId, String comment) {
+    public void cancelApproval(Integer jokboId, String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관리자입니다."));
+        Admin admin = getOrCreateDefaultAdmin();
         
         if (jokbo.getStatus() != Jokbo.JokboStatus.승인) {
             throw new IllegalStateException("승인된 족보만 승인 취소할 수 있습니다.");
@@ -259,20 +254,4 @@ public class AdminService {
         bookRepository.save(book);
     }
     
-    /**
-     * 비밀번호를 해시화합니다
-     */
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashedBytes = md.digest(password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashedBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("해시 알고리즘 오류", e);
-        }
-    }
 }

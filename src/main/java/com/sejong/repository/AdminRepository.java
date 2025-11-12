@@ -13,9 +13,4 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
      * 관리자 이름으로 관리자를 찾습니다
      */
     Optional<Admin> findByAdminName(String adminName);
-    
-    /**
-     * 관리자 이름과 비밀번호로 관리자를 찾습니다
-     */
-    Optional<Admin> findByAdminNameAndPassword(String adminName, String password);
 }

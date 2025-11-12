@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -38,16 +37,8 @@ public class CommentRestController {
     @PostMapping("/inquiry/{inquiryId}")
     public ResponseEntity<ApiResponse<Comment>> createComment(
             @Parameter(description = "문의 ID") @PathVariable Integer inquiryId,
-            @Valid @RequestBody CommentRequest request,
-            HttpSession session) {
-        
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return ResponseEntity.status(401)
-                    .body(ApiResponse.error("관리자 로그인이 필요합니다.", "UNAUTHORIZED"));
-        }
-        
-        Comment comment = commentService.createComment(inquiryId, adminId, request.getContent());
+            @Valid @RequestBody CommentRequest request) {
+        Comment comment = commentService.createComment(inquiryId, request.getContent());
         return ResponseEntity.ok(ApiResponse.success("답변이 작성되었습니다.", comment));
     }
     
@@ -55,32 +46,16 @@ public class CommentRestController {
     @PutMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Comment>> updateComment(
             @Parameter(description = "답변 ID") @PathVariable Integer commentId,
-            @Valid @RequestBody CommentRequest request,
-            HttpSession session) {
-        
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return ResponseEntity.status(401)
-                    .body(ApiResponse.error("관리자 로그인이 필요합니다.", "UNAUTHORIZED"));
-        }
-        
-        Comment comment = commentService.updateComment(commentId, adminId, request.getContent());
+            @Valid @RequestBody CommentRequest request) {
+        Comment comment = commentService.updateComment(commentId, request.getContent());
         return ResponseEntity.ok(ApiResponse.success("답변이 수정되었습니다.", comment));
     }
     
     @Operation(summary = "답변 삭제", description = "작성한 답변을 삭제합니다")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
-            @Parameter(description = "답변 ID") @PathVariable Integer commentId,
-            HttpSession session) {
-        
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return ResponseEntity.status(401)
-                    .body(ApiResponse.error("관리자 로그인이 필요합니다.", "UNAUTHORIZED"));
-        }
-        
-        commentService.deleteComment(commentId, adminId);
+            @Parameter(description = "답변 ID") @PathVariable Integer commentId) {
+        commentService.deleteComment(commentId);
         return ResponseEntity.ok(ApiResponse.success("답변이 삭제되었습니다.", null));
     }
     
