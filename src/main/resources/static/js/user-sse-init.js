@@ -1,7 +1,7 @@
 (function () {
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof initSSE !== 'function') {
-            console.warn('initSSE 함수가 정의되지 않았습니다. sse.js 로드를 확인하세요.');
+            debugWarn('initSSE 함수가 정의되지 않았습니다. sse.js 로드를 확인하세요.');
             return;
         }
 

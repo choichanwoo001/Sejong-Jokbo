@@ -128,7 +128,7 @@ function sendVerificationCode(button) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        debugError('Error:', error);
         alert('인증번호 발송 중 오류가 발생했습니다.');
         button.disabled = false;
         button.textContent = '인증번호 발송';
@@ -181,7 +181,7 @@ function verifyCode(button) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        debugError('Error:', error);
         alert('인증번호 확인 중 오류가 발생했습니다.');
         button.disabled = false;
         button.textContent = '인증확인';
@@ -314,15 +314,6 @@ function updateFileDisplay() {
     }
 }
 
-// 파일 크기 포맷팅
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
 // 파일 삭제
 function removeFile() {
     const fileInput = document.getElementById('fileInput');
@@ -451,7 +442,7 @@ function handleFileJokboSubmit(e) {
         }
     })
     .catch(error => {
-        console.error('Upload error:', error);
+        debugError('Upload error:', error);
         alert('파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
     })
     .finally(() => {

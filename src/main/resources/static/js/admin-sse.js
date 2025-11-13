@@ -14,7 +14,7 @@
 
     function initAdminSSE() {
         if (typeof initSSE !== 'function') {
-            console.warn('initSSE 함수가 정의되지 않았습니다. sse.js가 로드되었는지 확인하세요.');
+            debugWarn('initSSE 함수가 정의되지 않았습니다. sse.js가 로드되었는지 확인하세요.');
             return;
         }
 

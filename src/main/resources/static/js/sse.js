@@ -6,6 +6,8 @@ class SSEManager {
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
         this.reconnectDelay = 5000;
+        this.lastErrorNotificationTime = 0; // 마지막 오류 알림 시간 (밀리초)
+        this.errorNotificationInterval = 60000; // 1분 (밀리초)
     }
     
     // SSE 연결 설정
@@ -18,36 +20,38 @@ class SSEManager {
         this.eventSource = new EventSource(url);
         
         this.eventSource.onopen = (event) => {
-            console.log(`${this.type} SSE 연결이 설정되었습니다.`);
+            debugLog(`${this.type} SSE 연결이 설정되었습니다.`);
             this.reconnectAttempts = 0;
+            // 연결 성공 시 오류 알림 시간 초기화
+            this.lastErrorNotificationTime = 0;
             
             // 연결 상태를 페이지에 표시 (디버깅용)
             if (this.type === 'user') {
-                console.log('사용자 SSE 연결 성공 - 족보 승인 알림을 받을 준비가 되었습니다.');
+                debugLog('사용자 SSE 연결 성공 - 족보 승인 알림을 받을 준비가 되었습니다.');
             }
         };
         
         this.eventSource.onmessage = (event) => {
-            console.log('SSE 메시지 수신:', event.data);
+            debugLog('SSE 메시지 수신:', event.data);
         };
         
         this.eventSource.addEventListener('connect', (event) => {
-            console.log(`${this.type} SSE 연결 확인:`, event.data);
+            debugLog(`${this.type} SSE 연결 확인:`, event.data);
         });
         
         // 사용자용 이벤트 리스너
         if (this.type === 'user') {
             this.eventSource.addEventListener('jokbo_approved', (event) => {
-                console.log('족보 승인 알림 수신:', event.data);
+                debugLog('족보 승인 알림 수신:', event.data);
                 this.showNotification('족보 승인', event.data, 'success');
                 
                 // 실시간으로 족보 목록 업데이트
-                console.log('실시간 업데이트 시작...');
+                debugLog('실시간 업데이트 시작...');
                 this.updateJokboList();
                 
                 // 실시간 업데이트 실패 시 페이지 새로고침으로 fallback (5초 후)
                 setTimeout(() => {
-                    console.log('Fallback: 페이지 새로고침 실행');
+                    debugLog('Fallback: 페이지 새로고침 실행');
                     location.reload();
                 }, 5000);
             });
@@ -56,7 +60,7 @@ class SSEManager {
         // 관리자용 이벤트 리스너
         if (this.type === 'admin') {
             this.eventSource.addEventListener('new_jokbo_request', (event) => {
-                console.log('새로운 족보 요청:', event.data);
+                debugLog('새로운 족보 요청:', event.data);
                 this.showNotification('새로운 족보 요청', event.data, 'info');
                 
                 // 승인 대기 족보 수 업데이트
@@ -64,29 +68,28 @@ class SSEManager {
             });
             
             this.eventSource.addEventListener('sync', (event) => {
-                console.log('동기화 완료:', event.data);
+                debugLog('동기화 완료:', event.data);
                 this.showNotification('동기화 완료', event.data, 'success');
             });
             
             // 오류 이벤트 리스너 추가
             this.eventSource.addEventListener('error', (event) => {
-                console.error('SSE 오류 이벤트:', event.data);
-                this.showNotification('연결 오류', event.data, 'error');
-                
+                debugError('SSE 오류 이벤트:', event.data);
+                this.showErrorNotificationIfNeeded('연결 오류', event.data);
             });
         }
         
         // 사용자용 오류 이벤트 리스너 추가
         if (this.type === 'user') {
             this.eventSource.addEventListener('error', (event) => {
-                console.error('SSE 오류 이벤트 발생:', event);
+                debugError('SSE 오류 이벤트 발생:', event);
                 // event.data는 undefined일 수 있으므로 event 자체를 로깅
-                this.showNotification('연결 오류', 'SSE 연결에 문제가 발생했습니다.', 'error');
+                this.showErrorNotificationIfNeeded('연결 오류', 'SSE 연결에 문제가 발생했습니다.');
             });
         }
         
         this.eventSource.onerror = (event) => {
-            console.error('SSE 연결 오류:', event);
+            debugError('SSE 연결 오류:', event);
             this.handleReconnect();
         };
     }
@@ -95,13 +98,29 @@ class SSEManager {
     handleReconnect() {
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
             this.reconnectAttempts++;
-            console.log(`SSE 재연결 시도 ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
+            debugLog(`SSE 재연결 시도 ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
             setTimeout(() => {
                 this.connect();
             }, this.reconnectDelay);
         } else {
-            console.error('SSE 최대 재연결 시도 횟수 초과');
+            debugError('SSE 최대 재연결 시도 횟수 초과');
         }
+    }
+    
+    // 오류 알림 표시 (1분에 한 번만)
+    showErrorNotificationIfNeeded(title, message) {
+        const now = Date.now();
+        const timeSinceLastNotification = now - this.lastErrorNotificationTime;
+        
+        // 1분이 지나지 않았으면 알림을 표시하지 않음
+        if (timeSinceLastNotification < this.errorNotificationInterval) {
+            debugLog(`알림 제한: 마지막 알림으로부터 ${Math.floor(timeSinceLastNotification / 1000)}초 경과 (1분 제한)`);
+            return;
+        }
+        
+        // 1분이 지났으면 알림 표시 및 시간 업데이트
+        this.lastErrorNotificationTime = now;
+        this.showNotification(title, message, 'error');
     }
     
     // 알림 표시 함수
@@ -149,14 +168,14 @@ class SSEManager {
                         countElement.textContent = data.count;
                     }
                 })
-                .catch(error => console.error('족보 수 업데이트 실패:', error));
+                .catch(error => debugError('족보 수 업데이트 실패:', error));
         }
     }
     
     // 족보 목록 실시간 업데이트 (사용자용)
     updateJokboList() {
         if (this.type === 'user') {
-            console.log('족보 목록 실시간 업데이트 시작');
+            debugLog('족보 목록 실시간 업데이트 시작');
             
             // 현재 페이지의 책 ID 가져오기 (여러 방법으로 시도)
             let bookId = null;
@@ -183,7 +202,7 @@ class SSEManager {
                 }
             }
             
-            console.log('추출된 책 ID:', bookId);
+            debugLog('추출된 책 ID:', bookId);
             
             // 도서 상세 페이지인 경우 족보 목록 업데이트
             if (bookId) {
@@ -197,17 +216,17 @@ class SSEManager {
     
     // 특정 책의 족보 목록 새로고침
     refreshJokboList(bookId) {
-        console.log('족보 목록 새로고침 시작, 책 ID:', bookId);
+        debugLog('족보 목록 새로고침 시작, 책 ID:', bookId);
         
         // 현재 활성 탭 확인
         const activeTab = document.querySelector('.jokbo-tab.active');
         const isListTabActive = activeTab && activeTab.textContent.includes('목록');
         
-        console.log('족보 목록 탭 활성화 상태:', isListTabActive);
+        debugLog('족보 목록 탭 활성화 상태:', isListTabActive);
         
         // 족보 목록 탭이 활성화되지 않은 경우, 탭을 자동으로 활성화
         if (!isListTabActive) {
-            console.log('족보 목록 탭을 자동으로 활성화합니다.');
+            debugLog('족보 목록 탭을 자동으로 활성화합니다.');
             const listTab = document.querySelector('.jokbo-tab[onclick*="list"]');
             if (listTab) {
                 listTab.click(); // 탭 클릭으로 활성화
@@ -226,7 +245,7 @@ class SSEManager {
     // 실제 족보 목록 업데이트 수행
     performJokboListUpdate(bookId) {
         const currentPage = this.getCurrentPage();
-        console.log('실제 업데이트 실행, 현재 페이지:', currentPage);
+        debugLog('실제 업데이트 실행, 현재 페이지:', currentPage);
         
         fetch(`/api/user/books/${bookId}/jokbos?page=${currentPage}`)
             .then(response => {
@@ -236,11 +255,11 @@ class SSEManager {
                 return response.json();
             })
             .then(data => {
-                console.log('족보 목록 데이터 수신:', data);
+                debugLog('족보 목록 데이터 수신:', data);
                 this.renderJokboList(data);
             })
             .catch(error => {
-                console.error('족보 목록 업데이트 실패:', error);
+                debugError('족보 목록 업데이트 실패:', error);
                 // 오류 발생 시 페이지 새로고침으로 fallback
                 setTimeout(() => {
                     location.reload();
@@ -259,17 +278,17 @@ class SSEManager {
     
     // 족보 목록 렌더링
     renderJokboList(data) {
-        console.log('족보 목록 렌더링 시작');
+        debugLog('족보 목록 렌더링 시작');
         
         // 정확한 족보 목록 컨테이너 찾기 (DOM 구조에 맞게)
         let jokboListContainer = document.querySelector('#list .jokbo-list');
         
         if (!jokboListContainer) {
-            console.error('족보 목록 컨테이너를 찾을 수 없습니다. (#list .jokbo-list)');
+            debugError('족보 목록 컨테이너를 찾을 수 없습니다. (#list .jokbo-list)');
             return;
         }
         
-        console.log('족보 목록 컨테이너 찾음:', jokboListContainer);
+        debugLog('족보 목록 컨테이너 찾음:', jokboListContainer);
         
         // 기존 족보 목록 제거
         jokboListContainer.innerHTML = '';
@@ -288,7 +307,7 @@ class SSEManager {
             jokboListContainer.innerHTML = '<div class="no-jokbo"><p>등록된 족보가 없습니다.</p></div>';
         }
         
-        console.log('족보 목록 렌더링 완료');
+        debugLog('족보 목록 렌더링 완료');
     }
     
     // 족보 아이템 생성
@@ -327,11 +346,11 @@ class SSEManager {
     updatePagination(data) {
         const paginationContainer = document.querySelector('#list .jokbo-pagination');
         if (!paginationContainer) {
-            console.log('페이징 컨테이너를 찾을 수 없습니다.');
+            debugLog('페이징 컨테이너를 찾을 수 없습니다.');
             return;
         }
         
-        console.log('페이징 업데이트 시작');
+        debugLog('페이징 업데이트 시작');
         
         // 기존 페이징 제거
         paginationContainer.innerHTML = '';
@@ -367,7 +386,7 @@ class SSEManager {
             }
         }
         
-        console.log('페이징 업데이트 완료');
+        debugLog('페이징 업데이트 완료');
     }
     
     // 페이지 번호 생성
@@ -428,16 +447,16 @@ class SSEManager {
     
     // 홈페이지 족보 수 업데이트
     updateHomePageJokboCounts() {
-        console.log('홈페이지 족보 수 업데이트 시작');
+        debugLog('홈페이지 족보 수 업데이트 시작');
         
         // 홈페이지에서만 실행
         const bookItems = document.querySelectorAll('.book-item');
-        console.log('발견된 도서 아이템 수:', bookItems.length);
+        debugLog('발견된 도서 아이템 수:', bookItems.length);
         
         if (bookItems.length > 0) {
             bookItems.forEach((bookItem, index) => {
                 const bookId = this.extractBookIdFromElement(bookItem);
-                console.log(`도서 ${index + 1} ID:`, bookId);
+                debugLog(`도서 ${index + 1} ID:`, bookId);
                 
                 if (bookId) {
                     fetch(`/api/user/books/${bookId}/jokbos/count`)
@@ -448,7 +467,7 @@ class SSEManager {
                             return response.json();
                         })
                         .then(data => {
-                            console.log(`도서 ${bookId} 족보 수:`, data.count);
+                            debugLog(`도서 ${bookId} 족보 수:`, data.count);
                             const countElement = bookItem.querySelector('.jokbo-count');
                             if (countElement) {
                                 countElement.textContent = `족보: ${data.count}개`;
@@ -462,12 +481,12 @@ class SSEManager {
                             }
                         })
                         .catch(error => {
-                            console.error(`도서 ${bookId} 족보 수 업데이트 실패:`, error);
+                            debugError(`도서 ${bookId} 족보 수 업데이트 실패:`, error);
                         });
                 }
             });
         } else {
-            console.log('홈페이지가 아니거나 도서 아이템을 찾을 수 없습니다.');
+            debugLog('홈페이지가 아니거나 도서 아이템을 찾을 수 없습니다.');
         }
     }
     
@@ -512,7 +531,7 @@ class SSEManager {
                 
                 return result;
             } catch (error) {
-                console.error('동기화 오류:', error);
+                debugError('동기화 오류:', error);
                 this.showNotification('동기화 오류', '네트워크 오류가 발생했습니다.', 'error');
                 throw error;
             }
@@ -528,7 +547,7 @@ class SSEManager {
             // 서버에 연결 해제 요청
             fetch(`/api/sse/disconnect?type=${this.type}`, { 
                 method: 'DELETE' 
-            }).catch(error => console.error('연결 해제 요청 실패:', error));
+            }).catch(error => debugError('연결 해제 요청 실패:', error));
         }
     }
 }
@@ -552,7 +571,7 @@ function initSSE(type = 'user') {
         }
         userSseManager = new SSEManager('user');
         userSseManager.connect();
-        console.log('사용자용 SSE 매니저 생성 완료');
+        debugLog('사용자용 SSE 매니저 생성 완료');
     } else if (type === 'admin') {
         // 기존 관리자 연결이 있으면 해제
         if (adminSseManager) {
@@ -560,7 +579,7 @@ function initSSE(type = 'user') {
         }
         adminSseManager = new SSEManager('admin');
         adminSseManager.connect();
-        console.log('관리자용 SSE 매니저 생성 완료');
+        debugLog('관리자용 SSE 매니저 생성 완료');
     }
     
     // 페이지 언로드 시 연결 해제

@@ -18,7 +18,7 @@
 
         const jokboId = extractJokboId();
         if (!jokboId) {
-            console.warn('URL에서 족보 ID를 찾을 수 없습니다.');
+            debugWarn('URL에서 족보 ID를 찾을 수 없습니다.');
             return;
         }
 

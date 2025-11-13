@@ -16,27 +16,12 @@ function setupCategoryTabs() {
 
             this.classList.add('active');
 
-            let targetDisplay = null;
-
-            switch (category) {
-                case '서양':
-                    targetDisplay = document.getElementById('category-western');
-                    break;
-                case '동서양':
-                    targetDisplay = document.getElementById('category-east-west');
-                    break;
-                case '동양':
-                    targetDisplay = document.getElementById('category-eastern');
-                    break;
-                case '과학':
-                    targetDisplay = document.getElementById('category-science');
-                    break;
-                default:
-                    break;
-            }
-
-            if (targetDisplay) {
-                targetDisplay.style.display = 'block';
+            const categoryId = getCategoryId(category);
+            if (categoryId) {
+                const targetDisplay = document.getElementById(categoryId);
+                if (targetDisplay) {
+                    targetDisplay.style.display = 'block';
+                }
             }
         });
     });

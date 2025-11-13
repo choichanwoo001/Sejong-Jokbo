@@ -11,7 +11,7 @@
 
         const inquiryId = extractInquiryId();
         if (!inquiryId) {
-            console.warn('문의 ID를 찾을 수 없습니다. 데이터 속성을 확인해주세요.');
+            debugWarn('문의 ID를 찾을 수 없습니다. 데이터 속성을 확인해주세요.');
             return;
         }
 
