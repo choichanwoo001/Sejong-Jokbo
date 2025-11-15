@@ -9,6 +9,7 @@
       )}">
 
 <th:block th:fragment="extraHead">
+    <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     <style>
         .approval-history {
             padding: 20px 40px;
@@ -201,8 +202,8 @@
     <section class="approval-history">
         <h1 class="page-title">족보 승인 이력</h1>
 
-        <div class="search-section">
-            <form class="search-form" id="searchForm">
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <th:block th:fragment="searchFields">
                 <div class="search-group">
                     <label for="processDate">처리 일시</label>
                     <input type="date" id="processDate" name="processDate" class="search-input">
@@ -217,7 +218,7 @@
                 </div>
                 <button type="submit" class="search-btn">검색</button>
                 <button type="button" class="reset-btn" id="resetSearchBtn">초기화</button>
-            </form>
+            </th:block>
         </div>
 
         <div class="filter-section">

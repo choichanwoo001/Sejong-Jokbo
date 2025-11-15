@@ -2,7 +2,7 @@
      th:fragment="search-section(formId, fields)">
     <div class="search-section">
         <form class="search-form" th:attr="id=${formId}">
-            <div th:replace="${fields}"></div>
+            <th:block th:replace="${fields}"></th:block>
         </form>
     </div>
 </div>
