@@ -17,14 +17,14 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    command: 
+    command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --default-time-zone=+09:00
     networks:
       - sejong-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -36,7 +36,7 @@ services:
     container_name: sejong-app
     restart: always
     ports:
-      - "8080:8080"
+      - "80:8080"
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       DB_USERNAME: ${DB_USERNAME:-sj_admin}
@@ -54,7 +54,7 @@ services:
     networks:
       - sejong-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/swagger-ui.html"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/swagger-ui.html" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -69,4 +69,3 @@ volumes:
 networks:
   sejong-network:
     driver: bridge
-
