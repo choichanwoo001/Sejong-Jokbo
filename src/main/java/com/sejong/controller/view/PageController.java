@@ -25,6 +25,7 @@ public class PageController {
 
     /**
      * 홈 페이지를 반환합니다.
+     * 
      * @param model 뷰에 전달할 데이터 모델
      * @return 홈 페이지 뷰
      */
@@ -32,17 +33,17 @@ public class PageController {
     @GetMapping("/")
     public String home(Model model) {
         // 각 카테고리별 도서 목록을 가져옵니다
-        List<Book> westernBooks = bookService.getBooksByCategory("서양");
-        List<Book> eastWestBooks = bookService.getBooksByCategory("동서양");
-        List<Book> easternBooks = bookService.getBooksByCategory("동양");
-        List<Book> scienceBooks = bookService.getBooksByCategory("과학");
-        
+        List<Book> westernBooks = bookService.getBooksByCategory("west");
+        List<Book> eastWestBooks = bookService.getBooksByCategory("eastwest");
+        List<Book> easternBooks = bookService.getBooksByCategory("east");
+        List<Book> scienceBooks = bookService.getBooksByCategory("science");
+
         // 모델에 데이터를 추가합니다
         model.addAttribute("westernBooks", westernBooks);
         model.addAttribute("eastWestBooks", eastWestBooks);
         model.addAttribute("easternBooks", easternBooks);
         model.addAttribute("scienceBooks", scienceBooks);
-        
+
         return "home";
     }
 }
