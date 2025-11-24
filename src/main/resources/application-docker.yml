@@ -59,6 +59,7 @@ app:
   storage:
     type: local
 
+# 확인용
 logging:
   level:
     com.sejong: INFO
