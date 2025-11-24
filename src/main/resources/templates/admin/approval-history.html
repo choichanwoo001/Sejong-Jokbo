@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'족보 승인 이력 - 세종족보'},
+        currentPage=${'history'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <link rel="stylesheet" th:href="@{/css/admin-search.css}">
+    <style>
+        .approval-history {
+            padding: 20px 40px;
+        }
+
+        .approval-history .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .approval-history .history-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .approval-history .history-table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .approval-history .history-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .approval-history .status-badge,
+        .approval-history .action-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .approval-history .action-승인 {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .approval-history .action-반려 {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .approval-history .action-승인취소 {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .approval-history .action-재심사요청 {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .approval-history .status-대기 {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+        }
+
+        .approval-history .status-승인 {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .approval-history .status-반려 {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .approval-history .jokbo-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .approval-history .jokbo-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .approval-history .comment-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .approval-history .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .approval-history .no-data p {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .approval-history .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .approval-history .page-link {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .approval-history .page-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .approval-history .page-info {
+            font-weight: 600;
+            color: #495057;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .approval-history .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .approval-history .filter-row {
+            display: flex;
+            gap: 20px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .approval-history .filter-item {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        .approval-history .filter-item label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+
+        .approval-history .filter-item select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .approval-history .filter-item select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+    </style>
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="approval-history">
+        <h1 class="page-title">족보 승인 이력</h1>
+
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <th:block th:fragment="searchFields">
+                <div class="search-group">
+                    <label for="processDate">처리 일시</label>
+                    <input type="date" id="processDate" name="processDate" class="search-input">
+                </div>
+                <div class="search-group">
+                    <label for="bookTitle">책 제목</label>
+                    <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 제목을 입력하세요">
+                </div>
+                <div class="search-group">
+                    <label for="registrant">등록자</label>
+                    <input type="text" id="registrant" name="registrant" class="search-input" placeholder="등록자를 입력하세요">
+                </div>
+                <button type="submit" class="search-btn">검색</button>
+                <button type="button" class="reset-btn" id="resetSearchBtn">초기화</button>
+            </th:block>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-item">
+                    <label for="actionFilter">처리 액션:</label>
+                    <select id="actionFilter" class="filter-select">
+                        <option value="" th:selected="${selectedAction == null}">전체</option>
+                        <option value="승인" th:selected="${selectedAction == '승인'}">승인</option>
+                        <option value="반려" th:selected="${selectedAction == '반려'}">반려</option>
+                        <option value="승인취소" th:selected="${selectedAction == '승인취소'}">승인취소</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="previousStatusFilter">이전 상태:</label>
+                    <select id="previousStatusFilter" class="filter-select">
+                        <option value="" th:selected="${selectedPreviousStatus == null}">전체</option>
+                        <option value="대기" th:selected="${selectedPreviousStatus == '대기'}">대기</option>
+                        <option value="승인" th:selected="${selectedPreviousStatus == '승인'}">승인</option>
+                        <option value="반려" th:selected="${selectedPreviousStatus == '반려'}">반려</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="newStatusFilter">새 상태:</label>
+                    <select id="newStatusFilter" class="filter-select">
+                        <option value="" th:selected="${selectedNewStatus == null}">전체</option>
+                        <option value="대기" th:selected="${selectedNewStatus == '대기'}">대기</option>
+                        <option value="승인" th:selected="${selectedNewStatus == '승인'}">승인</option>
+                        <option value="반려" th:selected="${selectedNewStatus == '반려'}">반려</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(history)}" class="no-data">
+            <p>승인 이력이 없습니다.</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(history)}" id="historyTableContainer">
+            <table class="history-table" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>처리일시</th>
+                        <th>족보 ID</th>
+                        <th>책 제목</th>
+                        <th>등록자</th>
+                        <th>처리 액션</th>
+                        <th>이전 상태</th>
+                        <th>새 상태</th>
+                        <th>처리 관리자</th>
+                        <th>처리 사유</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="h : ${history}"
+                        th:data-process-date="${#temporals.format(h.createdAt, 'yyyy-MM-dd')}"
+                        th:data-book-title="${h.jokbo.book.title}"
+                        th:data-registrant="${h.jokbo.uploaderName}">
+                        <td th:text="${#temporals.format(h.createdAt, 'yyyy-MM-dd HH:mm:ss')}">처리일시</td>
+                        <td>
+                            <a th:href="@{'/admin/jokbo/' + ${h.jokbo.jokboId} + '/history'}"
+                               th:text="${h.jokbo.jokboId}"
+                               class="jokbo-link">족보 ID</a>
+                        </td>
+                        <td th:text="${h.jokbo.book.title}">책 제목</td>
+                        <td th:text="${h.jokbo.uploaderName}">등록자</td>
+                        <td>
+                            <span th:class="${'action-badge action-' + h.action.name().toLowerCase()}"
+                                  th:text="${h.action.name()}">액션</span>
+                        </td>
+                        <td>
+                            <span th:if="${h.previousStatus}"
+                                  th:class="${'status-badge status-' + h.previousStatus.name().toLowerCase()}"
+                                  th:text="${h.previousStatus.name()}">이전 상태</span>
+                        </td>
+                        <td>
+                            <span th:class="${'status-badge status-' + h.newStatus.name().toLowerCase()}"
+                                  th:text="${h.newStatus.name()}">새 상태</span>
+                        </td>
+                        <td th:text="${h.admin.adminName}">관리자</td>
+                        <td class="comment-cell" th:text="${h.comment}">처리 사유</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination" th:if="${totalPages > 1}">
+                <a th:if="${hasPrevious}"
+                   th:href="@{/admin/approval-history(page=${currentPage - 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}"
+                   class="page-link">이전</a>
+
+                <span class="page-info">
+                    <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+                </span>
+
+                <a th:if="${hasNext}"
+                   th:href="@{/admin/approval-history(page=${currentPage + 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}"
+                   class="page-link">다음</a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-approval-history.js}"></script>
+</th:block>
+</html>

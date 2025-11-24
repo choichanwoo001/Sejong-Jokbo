@@ -1,38 +1,39 @@
-# Stage 1: 빌드 환경
-# Java 21과 Gradle을 포함한 이미지를 기반으로 빌드 단계를 설정합니다.
-FROM gradle:8.5.0-jdk21-jammy AS builder
-
-# 작업 디렉토리를 /app으로 설정합니다.
+# Stage 1: Build Module
+FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
 
-# 먼저 의존성 관련 파일만 복사하여 캐시를 활용합니다.
-# Gradle Wrapper를 사용해 버전 일치를 보장합니다.
-COPY gradle ./gradle
-COPY gradlew build.gradle ./
+# 의존성 캐싱을 위해 설정 파일만 먼저 복사
+COPY build.gradle gradlew ./
+COPY gradle gradle
 RUN chmod +x gradlew
+# 의존성 다운로드 (소스 복사 전)
+RUN ./gradlew dependencies --no-daemon || return 0
 
-# 의존성 프리페치 (네트워크 이슈가 있어도 빌드가 계속되도록 허용)
-RUN ./gradlew dependencies --no-daemon || true
+# 소스 코드 복사 및 빌드
+COPY src src
+RUN ./gradlew build -x test --no-daemon
 
-# 전체 소스 복사 후 빌드 (테스트 제외)
-COPY src ./src
-RUN ./gradlew bootJar -x test --no-daemon
-
-# Stage 2: 실행 환경
-# 더 가볍고 안전한 JRE(Java Runtime Environment) 이미지를 기반으로 최종 이미지를 만듭니다.
+# Stage 2: Run Module
 FROM eclipse-temurin:21-jre-jammy
-
-# 작업 디렉토리를 /app으로 설정합니다.
 WORKDIR /app
 
-# 빌드 단계에서 생성된 단일 부트 JAR을 복사합니다. (프로젝트명 변경에도 안전)
-# 부트 JAR만 복사(plain JAR 제외). 버전이 SNAPSHOT이 아닐 경우 패턴을 조정하세요.
-COPY --from=builder /app/build/libs/*-SNAPSHOT.jar app.jar
+# curl 설치 (healthcheck용)
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# 애플리케이션이 사용할 포트를 8080으로 노출시킵니다.
+# 빌드 스테이지에서 생성된 JAR 파일 복사
+# 파일명이 버전에 따라 달라질 수 있으므로 와일드카드 사용 후 이름 변경 고려, 
+# 하지만 여기서는 하나만 생성된다고 가정하고 복사
+COPY --from=builder /app/build/libs/*SNAPSHOT.jar app.jar
+
+# 업로드 디렉토리 생성
+RUN mkdir -p /app/uploads/jokbo
+
+# 환경 변수 설정
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    JAVA_OPTS="-Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8"
+
 EXPOSE 8080
 
-# 컨테이너가 시작될 때 실행할 명령을 정의합니다.
-# java -jar app.jar 명령으로 애플리케이션을 실행합니다.
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
 

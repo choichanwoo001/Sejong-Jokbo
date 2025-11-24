@@ -1,147 +1,72 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의 관리 - 세종족보</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'문의 관리 - 세종족보'},
+        currentPage=${'inquiries'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f7fa;
+        .admin-inquiries {
+            padding: 20px 40px;
         }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 600;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .back-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .back-btn:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .inquiry-list {
+
+        .admin-inquiries .inquiry-list {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
-        .inquiry-item {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-        
-        .inquiry-item:hover {
-            transform: translateY(-2px);
-        }
-        
-        .inquiry-header {
+
+        .admin-inquiries .inquiry-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 15px;
         }
-        
-        .inquiry-info {
+
+        .admin-inquiries .inquiry-info {
             flex: 1;
         }
-        
-        .inquiry-name {
+
+        .admin-inquiries .inquiry-name {
             font-size: 18px;
             font-weight: 600;
             color: #333;
             margin: 0 0 5px 0;
         }
-        
-        .inquiry-email {
+
+        .admin-inquiries .inquiry-email {
             color: #666;
             font-size: 14px;
             margin-bottom: 10px;
         }
-        
-        .inquiry-date {
+
+        .admin-inquiries .inquiry-date {
             color: #999;
             font-size: 12px;
         }
-        
-        .inquiry-status {
+
+        .admin-inquiries .inquiry-status {
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
         }
-        
-        .status-answered {
+
+        .admin-inquiries .status-answered {
             background: #d4edda;
             color: #155724;
         }
-        
-        .status-unanswered {
+
+        .admin-inquiries .status-unanswered {
             background: #f8d7da;
             color: #721c24;
         }
-        
-        .inquiry-message {
+
+        .admin-inquiries .inquiry-message {
             margin: 15px 0;
             padding: 15px;
             background: #f8f9fa;
@@ -151,98 +76,121 @@
             line-height: 1.6;
             white-space: pre-wrap;
         }
-        
-        .inquiry-actions {
+
+        .admin-inquiries .inquiry-actions {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        
-        .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-        }
-        
-        .reply-btn {
-            background: #667eea;
-            color: white;
-        }
-        
-        .reply-btn:hover {
-            background: #5a6fd8;
-            color: white;
-        }
-        
-        .view-btn {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .view-btn:hover {
-            background: #5a6268;
-            color: white;
-        }
-        
-        .no-inquiries {
+
+        .admin-inquiries .no-inquiries {
             text-align: center;
             padding: 60px 20px;
             color: #666;
         }
-        
-        .no-inquiries h3 {
+
+        .admin-inquiries .no-inquiries h3 {
             margin: 0 0 10px 0;
             color: #333;
         }
+
+        .admin-inquiries .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .admin-inquiries .page-link {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-inquiries .page-link:hover {
+            background: #5a6fd8;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .admin-inquiries .page-info {
+            color: #666;
+            font-weight: 500;
+            padding: 0 10px;
+        }
     </style>
-</head>
-<body>
-    <div class="header">
-        <div class="header-content">
-            <h1>문의 관리</h1>
-            <div class="nav-links">
-                <a href="/admin/dashboard">대시보드</a>
-                <a href="/admin/books">책 관리</a>
-                <a href="/admin/jokbos/pending">승인 대기</a>
-                <a href="/admin/logout">로그아웃</a>
-            </div>
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-inquiries">
+        <h1 class="page-title">문의 관리</h1>
+
+        <div class="search-section">
+            <form class="search-form" id="searchForm">
+                <div class="search-group">
+                    <label for="studentName">학생 이름(등록자)</label>
+                    <input type="text" id="studentName" name="studentName" class="search-input" placeholder="학생 이름을 입력하세요">
+                </div>
+                <div class="search-group">
+                    <label for="creationDate">생성일</label>
+                    <input type="date" id="creationDate" name="creationDate" class="search-input">
+                </div>
+                <button type="submit" class="search-btn">검색</button>
+                <button type="button" class="reset-btn" id="resetInquirySearchBtn">초기화</button>
+            </form>
         </div>
-    </div>
-    
-    <div class="container">
-        <a href="/admin/dashboard" class="back-btn">대시보드로 돌아가기</a>
-        
-        <div class="inquiry-list" th:if="${inquiries.size() > 0}">
-            <div class="inquiry-item" th:each="inquiry : ${inquiries}">
+
+        <div class="inquiry-list" th:if="${inquiries.size() > 0}" id="inquiryList">
+            <div class="admin-card admin-card--hover inquiry-item" th:each="inquiry : ${inquiries}"
+                 th:data-student-name="${inquiry.name}"
+                 th:data-creation-date="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd')}">
                 <div class="inquiry-header">
                     <div class="inquiry-info">
                         <h3 class="inquiry-name" th:text="${inquiry.name}">사용자명</h3>
                         <p class="inquiry-email" th:text="${inquiry.email}">이메일</p>
                         <p class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">문의 날짜</p>
                     </div>
-                    <span class="inquiry-status" 
-                          th:class="${inquiry.comments.size() > 0 ? 'status-answered' : 'status-unanswered'}"
+                    <span class="inquiry-status"
+                          th:class="${inquiry.comments.size() > 0 ? 'inquiry-status status-answered' : 'inquiry-status status-unanswered'}"
                           th:text="${inquiry.comments.size() > 0 ? '답변완료' : '답변대기'}">상태</span>
                 </div>
-                
+
                 <div class="inquiry-message" th:text="${inquiry.message}">문의 내용</div>
-                
+
                 <div class="inquiry-actions">
-                    <a th:href="'/admin/inquiry/' + ${inquiry.inquiryId}" class="action-btn reply-btn">답변하기</a>
+                    <a th:href="'/admin/inquiry/' + ${inquiry.inquiryId}" class="admin-btn admin-btn--primary">답변하기</a>
                 </div>
             </div>
         </div>
-        
+
         <div class="no-inquiries" th:if="${inquiries.size() == 0}">
             <h3>등록된 문의가 없습니다</h3>
             <p>새로운 문의가 등록되면 여기에 표시됩니다.</p>
         </div>
-    </div>
-</body>
+
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${hasPrevious}"
+               th:href="@{/admin/inquiries(page=${currentPage - 1})}"
+               class="page-link">이전</a>
+
+            <span class="page-info">
+                <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            </span>
+
+            <a th:if="${hasNext}"
+               th:href="@{/admin/inquiries(page=${currentPage + 1})}"
+               class="page-link">다음</a>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-inquiries.js}"></script>
+</th:block>
 </html>

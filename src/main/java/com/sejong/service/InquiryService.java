@@ -22,10 +22,18 @@ public class InquiryService {
     private final AdminService adminService;
     
     /**
-     * 모든 문의를 페이징하여 조회합니다 (10개씩)
+     * 모든 문의를 페이징하여 조회합니다 (15개씩)
      */
     public Page<Inquiry> getAllInquiries(int page) {
-        Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
+        Pageable pageable = PageRequest.of(page, 15); // 15개씩 페이징
+        return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+    
+    /**
+     * 모든 문의를 페이징하여 조회합니다 (커스텀 페이지 크기)
+     */
+    public Page<Inquiry> getAllInquiries(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
     
@@ -89,12 +97,12 @@ public class InquiryService {
     /**
      * 문의에 답변을 추가합니다
      */
-    public Comment addComment(Integer inquiryId, Integer adminId, String content) {
+    public Comment addComment(Integer inquiryId, String content) {
         Inquiry inquiry = getInquiryById(inquiryId);
-        Admin admin = adminService.getAdminById(adminId);
+        Admin admin = adminService.getOrCreateDefaultAdmin();
         
-        if (inquiry == null || admin == null) {
-            throw new IllegalArgumentException("문의 또는 관리자를 찾을 수 없습니다.");
+        if (inquiry == null) {
+            throw new IllegalArgumentException("문의를 찾을 수 없습니다.");
         }
         
         Comment comment = new Comment();

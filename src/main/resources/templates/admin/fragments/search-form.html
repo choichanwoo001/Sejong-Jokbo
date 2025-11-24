@@ -1,0 +1,9 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="search-section(formId, fields)">
+    <div class="search-section">
+        <form class="search-form" th:attr="id=${formId}">
+            <th:block th:replace="${fields}"></th:block>
+        </form>
+    </div>
+</div>
+

@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                debugError('Error:', error);
                 alert('문의 등록 중 오류가 발생했습니다.');
             });
         });

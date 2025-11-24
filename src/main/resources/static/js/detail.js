@@ -8,56 +8,84 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFormHandlers();
     updateSubmitButtonState();
     checkTabParameter();
+    initializeTabHandlers();
+    initializeVerificationButtons();
+    initializeFileRemovalButtons();
 });
 
 // URL 파라미터 확인하여 탭 설정
 function checkTabParameter() {
-    // 서버에서 전달받은 activeTab 변수 사용
-    if (typeof activeTab !== 'undefined' && activeTab === 'list') {
-        // 족보 목록 탭 활성화
+    const tab = resolveActiveTab();
+    if (tab === 'list') {
         showJokboTabByName('list');
     }
     // 기본값은 등록 탭이므로 별도 처리 불필요
 }
 
+function resolveActiveTab() {
+    const container = document.querySelector('.book-detail');
+    if (container && container.dataset.activeTab) {
+        return container.dataset.activeTab;
+    }
+
+    if (typeof activeTab !== 'undefined') {
+        return activeTab;
+    }
+
+    return null;
+}
+
 // 족보 탭 전환 함수 (탭 이름으로 직접 호출)
 function showJokboTabByName(tabName) {
-    // 모든 탭과 콘텐츠 비활성화
+    showJokboTab(tabName);
+}
+
+// 족보 탭 전환 함수 (이벤트 핸들러용)
+function showJokboTab(tabName, triggerElement = null) {
+    if (!tabName) {
+        return;
+    }
+
     document.querySelectorAll('.jokbo-tab').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.jokbo-content').forEach(content => content.classList.remove('active'));
-    
-    // 선택된 탭과 콘텐츠 활성화
-    const targetTab = document.querySelector(`.jokbo-tab[onclick="showJokboTab('${tabName}')"]`);
-    if (targetTab) {
-        targetTab.classList.add('active');
+
+    if (triggerElement) {
+        triggerElement.classList.add('active');
+    } else {
+        const tabButton = document.querySelector(`.jokbo-tab[data-tab-target="${tabName}"]`);
+        if (tabButton) {
+            tabButton.classList.add('active');
+        }
     }
-    
+
     const targetContent = document.getElementById(tabName);
     if (targetContent) {
         targetContent.classList.add('active');
     }
 }
 
-// 족보 탭 전환 함수 (이벤트 핸들러용)
-function showJokboTab(tabName) {
-    // 모든 탭과 콘텐츠 비활성화
-    document.querySelectorAll('.jokbo-tab').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.jokbo-content').forEach(content => content.classList.remove('active'));
-    
-    // 선택된 탭과 콘텐츠 활성화
-    event.target.classList.add('active');
-    document.getElementById(tabName).classList.add('active');
-}
-
 // 등록 방식 탭 전환 함수
-function showRegisterTab(tabName) {
-    // 모든 등록 탭과 콘텐츠 비활성화
+function showRegisterTab(tabName, triggerElement = null) {
+    if (!tabName) {
+        return;
+    }
+
     document.querySelectorAll('.register-tab').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.register-content').forEach(content => content.classList.remove('active'));
-    
-    // 선택된 탭과 콘텐츠 활성화
-    event.target.classList.add('active');
-    document.getElementById(tabName + '-register').classList.add('active');
+
+    if (triggerElement) {
+        triggerElement.classList.add('active');
+    } else {
+        const tabButton = document.querySelector(`.register-tab[data-register-target="${tabName}"]`);
+        if (tabButton) {
+            tabButton.classList.add('active');
+        }
+    }
+
+    const content = document.getElementById(`${tabName}-register`);
+    if (content) {
+        content.classList.add('active');
+    }
 }
 
 // 인증번호 발송
@@ -100,7 +128,7 @@ function sendVerificationCode(button) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        debugError('Error:', error);
         alert('인증번호 발송 중 오류가 발생했습니다.');
         button.disabled = false;
         button.textContent = '인증번호 발송';
@@ -153,7 +181,7 @@ function verifyCode(button) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        debugError('Error:', error);
         alert('인증번호 확인 중 오류가 발생했습니다.');
         button.disabled = false;
         button.textContent = '인증확인';
@@ -218,6 +246,38 @@ function initializeFileUpload() {
     }
 }
 
+function initializeTabHandlers() {
+    document.querySelectorAll('.jokbo-tab[data-tab-target]').forEach((tabButton) => {
+        tabButton.addEventListener('click', () => {
+            const tabName = tabButton.getAttribute('data-tab-target');
+            showJokboTab(tabName, tabButton);
+        });
+    });
+
+    document.querySelectorAll('.register-tab[data-register-target]').forEach((tabButton) => {
+        tabButton.addEventListener('click', () => {
+            const tabName = tabButton.getAttribute('data-register-target');
+            showRegisterTab(tabName, tabButton);
+        });
+    });
+}
+
+function initializeVerificationButtons() {
+    document.querySelectorAll('.verify-button[data-action="send-verification"]').forEach((button) => {
+        button.addEventListener('click', () => sendVerificationCode(button));
+    });
+
+    document.querySelectorAll('.verify-button[data-action="verify-code"]').forEach((button) => {
+        button.addEventListener('click', () => verifyCode(button));
+    });
+}
+
+function initializeFileRemovalButtons() {
+    document.querySelectorAll('[data-action="remove-file"]').forEach((button) => {
+        button.addEventListener('click', () => removeFile());
+    });
+}
+
 // 파일 표시 업데이트
 function updateFileDisplay() {
     const fileInput = document.getElementById('fileInput');
@@ -252,15 +312,6 @@ function updateFileDisplay() {
         fileInfo.style.display = 'none';
         fileUpload.style.display = 'block';
     }
-}
-
-// 파일 크기 포맷팅
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 // 파일 삭제
@@ -391,7 +442,7 @@ function handleFileJokboSubmit(e) {
         }
     })
     .catch(error => {
-        console.error('Upload error:', error);
+        debugError('Upload error:', error);
         alert('파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
     })
     .finally(() => {

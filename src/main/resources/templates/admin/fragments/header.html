@@ -1,0 +1,36 @@
+<th:block th:fragment="admin-head">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
+    <link rel="stylesheet" th:href="@{/css/notifications.css}">
+</th:block>
+
+<header th:fragment="admin-header(currentPage)" class="admin-header">
+    <div class="header-content">
+        <h1>세종족보 관리자</h1>
+        <nav class="admin-nav">
+            <a href="/admin/dashboard"
+               th:class="${currentPage == 'dashboard'} ? 'nav-link active' : 'nav-link'">
+                📊 대시보드
+            </a>
+            <a href="/admin/books"
+               th:class="${currentPage == 'books'} ? 'nav-link active' : 'nav-link'">
+                📖 모든 책 관리
+            </a>
+            <a href="/admin/jokbos/pending"
+               th:class="${currentPage == 'pending'} ? 'nav-link active' : 'nav-link'">
+                ⏳ 승인 대기 족보
+            </a>
+            <a href="/admin/jokbos"
+               th:class="${currentPage == 'jokbos'} ? 'nav-link active' : 'nav-link'">
+                🗂️ 전체 족보
+            </a>
+            <a href="/admin/approval-history"
+               th:class="${currentPage == 'history'} ? 'nav-link active' : 'nav-link'">
+                📊 승인 이력
+            </a>
+            <a href="/admin/inquiries"
+               th:class="${currentPage == 'inquiries'} ? 'nav-link active' : 'nav-link'">
+                💬 문의 관리
+            </a>
+        </nav>
+    </div>
+</header>

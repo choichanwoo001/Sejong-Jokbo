@@ -1,43 +1,123 @@
-// 족보 승인
-function approveJokbo(jokboId) {
-    if (confirm('이 족보를 승인하시겠습니까?')) {
-        fetch(`/admin/jokbo/${jokboId}/approve`, {
-            method: 'POST'
-        })
-        .then(response => response.text())
-        .then(result => {
-            if (result === 'success') {
-                alert('족보가 승인되었습니다.');
-                location.reload();
-            } else {
-                alert('승인에 실패했습니다: ' + result);
-            }
-        })
-        .catch(error => {
-            alert('오류가 발생했습니다: ' + error);
-        });
+// 상태별 필터링
+function filterByStatus() {
+    const status = document.getElementById('statusFilter').value;
+    const currentUrl = new URL(window.location);
+    
+    if (status) {
+        currentUrl.searchParams.set('status', status);
+    } else {
+        currentUrl.searchParams.delete('status');
     }
+    currentUrl.searchParams.delete('page'); // 페이지는 초기화
+    
+    window.location.href = currentUrl.toString();
 }
 
-// 족보 반려
-function rejectJokbo(jokboId) {
-    if (confirm('이 족보를 반려하시겠습니까?')) {
-        fetch(`/admin/jokbo/${jokboId}/reject`, {
-            method: 'POST'
-        })
-        .then(response => response.text())
-        .then(result => {
-            if (result === 'success') {
-                alert('족보가 반려되었습니다.');
-                location.reload();
-            } else {
-                alert('반려에 실패했습니다: ' + result);
-            }
-        })
-        .catch(error => {
-            alert('오류가 발생했습니다: ' + error);
-        });
+// 승인/반려/취소 모달 표시
+function showApprovalModal(jokboId, actionType) {
+    const modal = document.getElementById('approvalModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const confirmButton = document.getElementById('confirmButton');
+    const jokboIdInput = document.getElementById('jokboId');
+    const actionTypeInput = document.getElementById('actionType');
+    const commentInput = document.getElementById('comment');
+    
+    jokboIdInput.value = jokboId;
+    actionTypeInput.value = actionType;
+    commentInput.value = '';
+    
+    if (actionType === 'approve') {
+        modalTitle.textContent = '족보 승인';
+        confirmButton.textContent = '승인';
+        confirmButton.className = 'btn-approve';
+    } else if (actionType === 'reject') {
+        modalTitle.textContent = '족보 반려';
+        confirmButton.textContent = '반려';
+        confirmButton.className = 'btn-reject';
+    } else if (actionType === 'cancel') {
+        modalTitle.textContent = '승인 취소';
+        confirmButton.textContent = '승인취소';
+        confirmButton.className = 'btn-cancel';
     }
+    
+    modal.style.display = 'block';
+}
+
+// 승인/반려 모달 닫기
+function closeApprovalModal() {
+    const modal = document.getElementById('approvalModal');
+    modal.style.display = 'none';
+}
+
+
+
+// 족보 승인 (새로운 방식)
+function approveJokbo(jokboId, comment = '') {
+    const formData = new FormData();
+    if (comment) formData.append('comment', comment);
+    
+    fetch(`/admin/jokbo/${jokboId}/approve`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === 'success') {
+            alert('족보가 승인되었습니다.');
+            location.reload();
+        } else {
+            alert('승인에 실패했습니다: ' + result);
+        }
+    })
+    .catch(error => {
+        alert('오류가 발생했습니다: ' + error);
+    });
+}
+
+// 족보 반려 (새로운 방식)
+function rejectJokbo(jokboId, comment = '') {
+    const formData = new FormData();
+    if (comment) formData.append('comment', comment);
+    
+    fetch(`/admin/jokbo/${jokboId}/reject`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === 'success') {
+            alert('족보가 반려되었습니다.');
+            location.reload();
+        } else {
+            alert('반려에 실패했습니다: ' + result);
+        }
+    })
+    .catch(error => {
+        alert('오류가 발생했습니다: ' + error);
+    });
+}
+
+// 승인 취소
+function cancelApproval(jokboId, comment = '') {
+    const formData = new FormData();
+    if (comment) formData.append('comment', comment);
+    
+    fetch(`/admin/jokbo/${jokboId}/cancel-approval`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === 'success') {
+            alert('족보 승인이 취소되었습니다.');
+            location.reload();
+        } else {
+            alert('승인 취소에 실패했습니다: ' + result);
+        }
+    })
+    .catch(error => {
+        alert('오류가 발생했습니다: ' + error);
+    });
 }
 
 // 텍스트 족보 내용 보기
@@ -61,20 +141,96 @@ function closeTextModal() {
 
 // 페이지 로드 시 모달 이벤트 리스너 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('textModal');
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterByStatus);
+    }
+
+    document.querySelectorAll('.approval-trigger').forEach((button) => {
+        button.addEventListener('click', () => {
+            const jokboId = button.getAttribute('data-jokbo-id');
+            const action = button.getAttribute('data-approval-action');
+
+            if (!jokboId || !action) {
+                return;
+            }
+
+            showApprovalModal(jokboId, action);
+        });
+    });
+
+    document.querySelectorAll('[data-close-approval-modal]').forEach((element) => {
+        element.addEventListener('click', closeApprovalModal);
+    });
+
+    const textModal = document.getElementById('textModal');
+    const approvalModal = document.getElementById('approvalModal');
+    const approvalForm = document.getElementById('approvalForm');
     
-    if (modal) {
-        // 모달 외부 클릭 시 닫기
-        modal.addEventListener('click', function(e) {
+    // 텍스트 모달 이벤트
+    if (textModal) {
+        textModal.addEventListener('click', function(e) {
             if (e.target === this) {
                 closeTextModal();
             }
         });
-        
-        // ESC 키로 모달 닫기
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
+    }
+    
+    // 승인 모달 이벤트
+    if (approvalModal) {
+        approvalModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeApprovalModal();
+            }
+        });
+    }
+    
+    // 승인 폼 제출 처리
+    if (approvalForm) {
+        approvalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jokboId = document.getElementById('jokboId').value;
+            const actionType = document.getElementById('actionType').value;
+            const comment = document.getElementById('comment').value;
+            
+            closeApprovalModal();
+            
+            if (actionType === 'approve') {
+                approveJokbo(jokboId, comment);
+            } else if (actionType === 'reject') {
+                rejectJokbo(jokboId, comment);
+            } else if (actionType === 'cancel') {
+                cancelApproval(jokboId, comment);
+            }
+        });
+    }
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (textModal && textModal.style.display === 'block') {
                 closeTextModal();
+            }
+            if (approvalModal && approvalModal.style.display === 'block') {
+                closeApprovalModal();
+            }
+        }
+    });
+
+    if (window.AdminSearch) {
+        window.AdminSearch.init({
+            formId: 'searchForm',
+            itemSelector: '#jokboTable tbody tr',
+            fieldConfigs: [
+                { name: 'bookTitle', datasetKey: 'bookTitle', matchType: 'includes' },
+                { name: 'registrant', datasetKey: 'registrant', matchType: 'includes' },
+                { name: 'registrationDate', datasetKey: 'registrationDate', matchType: 'equals' }
+            ],
+            visibleDisplayStyle: 'table-row',
+            noResult: {
+                targetSelector: '#jokboTableContainer',
+                text: '검색 결과가 없습니다.'
             }
         });
     }

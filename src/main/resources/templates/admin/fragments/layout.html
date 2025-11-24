@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(pageTitle, currentPage, content, extraHead, extraScripts)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">세종족보 관리자</title>
+    <th:block th:replace="~{admin/fragments/header :: admin-head}"></th:block>
+    <th:block th:if="${extraHead != null}" th:replace="${extraHead}"></th:block>
+</head>
+<body>
+    <div th:replace="~{admin/fragments/header :: admin-header(${currentPage})}"></div>
+
+    <div class="admin-layout">
+        <main class="main-content" role="main">
+            <th:block th:replace="${content}"></th:block>
+        </main>
+    </div>
+
+    <script th:src="@{/js/utils.js}"></script>
+    <script th:src="@{/js/sse.js}"></script>
+    <script th:src="@{/js/admin-sse.js}"></script>
+    <th:block th:if="${extraScripts != null}" th:replace="${extraScripts}"></th:block>
+</body>
+</html>
+
