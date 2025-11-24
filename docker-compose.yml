@@ -31,9 +31,8 @@ services:
 
   # Spring Boot 애플리케이션
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # GitHub Container Registry에서 이미지 pull
+    image: ghcr.io/choichanwoo001/sejong-jokbo:latest
     container_name: sejong-app
     restart: always
     ports:
