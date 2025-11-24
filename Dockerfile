@@ -3,7 +3,7 @@ FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
 
 # 의존성 캐싱을 위해 설정 파일만 먼저 복사
-COPY build.gradle settings.gradle gradlew ./
+COPY build.gradle gradlew ./
 COPY gradle gradle
 RUN chmod +x gradlew
 # 의존성 다운로드 (소스 복사 전)
