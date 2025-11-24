@@ -1,3 +1,20 @@
+SET NAMES 'utf8mb4';
+
+ALTER DATABASE sejong_jokbo CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS book;
+
+CREATE TABLE book (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(100),
+    publisher VARCHAR(100),
+    category VARCHAR(50),
+    image_url VARCHAR(500),
+    jokbo_count INT NOT NULL DEFAULT 0,
+    created_at DATETIME(6)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 INSERT INTO book (title, author, publisher, category, image_url, jokbo_count, created_at) VALUES
 -- 첫 번째 목록: 동양 도서 (Category: east)
 ('성학십도', '이황', '홍익출판사(2001)', 'east', '/img/east/imgi_3_img-338607574.jpg', 0, NOW()),
