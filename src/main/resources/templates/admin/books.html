@@ -1,109 +1,28 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>책 관리 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <div th:replace="admin/fragments/header :: admin-header-css"></div>
-    
-    <!-- 홈페이지 스타일 재사용 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'책 관리 - 세종족보'},
+        currentPage=${'books'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    
+    <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     <style>
-        /* 관리자 페이지 전용 오버라이드 */
-        .main-content {
+        .admin-books {
             padding: 20px 40px;
         }
-        
-        /* 검색 영역 스타일 */
-        .search-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .search-form {
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-        
-        .search-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .search-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .search-input {
-            padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .reset-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .reset-btn:hover {
-            background: #4b5563;
-        }
-        
-        .admin-actions {
+
+        .admin-books .admin-actions {
             display: flex;
             gap: 10px;
             margin-top: 10px;
         }
-        
-        .admin-btn {
+
+        .admin-books .admin-btn {
             flex: 1;
             padding: 8px 12px;
             border: none;
@@ -115,363 +34,186 @@
             text-decoration: none;
             text-align: center;
         }
-        
-        .view-btn {
-            background: #667eea;
-            color: white;
-        }
-        
-        .view-btn:hover {
-            background: #5a6fd8;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .manage-btn {
+
+        .admin-books .manage-btn {
             background: #dc2626;
             color: white;
         }
-        
-        .manage-btn:hover {
+
+        .admin-books .manage-btn:hover {
             background: #b91c1c;
             color: white;
             text-decoration: none;
         }
-        
-        /* 관리자 페이지 카테고리 섹션 스타일 조정 */
-        .category-section {
+
+        .admin-books .category-section {
             margin-bottom: 40px;
         }
-        
-        .category-header {
-            justify-content: center !important; /* 중앙 정렬 */
+
+        .admin-books .category-header {
+            justify-content: center !important;
         }
-        
-        .left-controls, .right-controls {
-            display: none; /* 좌우 공간 제거하여 완전히 중앙 정렬 */
+
+        .admin-books .left-controls,
+        .admin-books .right-controls {
+            display: none;
         }
-        
-        .site-title h1 {
-            font-size: 2rem;
-        }
-        
-        .page-title {
+
+        .admin-books .page-title {
             text-align: center;
             margin-bottom: 30px;
             padding: 20px 0;
         }
-        
-        .page-title h1 {
+
+        .admin-books .page-title h1 {
             color: #000000;
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -1px;
         }
-        
-        /* 검색 결과 없음 메시지 */
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-            font-size: 16px;
-        }
     </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="admin/fragments/header :: admin-header('books')"></div>
-    
-    <div class="container">
-        <main class="main-content">
-            <div class="page-title">
-                <h1>모든 책 관리</h1>
-            </div>
-            
-            <!-- 검색 영역 -->
-            <div class="search-section">
-                <form class="search-form" id="searchForm">
-                    <div class="search-group">
-                        <label for="bookTitle">책 이름</label>
-                        <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 이름을 입력하세요">
-                    </div>
-                    <div class="search-group">
-                        <label for="author">저자</label>
-                        <input type="text" id="author" name="author" class="search-input" placeholder="저자를 입력하세요">
-                    </div>
-                    <div class="search-group">
-                        <label for="category">카테고리</label>
-                        <select id="category" name="category" class="search-input">
-                            <option value="">전체</option>
-                            <option value="서양">서양</option>
-                            <option value="동서양">동서양</option>
-                            <option value="동양">동양</option>
-                            <option value="과학사">과학사</option>
-                        </select>
-                    </div>
-                                    <button type="submit" class="search-btn">검색</button>
-                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
-                </form>
-            </div>
-            
-            <!-- 카테고리 섹션 -->
-            <div class="category-section">
-                <div class="category-header">
-                    <div class="left-controls">
-                        <!-- 빈 공간 (문의 게시판 버튼 자리) -->
-                    </div>
-                    <div class="category-tabs subtle-shadow">
-                        <button class="category-tab active" data-category="서양">서양</button>
-                        <button class="category-tab" data-category="동서양">동서양</button>
-                        <button class="category-tab" data-category="동양">동양</button>
-                        <button class="category-tab" data-category="과학사">과학사</button>
-                    </div>
-                    <div class="right-controls">
-                        <!-- 빈 공간 (정렬 필터 자리) -->
-                    </div>
-                </div>
-            </div>
+</th:block>
 
-            <!-- 서양 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-western" style="display: block;">
-                <div class="books-grid" id="western-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '서양'}" 
-                         th:data-title="${book.title}" th:data-author="${book.author}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<th:block th:fragment="content">
+    <div class="admin-books container">
+        <div class="page-title">
+            <h1>모든 책 관리</h1>
+        </div>
 
-            <!-- 동서양 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
-                <div class="books-grid" id="eastwest-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동서양'}"
-                         th:data-title="${book.title}" th:data-author="${book.author}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
-                        </div>
-                    </div>
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <th:block th:fragment="searchFields">
+                <div class="search-group">
+                    <label for="bookTitle">책 이름</label>
+                    <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 이름을 입력하세요">
                 </div>
-            </div>
+                <div class="search-group">
+                    <label for="author">저자</label>
+                    <input type="text" id="author" name="author" class="search-input" placeholder="저자를 입력하세요">
+                </div>
+                <div class="search-group">
+                    <label for="category">카테고리</label>
+                    <select id="category" name="category" class="search-input">
+                        <option value="">전체</option>
+                        <option value="서양">서양</option>
+                        <option value="동서양">동서양</option>
+                        <option value="동양">동양</option>
+                        <option value="과학">과학</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-btn">검색</button>
+                <button type="button" class="reset-btn" data-search-reset>초기화</button>
+            </th:block>
+        </div>
 
-            <!-- 동양 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
-                <div class="books-grid" id="eastern-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동양'}"
-                         th:data-title="${book.title}" th:data-author="${book.author}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="category-section">
+            <div class="category-header">
+                <div class="left-controls"></div>
+                <div class="category-tabs subtle-shadow">
+                    <button class="category-tab active" data-category="서양">서양</button>
+                    <button class="category-tab" data-category="동서양">동서양</button>
+                    <button class="category-tab" data-category="동양">동양</button>
+                    <button class="category-tab" data-category="과학">과학</button>
                 </div>
+                <div class="right-controls"></div>
             </div>
+        </div>
 
-            <!-- 과학사 카테고리 -->
-            <div class="book-display subtle-shadow" id="category-science" style="display: none;">
-                <div class="books-grid" id="science-books">
-                    <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"
-                         th:data-title="${book.title}" th:data-author="${book.author}">
-                        <div class="book-cover">
-                            <a th:href="'/admin/book/' + ${book.bookId}">
-                                <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
-                            </a>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
-                            <p class="book-author" th:text="${book.author}">저자</p>
-                            <p class="book-publisher" th:text="${book.publisher}">출판사</p>
-                            <div class="admin-actions">
-                                <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
-                            </div>
+        <div class="book-display subtle-shadow" id="category-western" style="display: block;">
+            <div class="books-grid" id="western-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '서양'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
+            <div class="books-grid" id="eastwest-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동서양'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
+            <div class="books-grid" id="eastern-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동양'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-display subtle-shadow" id="category-science" style="display: none;">
+            <div class="books-grid" id="science-books">
+                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"
+                     th:data-title="${book.title}" th:data-author="${book.author}"
+                     th:data-category="${book.category}">
+                    <div class="book-cover">
+                        <a th:href="'/admin/book/' + ${book.bookId}">
+                            <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
+                        </a>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
+                        <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                        <p class="book-author" th:text="${book.author}">저자</p>
+                        <p class="book-publisher" th:text="${book.publisher}">출판사</p>
+                        <div class="admin-actions">
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</th:block>
 
-    <script>
-        // 카테고리 탭 기능
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryTabs = document.querySelectorAll('.category-tab');
-            const bookDisplays = document.querySelectorAll('.book-display');
-            
-            categoryTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
-                    
-                    // 모든 탭 비활성화
-                    categoryTabs.forEach(t => t.classList.remove('active'));
-                    bookDisplays.forEach(display => display.style.display = 'none');
-                    
-                    // 선택된 탭 활성화
-                    this.classList.add('active');
-                    
-                    // 해당 카테고리 표시
-                    let targetDisplay;
-                    switch(category) {
-                        case '서양':
-                            targetDisplay = document.getElementById('category-western');
-                            break;
-                        case '동서양':
-                            targetDisplay = document.getElementById('category-east-west');
-                            break;
-                        case '동양':
-                            targetDisplay = document.getElementById('category-eastern');
-                            break;
-                        case '과학사':
-                            targetDisplay = document.getElementById('category-science');
-                            break;
-                    }
-                    
-                    if (targetDisplay) {
-                        targetDisplay.style.display = 'block';
-                    }
-                });
-            });
-        });
-        
-        // 검색 기능
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-        
-        function performSearch() {
-            const bookTitle = document.getElementById('bookTitle').value.toLowerCase();
-            const author = document.getElementById('author').value.toLowerCase();
-            const category = document.getElementById('category').value;
-            
-            const bookItems = document.querySelectorAll('.book-item');
-            
-            bookItems.forEach(item => {
-                const title = item.getAttribute('data-title').toLowerCase();
-                const itemAuthor = item.getAttribute('data-author').toLowerCase();
-                const itemCategory = item.closest('.book-display').id.replace('category-', '');
-                
-                let titleMatch = true;
-                let authorMatch = true;
-                let categoryMatch = true;
-                
-                if (bookTitle && !title.includes(bookTitle)) {
-                    titleMatch = false;
-                }
-                
-                if (author && !itemAuthor.includes(author)) {
-                    authorMatch = false;
-                }
-                
-                if (category) {
-                    let categoryName = '';
-                    switch(category) {
-                        case '서양':
-                            categoryName = 'western';
-                            break;
-                        case '동서양':
-                            categoryName = 'east-west';
-                            break;
-                        case '동양':
-                            categoryName = 'eastern';
-                            break;
-                        case '과학사':
-                            categoryName = 'science';
-                            break;
-                    }
-                    if (itemCategory !== categoryName) {
-                        categoryMatch = false;
-                    }
-                }
-                
-                if (titleMatch && authorMatch && categoryMatch) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // 검색 결과가 없는 카테고리 표시
-            checkEmptyCategories();
-        }
-        
-        function checkEmptyCategories() {
-            const categories = ['western', 'east-west', 'eastern', 'science'];
-            
-            categories.forEach(category => {
-                const display = document.getElementById(`category-${category}`);
-                const visibleBooks = display.querySelectorAll('.book-item[style="display: block"], .book-item:not([style*="display: none"])');
-                
-                if (visibleBooks.length === 0) {
-                    // 기존 no-results 메시지 제거
-                    const existingMessage = display.querySelector('.no-results');
-                    if (existingMessage) {
-                        existingMessage.remove();
-                    }
-                    
-                    // 새로운 no-results 메시지 추가
-                    const noResults = document.createElement('div');
-                    noResults.className = 'no-results';
-                    noResults.textContent = '검색 결과가 없습니다.';
-                    display.querySelector('.books-grid').appendChild(noResults);
-                } else {
-                    // no-results 메시지 제거
-                    const existingMessage = display.querySelector('.no-results');
-                    if (existingMessage) {
-                        existingMessage.remove();
-                    }
-                }
-            });
-        }
-        
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            
-            // 모든 책 아이템 표시
-            const bookItems = document.querySelectorAll('.book-item');
-            bookItems.forEach(item => {
-                item.style.display = 'block';
-            });
-            
-            // no-results 메시지 제거
-            const noResultsMessages = document.querySelectorAll('.no-results');
-            noResultsMessages.forEach(message => {
-                message.remove();
-            });
-        }
-    </script>
-</body>
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-search.js}"></script>
+    <script th:src="@{/js/admin-books.js}"></script>
+</th:block>
 </html>

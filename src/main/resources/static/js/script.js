@@ -42,22 +42,7 @@ document.querySelectorAll('.category-tab').forEach(tab => {
 
         // 클릭된 탭에 해당하는 카테고리 표시
         const tabText = this.textContent.trim();
-        let targetCategory;
-
-        switch(tabText) {
-            case '서양':
-                targetCategory = 'category-western';
-                break;
-            case '동서양':
-                targetCategory = 'category-east-west';
-                break;
-            case '동양':
-                targetCategory = 'category-eastern';
-                break;
-            case '과학사':
-                targetCategory = 'category-science';
-                break;
-        }
+        const targetCategory = getCategoryId(tabText);
 
         if (targetCategory) {
             document.getElementById(targetCategory).style.display = 'block';
@@ -65,7 +50,7 @@ document.querySelectorAll('.category-tab').forEach(tab => {
             // 현재 필터 적용
             const sortFilter = document.getElementById('sortFilter');
             const currentFilter = sortFilter ? sortFilter.value : 'name';
-            console.log('카테고리 변경, 필터 적용:', currentFilter);
+            debugLog('카테고리 변경, 필터 적용:', currentFilter);
             sortBooks(currentFilter);
         }
     });
@@ -77,6 +62,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (searchResults) {
         searchInput.focus();
     }
+
+    document.querySelectorAll('.book-item[data-book-url]').forEach((item) => {
+        item.addEventListener('click', () => {
+            const url = item.getAttribute('data-book-url');
+            if (url) {
+                window.location.href = url;
+            }
+        });
+
+        item.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const url = item.getAttribute('data-book-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            }
+        });
+    });
 });
 
 // 카테고리 탭 클릭 효과
@@ -95,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sortFilter) {
         sortFilter.addEventListener('change', function() {
             const selectedValue = this.value;
-            console.log('필터 변경:', selectedValue);
+            debugLog('필터 변경:', selectedValue);
             sortBooks(selectedValue);
         });
     }
@@ -107,22 +111,7 @@ function sortBooks(sortType) {
     if (!currentCategory) return;
 
     const tabText = currentCategory.textContent.trim();
-    let targetCategory;
-    
-    switch(tabText) {
-        case '서양':
-            targetCategory = 'category-western';
-            break;
-        case '동서양':
-            targetCategory = 'category-east-west';
-            break;
-        case '동양':
-            targetCategory = 'category-eastern';
-            break;
-        case '과학사':
-            targetCategory = 'category-science';
-            break;
-    }
+    const targetCategory = getCategoryId(tabText);
 
     if (targetCategory) {
         const bookGrid = document.querySelector(`#${targetCategory} .books-grid`);
@@ -151,7 +140,7 @@ function sortBooks(sortType) {
         books.forEach(book => bookGrid.appendChild(book));
         
         // 정렬 완료 알림 (개발용)
-        console.log(`${sortType} 기준으로 정렬 완료`);
+        debugLog(`${sortType} 기준으로 정렬 완료`);
     }
 }
 
@@ -165,17 +154,6 @@ const FILE_SIZE_LIMITS = {
     GENERAL_UPLOAD: 10 * 1024 * 1024, // 10MB
     EMAIL_ATTACHMENT: 1 * 1024 * 1024  // 1MB
 };
-
-/**
- * 파일 크기를 사람이 읽기 쉬운 형태로 변환
- */
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
 
 /**
  * 파일 크기 검증

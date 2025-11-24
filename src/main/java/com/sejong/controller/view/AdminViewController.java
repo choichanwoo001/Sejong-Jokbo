@@ -15,10 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -33,33 +31,10 @@ public class AdminViewController {
     private final InquiryService inquiryService;
     
     /**
-     * 관리자 로그인 페이지
-     */
-    @Operation(summary = "관리자 로그인 페이지", description = "관리자 로그인 페이지를 반환합니다")
-    @GetMapping("/login")
-    public String loginPage() {
-        return "admin/login";
-    }
-    
-    /**
-     * 관리자 로그아웃
-     */
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/admin/login";
-    }
-    
-    /**
      * 관리자 대시보드
      */
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
+    public String dashboard(Model model) {
         // 승인 대기 중인 족보 수
         long pendingJokbos = jokboService.getPendingJokbosCount();
         
@@ -76,12 +51,7 @@ public class AdminViewController {
      * 모든 책 목록 (관리자용)
      */
     @GetMapping("/books")
-    public String adminBooks(HttpSession session, Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
+    public String adminBooks(Model model) {
         List<Book> books = bookService.getAllBooks();
         model.addAttribute("books", books);
         
@@ -92,12 +62,7 @@ public class AdminViewController {
      * 승인 대기 중인 족보 목록 (페이징 없음)
      */
     @GetMapping("/jokbos/pending")
-    public String pendingJokbos(HttpSession session, Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
+    public String pendingJokbos(Model model) {
         List<Jokbo> pendingJokbos = jokboService.getPendingJokbos();
         model.addAttribute("jokbos", pendingJokbos);
         
@@ -109,13 +74,7 @@ public class AdminViewController {
      */
     @GetMapping("/jokbos/pending/page/{page}")
     public String pendingJokbosWithPaging(@PathVariable int page, 
-                                         HttpSession session, 
                                          Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Page<Jokbo> jokboPage = jokboService.getPendingJokbos(page);
         
         model.addAttribute("jokbos", jokboPage.getContent());
@@ -133,13 +92,7 @@ public class AdminViewController {
     @GetMapping("/inquiries")
     public String inquiries(@RequestParam(defaultValue = "0") int page,
                            @RequestParam(defaultValue = "15") int size,
-                           HttpSession session, 
                            Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Page<Inquiry> inquiryPage = inquiryService.getAllInquiries(page, size);
         
         model.addAttribute("inquiries", inquiryPage.getContent());
@@ -159,19 +112,12 @@ public class AdminViewController {
      */
     @GetMapping("/inquiry/{inquiryId}")
     public String inquiryDetail(@PathVariable Integer inquiryId, 
-                               HttpSession session, 
                                Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
         List<Comment> comments = inquiryService.getCommentsByInquiryId(inquiryId);
         
         model.addAttribute("inquiry", inquiry);
         model.addAttribute("comments", comments);
-        model.addAttribute("adminId", adminId);
         
         return "admin/inquiry-detail";
     }
@@ -186,13 +132,7 @@ public class AdminViewController {
                               @RequestParam(required = false) String action,
                               @RequestParam(required = false) String previousStatus,
                               @RequestParam(required = false) String newStatus,
-                              HttpSession session,
                               Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Page<JokboApprovalHistory> historyPage = adminService.getJokboApprovalHistoryWithFilters(
             jokboId, page, size, action, previousStatus, newStatus);
         Jokbo jokbo = jokboService.getJokboById(jokboId);
@@ -219,13 +159,7 @@ public class AdminViewController {
                                  @RequestParam(required = false) String action,
                                  @RequestParam(required = false) String previousStatus,
                                  @RequestParam(required = false) String newStatus,
-                                 HttpSession session,
                                  Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Page<JokboApprovalHistory> historyPage = adminService.getAllApprovalHistoryWithFilters(
             page, size, action, previousStatus, newStatus);
         
@@ -246,13 +180,7 @@ public class AdminViewController {
      */
     @GetMapping("/book/{bookId}")
     public String adminBookDetail(@PathVariable Integer bookId, 
-                                 HttpSession session, 
                                  Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Book book = bookService.getBookById(bookId);
         List<Jokbo> jokbos = jokboService.getApprovedJokbosByBookId(bookId);
         
@@ -268,13 +196,7 @@ public class AdminViewController {
     @GetMapping("/book/{bookId}/page/{page}")
     public String adminBookDetailWithPaging(@PathVariable Integer bookId, 
                                            @PathVariable int page,
-                                           HttpSession session, 
                                            Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Book book = bookService.getBookById(bookId);
         Page<Jokbo> jokboPage = jokboService.getApprovedJokbosByBookId(bookId, page);
         
@@ -296,13 +218,7 @@ public class AdminViewController {
                             @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "20") int size,
                             @RequestParam(required = false) String status,
-                            HttpSession session,
                             Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Book book = bookService.getBookById(bookId);
         Page<Jokbo> jokboPage;
         
@@ -331,13 +247,7 @@ public class AdminViewController {
     public String allJokbos(@RequestParam(defaultValue = "0") int page,
                            @RequestParam(defaultValue = "20") int size,
                            @RequestParam(required = false) String status,
-                           HttpSession session,
                            Model model) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "redirect:/admin/login";
-        }
-        
         Page<Jokbo> jokboPage;
         if (status != null && !status.isEmpty()) {
             Jokbo.JokboStatus jokboStatus = Jokbo.JokboStatus.valueOf(status);

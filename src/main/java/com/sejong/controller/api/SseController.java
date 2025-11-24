@@ -1,5 +1,6 @@
 package com.sejong.controller.api;
 
+import com.sejong.service.AdminService;
 import com.sejong.service.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -12,9 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/api/sse")
 @RequiredArgsConstructor
@@ -22,6 +20,7 @@ import java.io.IOException;
 public class SseController {
     
     private final SseService sseService;
+    private final AdminService adminService;
     
     /**
      * 사용자용 SSE 연결 (족보 승인 알림)
@@ -40,25 +39,11 @@ public class SseController {
      */
     @Operation(summary = "관리자 SSE 연결", description = "새로운 족보 요청 알림을 받기 위한 SSE 연결을 생성합니다")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "SSE 연결 성공"),
-        @ApiResponse(responseCode = "401", description = "관리자 로그인 필요")
+        @ApiResponse(responseCode = "200", description = "SSE 연결 성공")
     })
     @GetMapping(value = "/admin/notifications", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribeToAdminNotifications(HttpSession session) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            // SSE 연결을 생성하되 즉시 오류 이벤트를 보내고 연결을 종료
-            SseEmitter emitter = new SseEmitter(1000L); // 1초 후 타임아웃
-            try {
-                emitter.send(SseEmitter.event()
-                    .name("error")
-                    .data("관리자 로그인이 필요합니다."));
-                emitter.complete();
-            } catch (IOException e) {
-                emitter.completeWithError(e);
-            }
-            return emitter;
-        }
+    public SseEmitter subscribeToAdminNotifications() {
+        Integer adminId = adminService.getOrCreateDefaultAdmin().getAdminId();
         return sseService.createAdminEmitter(adminId);
     }
     
@@ -70,12 +55,8 @@ public class SseController {
         @ApiResponse(responseCode = "200", description = "동기화 성공")
     })
     @PostMapping("/admin/sync")
-    public String syncAdminNotifications(HttpSession session) {
-        Integer adminId = (Integer) session.getAttribute("adminId");
-        if (adminId == null) {
-            return "error: 관리자 로그인이 필요합니다.";
-        }
-        
+    public String syncAdminNotifications() {
+        Integer adminId = adminService.getOrCreateDefaultAdmin().getAdminId();
         try {
             sseService.sendAdminSyncNotification(adminId);
             return "success";
@@ -92,14 +73,11 @@ public class SseController {
         @ApiResponse(responseCode = "200", description = "연결 해제 성공")
     })
     @DeleteMapping("/disconnect")
-    public String disconnect(@Parameter(description = "연결 타입 (user/admin)") @RequestParam String type,
-                           HttpSession session) {
+    public String disconnect(@Parameter(description = "연결 타입 (user/admin)") @RequestParam String type) {
         try {
             if ("admin".equals(type)) {
-                Integer adminId = (Integer) session.getAttribute("adminId");
-                if (adminId != null) {
-                    sseService.removeAdminEmitter(adminId);
-                }
+                Integer adminId = adminService.getOrCreateDefaultAdmin().getAdminId();
+                sseService.removeAdminEmitter(adminId);
             } else {
                 sseService.removeUserEmitter();
             }

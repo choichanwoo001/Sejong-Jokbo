@@ -1,72 +1,108 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>족보 이력 - 세종족보</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'족보 이력 - 세종족보'},
+        currentPage=${'jokbos'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
     <style>
-        /* 필터 섹션 스타일 */
-        .filter-section {
+        .admin-jokbo-history {
+            padding: 20px 40px;
+        }
+
+        .admin-jokbo-history .filter-section {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
         }
-        
-        .filter-row {
+
+        .admin-jokbo-history .filter-row {
             display: flex;
             gap: 20px;
             align-items: end;
             flex-wrap: wrap;
         }
-        
-        .filter-item {
+
+        .admin-jokbo-history .filter-item {
             display: flex;
             flex-direction: column;
             min-width: 150px;
         }
-        
-        .filter-item label {
+
+        .admin-jokbo-history .filter-item label {
             font-weight: 600;
             margin-bottom: 5px;
             color: #495057;
         }
-        
-        .filter-item select {
+
+        .admin-jokbo-history .filter-item select {
             padding: 8px 12px;
             border: 1px solid #ced4da;
             border-radius: 4px;
             background: white;
             font-size: 14px;
         }
-        
-        .filter-item select:focus {
+
+        .admin-jokbo-history .filter-item select:focus {
             outline: none;
             border-color: #80bdff;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
+
+        .admin-jokbo-history .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .admin-jokbo-history .page-link {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-jokbo-history .page-link:hover {
+            background: #5a6fd8;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .admin-jokbo-history .page-info {
+            color: #666;
+            font-weight: 500;
+            padding: 0 10px;
+        }
+
+        .admin-jokbo-history .back-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
     </style>
-</head>
-<body>
-    <div class="admin-container">
-        <nav class="admin-nav">
-            <a href="/admin/dashboard" class="nav-link">대시보드</a>
-            <a href="/admin/jokbos/pending" class="nav-link">대기 족보</a>
-            <a href="/admin/jokbos" class="nav-link">전체 족보</a>
-            <a href="/admin/approval-history" class="nav-link">승인 이력</a>
-            <a href="/admin/logout" class="nav-link">로그아웃</a>
-        </nav>
-        
-        <h1>족보 상세 이력</h1>
-        
-        <!-- 필터 섹션 -->
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-jokbo-history" th:data-jokbo-id="${jokbo.jokboId}">
+        <h1 class="page-title">족보 상세 이력</h1>
+
         <div class="filter-section">
             <div class="filter-row">
                 <div class="filter-item">
                     <label for="actionFilter">액션:</label>
-                    <select id="actionFilter" onchange="applyFilters()">
+                    <select id="actionFilter" class="jokbo-filter-select">
                         <option value="" th:selected="${selectedAction == null}">전체</option>
                         <option value="승인" th:selected="${selectedAction == '승인'}">승인</option>
                         <option value="반려" th:selected="${selectedAction == '반려'}">반려</option>
@@ -75,7 +111,7 @@
                 </div>
                 <div class="filter-item">
                     <label for="previousStatusFilter">이전 상태:</label>
-                    <select id="previousStatusFilter" onchange="applyFilters()">
+                    <select id="previousStatusFilter" class="jokbo-filter-select">
                         <option value="" th:selected="${selectedPreviousStatus == null}">전체</option>
                         <option value="대기" th:selected="${selectedPreviousStatus == '대기'}">대기</option>
                         <option value="승인" th:selected="${selectedPreviousStatus == '승인'}">승인</option>
@@ -84,7 +120,7 @@
                 </div>
                 <div class="filter-item">
                     <label for="newStatusFilter">새 상태:</label>
-                    <select id="newStatusFilter" onchange="applyFilters()">
+                    <select id="newStatusFilter" class="jokbo-filter-select">
                         <option value="" th:selected="${selectedNewStatus == null}">전체</option>
                         <option value="대기" th:selected="${selectedNewStatus == '대기'}">대기</option>
                         <option value="승인" th:selected="${selectedNewStatus == '승인'}">승인</option>
@@ -93,8 +129,7 @@
                 </div>
             </div>
         </div>
-        
-        <!-- 족보 정보 -->
+
         <div class="jokbo-info-card">
             <h2>족보 정보</h2>
             <div class="info-grid">
@@ -121,7 +156,7 @@
                 </div>
                 <div class="info-item">
                     <label>현재 상태:</label>
-                    <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}" 
+                    <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}"
                           th:text="${jokbo.status.name()}">상태</span>
                 </div>
                 <div class="info-item full-width" th:if="${jokbo.comment}">
@@ -129,47 +164,45 @@
                     <span th:text="${jokbo.comment}">코멘트</span>
                 </div>
             </div>
-            
-            <!-- 족보 보기 버튼 (승인된 경우만) -->
+
             <div th:if="${jokbo.status.name() == '승인'}" class="view-actions">
-                <a th:if="${jokbo.contentType == 'text'}" 
-                   th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                <a th:if="${jokbo.contentType == 'text'}"
+                   th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}"
                    target="_blank" class="btn-view">족보 보기</a>
-                <a th:if="${jokbo.contentType == 'file'}" 
-                   th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
+                <a th:if="${jokbo.contentType == 'file'}"
+                   th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}"
                    target="_blank" class="btn-view">족보 보기</a>
             </div>
         </div>
-        
-        <!-- 처리 이력 -->
+
         <div class="history-section">
             <h2>처리 이력</h2>
-            
+
             <div th:if="${#lists.isEmpty(history)}" class="no-data">
                 <p>처리 이력이 없습니다.</p>
             </div>
-            
+
             <div th:if="${!#lists.isEmpty(history)}" class="timeline">
                 <div th:each="h : ${history}" class="timeline-item">
                     <div class="timeline-marker">
-                        <span th:class="${'action-icon action-' + h.action.name().toLowerCase()}" 
+                        <span th:class="${'action-icon action-' + h.action.name().toLowerCase()}"
                               th:text="${h.action.name().substring(0,1)}">A</span>
                     </div>
                     <div class="timeline-content">
                         <div class="timeline-header">
-                            <span th:class="${'action-badge action-' + h.action.name().toLowerCase()}" 
+                            <span th:class="${'action-badge action-' + h.action.name().toLowerCase()}"
                                   th:text="${h.action.name()}">액션</span>
-                            <span class="timeline-date" 
+                            <span class="timeline-date"
                                   th:text="${#temporals.format(h.createdAt, 'yyyy-MM-dd HH:mm:ss')}">처리일시</span>
                         </div>
                         <div class="timeline-body">
                             <p><strong>처리 관리자:</strong> <span th:text="${h.admin.adminName}">관리자명</span></p>
                             <div class="status-change">
-                                <span th:if="${h.previousStatus}" 
-                                      th:class="${'status-badge status-' + h.previousStatus.name().toLowerCase()}" 
+                                <span th:if="${h.previousStatus}"
+                                      th:class="${'status-badge status-' + h.previousStatus.name().toLowerCase()}"
                                       th:text="${h.previousStatus.name()}">이전 상태</span>
                                 <span th:if="${h.previousStatus}" class="arrow">→</span>
-                                <span th:class="${'status-badge status-' + h.newStatus.name().toLowerCase()}" 
+                                <span th:class="${'status-badge status-' + h.newStatus.name().toLowerCase()}"
                                       th:text="${h.newStatus.name()}">새 상태</span>
                             </div>
                             <p th:if="${h.comment}" class="timeline-comment">
@@ -179,45 +212,30 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- 페이징 -->
+
             <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${hasPrevious}" 
-                   th:href="@{'/admin/jokbo/' + ${jokbo.jokboId} + '/history'(page=${currentPage - 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}" 
+                <a th:if="${hasPrevious}"
+                   th:href="@{'/admin/jokbo/' + ${jokbo.jokboId} + '/history'(page=${currentPage - 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}"
                    class="page-link">이전</a>
-                
+
                 <span class="page-info">
                     <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
                 </span>
-                
-                <a th:if="${hasNext}" 
-                   th:href="@{'/admin/jokbo/' + ${jokbo.jokboId} + '/history'(page=${currentPage + 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}" 
+
+                <a th:if="${hasNext}"
+                   th:href="@{'/admin/jokbo/' + ${jokbo.jokboId} + '/history'(page=${currentPage + 1}, action=${selectedAction}, previousStatus=${selectedPreviousStatus}, newStatus=${selectedNewStatus})}"
                    class="page-link">다음</a>
             </div>
         </div>
-        
+
         <div class="back-actions">
             <a href="/admin/jokbos" class="btn-secondary">전체 족보로 돌아가기</a>
             <a href="/admin/approval-history" class="btn-secondary">승인 이력으로 돌아가기</a>
         </div>
-    </div>
-    
-    <script>
-        function applyFilters() {
-            const actionFilter = document.getElementById('actionFilter').value;
-            const previousStatusFilter = document.getElementById('previousStatusFilter').value;
-            const newStatusFilter = document.getElementById('newStatusFilter').value;
-            
-            const params = new URLSearchParams();
-            params.append('page', '0'); // 필터 적용 시 첫 페이지로
-            
-            if (actionFilter) params.append('action', actionFilter);
-            if (previousStatusFilter) params.append('previousStatus', previousStatusFilter);
-            if (newStatusFilter) params.append('newStatus', newStatusFilter);
-            
-            const jokboId = window.location.pathname.split('/')[3]; // /admin/jokbo/{jokboId}/history에서 jokboId 추출
-            window.location.href = `/admin/jokbo/${jokboId}/history?${params.toString()}`;
-        }
-    </script>
-</body>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-jokbo-history.js}"></script>
+</th:block>
 </html>

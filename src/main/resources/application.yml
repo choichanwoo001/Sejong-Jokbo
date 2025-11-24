@@ -11,10 +11,21 @@ spring:
       force: true
   
   thymeleaf:
+    cache: true  # 템플릿 캐시 활성화
     prefix: classpath:/templates/
     suffix: .html
     encoding: UTF-8
     mode: HTML
+  
+  web:
+    resources:
+      cache:
+        period: 3600  # 정적 리소스 캐시 활성화 (1시간)
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /css/**,/js/**
     
   servlet:
     multipart:
@@ -28,6 +39,13 @@ spring:
   # JPA 설정
   jpa:
     open-in-view: false  # OSIV 비활성화로 SSE 관련 EntityManager 문제 해결
+  
+  # DevTools 설정 (핫 리로딩 비활성화)
+  devtools:
+    restart:
+      enabled: false  # 자동 리로드 비활성화
+    livereload:
+      enabled: false  # LiveReload 비활성화
 
 # Swagger UI 설정
 springdoc:
@@ -58,3 +76,8 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" 
+
+# 기본 저장소 설정 (local)
+app:
+  storage:
+    type: local

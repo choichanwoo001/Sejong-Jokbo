@@ -14,9 +14,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    background: white;
     min-height: 100vh;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
 }
 
 .site-title {
@@ -122,6 +120,7 @@ body {
 
 .main-content {
     padding: 40px;
+    background: white;
 }
 
 .search-section {

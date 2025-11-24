@@ -1,300 +1,128 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>승인 대기 족보 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <div th:replace="admin/fragments/header :: admin-header-css"></div>
-    
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'승인 대기 족보 - 세종족보'},
+        currentPage=${'pending'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     <style>
-        /* 검색 영역 스타일 */
-        .search-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+        .admin-pending-jokbos {
+            padding: 20px 40px;
         }
-        
-        .search-form {
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-        
-        .search-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .search-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .search-input {
-            padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .reset-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .reset-btn:hover {
-            background: #4b5563;
-        }
-        
-        /* 승인 대기 족보 페이지 전용 스타일 */
-        
-        .back-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .back-btn:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .jokbo-list {
+
+        .admin-pending-jokbos .jokbo-list {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
-        .jokbo-item {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        .jokbo-header {
+
+        .admin-pending-jokbos .jokbo-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 15px;
         }
-        
-        .jokbo-info {
-            flex: 1;
-        }
-        
-        .book-title {
+
+        .admin-pending-jokbos .book-title {
             font-size: 18px;
             font-weight: 600;
             color: #333;
             margin: 0 0 5px 0;
         }
-        
-        .uploader-info {
+
+        .admin-pending-jokbos .uploader-info {
             color: #666;
             font-size: 14px;
             margin-bottom: 10px;
         }
-        
-        .upload-date {
+
+        .admin-pending-jokbos .upload-date {
             color: #999;
             font-size: 12px;
         }
-        
-        .jokbo-content {
+
+        .admin-pending-jokbos .jokbo-content {
             margin: 15px 0;
             padding: 15px;
             background: #f8f9fa;
             border-radius: 5px;
             border-left: 4px solid #667eea;
         }
-        
-        .content-type {
+
+        .admin-pending-jokbos .content-type {
             font-weight: 600;
             color: #667eea;
             margin-bottom: 10px;
         }
-        
-        .text-content {
+
+        .admin-pending-jokbos .text-content {
             color: #333;
             line-height: 1.6;
             white-space: pre-wrap;
         }
-        
-        .file-content {
-            color: #333;
-        }
-        
-        .file-link {
+
+        .admin-pending-jokbos .file-link {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
         }
-        
-        .file-link:hover {
+
+        .admin-pending-jokbos .file-link:hover {
             text-decoration: underline;
         }
-        
-        .jokbo-comment {
+
+        .admin-pending-jokbos .jokbo-comment {
             margin-top: 10px;
             padding: 10px;
             background: #fff3cd;
             border-radius: 5px;
             border-left: 4px solid #ffc107;
         }
-        
-        .comment-label {
+
+        .admin-pending-jokbos .comment-label {
             font-weight: 600;
             color: #856404;
             margin-bottom: 5px;
         }
-        
-        .comment-text {
+
+        .admin-pending-jokbos .comment-text {
             color: #856404;
             font-size: 14px;
         }
-        
-        .jokbo-actions {
+
+        .admin-pending-jokbos .jokbo-actions {
             display: flex;
             gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
-        
-        .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .approve-btn {
-            background: #28a745;
-            color: white;
-        }
-        
-        .approve-btn:hover {
-            background: #218838;
-        }
-        
-        .reject-btn {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .reject-btn:hover {
-            background: #c82333;
-        }
-        
-        .view-book-btn {
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .view-book-btn:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .preview-btn {
-            background: #17a2b8;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .preview-btn:hover {
-            background: #138496;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .no-jokbos {
+
+        .admin-pending-jokbos .no-jokbos {
             text-align: center;
             padding: 60px 20px;
             color: #666;
         }
-        
-        .no-jokbos h3 {
+
+        .admin-pending-jokbos .no-jokbos h3 {
             margin: 0 0 10px 0;
             color: #333;
         }
-        
-        /* 검색 결과 없음 메시지 */
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-            font-size: 16px;
-        }
     </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="admin/fragments/header :: admin-header('pending')"></div>
-    
-    <div class="main-content">
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-pending-jokbos">
         <div class="page-title">
             <h1>승인 대기 족보</h1>
         </div>
-        
-        <!-- 검색 영역 -->
-        <div class="search-section">
-            <form class="search-form" id="searchForm">
+
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <th:block th:fragment="searchFields">
                 <div class="search-group">
                     <label for="bookTitle">책 이름</label>
                     <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 이름을 입력하세요">
@@ -308,13 +136,13 @@
                     <input type="date" id="uploadDate" name="uploadDate" class="search-input">
                 </div>
                 <button type="submit" class="search-btn">검색</button>
-                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
-            </form>
+                <button type="button" class="reset-btn" data-search-reset>초기화</button>
+            </th:block>
         </div>
-        
+
         <div class="jokbo-list" th:if="${jokbos.size() > 0}" id="jokboList">
-            <div class="jokbo-item" th:each="jokbo : ${jokbos}" 
-                 th:data-book-title="${jokbo.book.title}" 
+            <div class="admin-card jokbo-item" th:each="jokbo : ${jokbos}"
+                 th:data-book-title="${jokbo.book.title}"
                  th:data-uploader="${jokbo.uploaderName}"
                  th:data-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}">
                 <div class="jokbo-header">
@@ -326,163 +154,52 @@
                         <p class="upload-date" th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">업로드 날짜</p>
                     </div>
                 </div>
-                
+
                 <div class="jokbo-content">
                     <div class="content-type" th:text="${jokbo.contentType == 'text' ? '텍스트 족보' : '파일 족보'}">내용 타입</div>
-                    
-                    <!-- <div th:if="${jokbo.contentType == 'text'}" class="text-content" th:text="${jokbo.content}">텍스트 내용</div> -->
-                    
+
                     <div th:if="${jokbo.contentType == 'file'}" class="file-content">
                         <a th:href="'/jokbo/download/' + ${jokbo.contentUrl}" class="file-link" th:text="${jokbo.contentUrl}">파일명</a>
                         <br>
                         <a th:href="'/jokbo/view/' + ${jokbo.contentUrl}" class="file-link" target="_blank">새 창에서 보기</a>
                     </div>
                 </div>
-                
+
                 <div class="jokbo-comment" th:if="${jokbo.comment != null and jokbo.comment != ''}">
                     <div class="comment-label">업로더 코멘트:</div>
                     <div class="comment-text" th:text="${jokbo.comment}">코멘트</div>
                 </div>
-                
+
                 <div class="jokbo-actions">
-                    <!-- PDF 미리보기 버튼 -->
-                    <a th:if="${jokbo.contentType == 'text'}" 
-                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
-                       target="_blank" 
-                       class="action-btn preview-btn">PDF 미리보기</a>
-                    <a th:if="${jokbo.contentType == 'file'}" 
-                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
-                       target="_blank" 
-                       class="action-btn preview-btn">미리보기</a>
-                    
-                    <button class="action-btn approve-btn" th:onclick="'approveJokbo(' + ${jokbo.jokboId} + ')'">승인</button>
-                    <button class="action-btn reject-btn" th:onclick="'rejectJokbo(' + ${jokbo.jokboId} + ')'">반려</button>
-                    <a th:href="'/admin/book/' + ${jokbo.book.bookId}" class="action-btn view-book-btn">책 상세보기</a>
+                    <a th:if="${jokbo.contentType == 'text'}"
+                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}"
+                       target="_blank"
+                       class="admin-btn admin-btn--info">PDF 미리보기</a>
+                    <a th:if="${jokbo.contentType == 'file'}"
+                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}"
+                       target="_blank"
+                       class="admin-btn admin-btn--info">미리보기</a>
+
+                    <button class="admin-btn admin-btn--success"
+                            data-action="approve"
+                            th:data-jokbo-id="${jokbo.jokboId}">승인</button>
+                    <button class="admin-btn admin-btn--danger"
+                            data-action="reject"
+                            th:data-jokbo-id="${jokbo.jokboId}">반려</button>
+                    <a th:href="'/admin/book/' + ${jokbo.book.bookId}" class="admin-btn admin-btn--secondary">책 상세보기</a>
                 </div>
             </div>
         </div>
-        
+
         <div class="no-jokbos" th:if="${jokbos.size() == 0}">
             <h3>승인 대기 중인 족보가 없습니다</h3>
             <p>새로운 족보가 등록되면 여기에 표시됩니다.</p>
         </div>
-    </div>
-    
-    <script>
-        // 검색 기능
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-        
-        function performSearch() {
-            const bookTitle = document.getElementById('bookTitle').value.toLowerCase();
-            const uploaderName = document.getElementById('uploaderName').value.toLowerCase();
-            const uploadDate = document.getElementById('uploadDate').value;
-            
-            const jokboItems = document.querySelectorAll('.jokbo-item');
-            let hasVisibleItems = false;
-            
-            jokboItems.forEach(item => {
-                const title = item.getAttribute('data-book-title').toLowerCase();
-                const uploader = item.getAttribute('data-uploader').toLowerCase();
-                const date = item.getAttribute('data-date');
-                
-                let titleMatch = true;
-                let uploaderMatch = true;
-                let dateMatch = true;
-                
-                if (bookTitle && !title.includes(bookTitle)) {
-                    titleMatch = false;
-                }
-                
-                if (uploaderName && !uploader.includes(uploaderName)) {
-                    uploaderMatch = false;
-                }
-                
-                if (uploadDate && date !== uploadDate) {
-                    dateMatch = false;
-                }
-                
-                if (titleMatch && uploaderMatch && dateMatch) {
-                    item.style.display = 'block';
-                    hasVisibleItems = true;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // 검색 결과가 없을 때 메시지 표시
-            const noResultsMessage = document.querySelector('.no-results');
-            if (!hasVisibleItems) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.className = 'no-results';
-                    message.textContent = '검색 결과가 없습니다.';
-                    document.getElementById('jokboList').appendChild(message);
-                }
-            } else {
-                if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-            }
-        }
-        
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            
-            // 모든 족보 아이템 표시
-            const jokboItems = document.querySelectorAll('.jokbo-item');
-            jokboItems.forEach(item => {
-                item.style.display = 'block';
-            });
-            
-            // no-results 메시지 제거
-            const noResultsMessage = document.querySelector('.no-results');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-        
-        function approveJokbo(jokboId) {
-            if (confirm('이 족보를 승인하시겠습니까?')) {
-                fetch(`/admin/jokbo/${jokboId}/approve`, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'success') {
-                        alert('족보가 승인되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('승인 중 오류가 발생했습니다: ' + result);
-                    }
-                })
-                .catch(error => {
-                    alert('승인 중 오류가 발생했습니다.');
-                });
-            }
-        }
-        
-        function rejectJokbo(jokboId) {
-            if (confirm('이 족보를 반려하시겠습니까?')) {
-                fetch(`/admin/jokbo/${jokboId}/reject`, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'success') {
-                        alert('족보가 반려되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('반려 중 오류가 발생했습니다: ' + result);
-                    }
-                })
-                .catch(error => {
-                    alert('반려 중 오류가 발생했습니다.');
-                });
-            }
-        }
-    </script>
-</body>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-search.js}"></script>
+    <script th:src="@{/js/admin-pending-jokbos.js}"></script>
+</th:block>
 </html>

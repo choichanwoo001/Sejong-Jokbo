@@ -20,6 +20,16 @@ spring:
     suffix: .html
     encoding: UTF-8
     mode: HTML
+  
+  web:
+    resources:
+      cache:
+        period: 0  # 정적 리소스 캐시 비활성화 (개발 환경)
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /css/**,/js/**
     
   servlet:
     multipart:
@@ -47,9 +57,7 @@ server:
 # 로컬 개발 환경 설정
 app:
   storage:
-    bucket-name: local-storage
-  development:
-    use-local-storage: true
+    type: local
 
 logging:
   level:

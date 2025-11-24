@@ -141,6 +141,28 @@ function closeTextModal() {
 
 // 페이지 로드 시 모달 이벤트 리스너 초기화
 document.addEventListener('DOMContentLoaded', function() {
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterByStatus);
+    }
+
+    document.querySelectorAll('.approval-trigger').forEach((button) => {
+        button.addEventListener('click', () => {
+            const jokboId = button.getAttribute('data-jokbo-id');
+            const action = button.getAttribute('data-approval-action');
+
+            if (!jokboId || !action) {
+                return;
+            }
+
+            showApprovalModal(jokboId, action);
+        });
+    });
+
+    document.querySelectorAll('[data-close-approval-modal]').forEach((element) => {
+        element.addEventListener('click', closeApprovalModal);
+    });
+
     const textModal = document.getElementById('textModal');
     const approvalModal = document.getElementById('approvalModal');
     const approvalForm = document.getElementById('approvalForm');
@@ -195,4 +217,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    if (window.AdminSearch) {
+        window.AdminSearch.init({
+            formId: 'searchForm',
+            itemSelector: '#jokboTable tbody tr',
+            fieldConfigs: [
+                { name: 'bookTitle', datasetKey: 'bookTitle', matchType: 'includes' },
+                { name: 'registrant', datasetKey: 'registrant', matchType: 'includes' },
+                { name: 'registrationDate', datasetKey: 'registrationDate', matchType: 'equals' }
+            ],
+            visibleDisplayStyle: 'table-row',
+            noResult: {
+                targetSelector: '#jokboTableContainer',
+                text: '검색 결과가 없습니다.'
+            }
+        });
+    }
 }); 

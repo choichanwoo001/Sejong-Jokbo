@@ -1,115 +1,24 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>족보 관리 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <div th:replace="~{admin/fragments/header :: admin-header-css}"></div>
-    
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'족보 관리 - 세종족보'},
+        currentPage=${'jokbos'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     <link rel="stylesheet" th:href="@{/css/jokbo-management.css}">
-    
-    <style>
-        /* 검색 영역 스타일 */
-        .search-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .search-form {
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-        
-        .search-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .search-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .search-input {
-            padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .reset-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 42px;
-            min-width: 80px;
-        }
-        
-        .reset-btn:hover {
-            background: #4b5563;
-        }
-        
-        /* 검색 결과 없음 메시지 */
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-            font-size: 16px;
-        }
-    </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="~{admin/fragments/header :: admin-header('jokbos')}"></div>
-    
-    <div class="main-content">
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-jokbo-management">
         <h1 class="page-title">족보 관리</h1>
-        
-        <!-- 검색 영역 -->
-        <div class="search-section">
-            <form class="search-form" id="searchForm">
+
+        <div th:replace="admin/fragments/search-form :: search-section('searchForm', ~{::searchFields})">
+            <th:block th:fragment="searchFields">
                 <div class="search-group">
                     <label for="bookTitle">책 제목</label>
                     <input type="text" id="bookTitle" name="bookTitle" class="search-input" placeholder="책 제목을 입력하세요">
@@ -123,25 +32,24 @@
                     <input type="date" id="registrationDate" name="registrationDate" class="search-input">
                 </div>
                 <button type="submit" class="search-btn">검색</button>
-                <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
-            </form>
+                <button type="button" class="reset-btn" data-search-reset>초기화</button>
+            </th:block>
         </div>
-        
-        <!-- 상태별 필터 -->
+
         <div class="filter-section">
             <label for="statusFilter">상태별 필터:</label>
-            <select id="statusFilter" onchange="filterByStatus()">
+            <select id="statusFilter">
                 <option value="" th:selected="${selectedStatus == null}">전체</option>
                 <option value="대기" th:selected="${selectedStatus == '대기'}">대기 중</option>
                 <option value="승인" th:selected="${selectedStatus == '승인'}">승인됨</option>
                 <option value="반려" th:selected="${selectedStatus == '반려'}">반려됨</option>
             </select>
         </div>
-        
+
         <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
             <p>등록된 족보가 없습니다.</p>
         </div>
-        
+
         <div th:if="${!#lists.isEmpty(jokbos)}" id="jokboTableContainer">
             <table class="jokbo-table" id="jokboTable">
                 <thead>
@@ -157,7 +65,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="jokbo : ${jokbos}" 
+                    <tr th:each="jokbo : ${jokbos}"
                         th:data-book-title="${jokbo.book.title}"
                         th:data-registrant="${jokbo.uploaderName}"
                         th:data-registration-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}">
@@ -170,33 +78,33 @@
                             <span th:if="${jokbo.contentType == 'file'}" class="content-type-badge file">파일</span>
                         </td>
                         <td>
-                            <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}" 
+                            <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}"
                                   th:text="${jokbo.status.name()}">상태</span>
                         </td>
                         <td class="comment-cell" th:text="${jokbo.comment}">코멘트</td>
                         <td>
                             <div class="action-buttons">
-                                <!-- 승인 대기 중인 경우 -->
                                 <div th:if="${jokbo.status.name() == '대기'}">
-                                    <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'approve\')'" 
-                                            class="btn-approve">승인</button>
-                                    <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'reject\')'" 
-                                            class="btn-reject">반려</button>
+                                    <button class="btn-approve approval-trigger"
+                                            data-approval-action="approve"
+                                            th:data-jokbo-id="${jokbo.jokboId}">승인</button>
+                                    <button class="btn-reject approval-trigger"
+                                            data-approval-action="reject"
+                                            th:data-jokbo-id="${jokbo.jokboId}">반려</button>
                                 </div>
-                                
-                                <!-- 승인된 경우 -->
+
                                 <div th:if="${jokbo.status.name() == '승인'}">
-                                    <button th:onclick="'showApprovalModal(' + ${jokbo.jokboId} + ', \'cancel\')'" 
-                                            class="btn-cancel">승인취소</button>
+                                    <button class="btn-cancel approval-trigger"
+                                            data-approval-action="cancel"
+                                            th:data-jokbo-id="${jokbo.jokboId}">승인취소</button>
                                 </div>
-                                
-                                <!-- 승인된 족보 보기/다운로드 -->
+
                                 <div th:if="${jokbo.status.name() == '승인'}">
-                                    <a th:if="${jokbo.contentType == 'text'}" 
-                                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" 
+                                    <a th:if="${jokbo.contentType == 'text'}"
+                                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}"
                                        target="_blank" class="btn-view">보기</a>
-                                    <a th:if="${jokbo.contentType == 'file'}" 
-                                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" 
+                                    <a th:if="${jokbo.contentType == 'file'}"
+                                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}"
                                        target="_blank" class="btn-view">보기</a>
                                 </div>
                             </div>
@@ -204,123 +112,47 @@
                     </tr>
                 </tbody>
             </table>
-            
-            <!-- 페이징 -->
+
             <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${hasPrevious}" 
-                   th:href="@{/admin/jokbos(page=${currentPage - 1}, status=${selectedStatus})}" 
+                <a th:if="${hasPrevious}"
+                   th:href="@{/admin/jokbos(page=${currentPage - 1}, status=${selectedStatus})}"
                    class="page-link">이전</a>
-                
+
                 <span class="page-info">
                     <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
                 </span>
-                
-                <a th:if="${hasNext}" 
-                   th:href="@{/admin/jokbos(page=${currentPage + 1}, status=${selectedStatus})}" 
+
+                <a th:if="${hasNext}"
+                   th:href="@{/admin/jokbos(page=${currentPage + 1}, status=${selectedStatus})}"
                    class="page-link">다음</a>
             </div>
         </div>
-    </div>
-    
-    <!-- 승인/반려 모달 -->
-    <div id="approvalModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeApprovalModal()">&times;</span>
-            <h3 id="modalTitle">족보 처리</h3>
-            <form id="approvalForm">
-                <input type="hidden" id="jokboId" name="jokboId">
-                <input type="hidden" id="actionType" name="actionType">
-                
-                <div class="form-group">
-                    <label for="comment">처리 사유 (선택사항):</label>
-                    <textarea id="comment" name="comment" rows="4" placeholder="승인/반려/취소 사유를 입력하세요"></textarea>
-                </div>
-                
-                <div class="modal-buttons">
-                    <button type="button" onclick="closeApprovalModal()" class="btn-cancel">취소</button>
-                    <button type="submit" id="confirmButton" class="btn-primary">확인</button>
-                </div>
-            </form>
+
+        <div id="approvalModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" data-close-approval-modal>&times;</span>
+                <h3 id="modalTitle">족보 처리</h3>
+                <form id="approvalForm">
+                    <input type="hidden" id="jokboId" name="jokboId">
+                    <input type="hidden" id="actionType" name="actionType">
+
+                    <div class="form-group">
+                        <label for="comment">처리 사유 (선택사항):</label>
+                        <textarea id="comment" name="comment" rows="4" placeholder="승인/반려/취소 사유를 입력하세요"></textarea>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel" data-close-approval-modal>취소</button>
+                        <button type="submit" id="confirmButton" class="btn-primary">확인</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-search.js}"></script>
     <script th:src="@{/js/jokbo-management.js}"></script>
-    
-    <script>
-        // 검색 기능
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-        
-        function performSearch() {
-            const bookTitle = document.getElementById('bookTitle').value.toLowerCase();
-            const registrant = document.getElementById('registrant').value.toLowerCase();
-            const registrationDate = document.getElementById('registrationDate').value;
-            
-            const tableRows = document.querySelectorAll('#jokboTable tbody tr');
-            let hasVisibleRows = false;
-            
-            tableRows.forEach(row => {
-                const title = row.getAttribute('data-book-title').toLowerCase();
-                const uploader = row.getAttribute('data-registrant').toLowerCase();
-                const date = row.getAttribute('data-registration-date');
-                
-                let titleMatch = true;
-                let registrantMatch = true;
-                let dateMatch = true;
-                
-                if (bookTitle && !title.includes(bookTitle)) {
-                    titleMatch = false;
-                }
-                
-                if (registrant && !uploader.includes(registrant)) {
-                    registrantMatch = false;
-                }
-                
-                if (registrationDate && date !== registrationDate) {
-                    dateMatch = false;
-                }
-                
-                if (titleMatch && registrantMatch && dateMatch) {
-                    row.style.display = 'table-row';
-                    hasVisibleRows = true;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            // 검색 결과가 없을 때 메시지 표시
-            const noResultsMessage = document.querySelector('.no-results');
-            if (!hasVisibleRows) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.className = 'no-results';
-                    message.textContent = '검색 결과가 없습니다.';
-                    document.getElementById('jokboTableContainer').appendChild(message);
-                }
-            } else {
-                if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-            }
-        }
-        
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            
-            // 모든 테이블 행 표시
-            const tableRows = document.querySelectorAll('#jokboTable tbody tr');
-            tableRows.forEach(row => {
-                row.style.display = 'table-row';
-            });
-            
-            // no-results 메시지 제거
-            const noResultsMessage = document.querySelector('.no-results');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-    </script>
-</body>
+</th:block>
 </html> 

@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의 상세 - 세종족보</title>
-    
-    <!-- 공통 헤더 CSS -->
-    <div th:replace="admin/fragments/header :: admin-header-css"></div>
-    
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'문의 상세 - 세종족보'},
+        currentPage=${'inquiries'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <style>
-        .container {
+        .admin-inquiry-detail {
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
         }
-        
-        .back-btn {
+
+        .admin-inquiry-detail .back-btn {
             background: #6c757d;
             color: white;
             border: none;
@@ -27,22 +28,22 @@
             text-decoration: none;
             display: inline-block;
         }
-        
-        .back-btn:hover {
+
+        .admin-inquiry-detail .back-btn:hover {
             background: #5a6268;
             color: white;
             text-decoration: none;
         }
-        
-        .inquiry-detail {
+
+        .admin-inquiry-detail .inquiry-detail {
             background: white;
             border-radius: 10px;
             padding: 30px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
         }
-        
-        .inquiry-header {
+
+        .admin-inquiry-detail .inquiry-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -50,23 +51,23 @@
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
         }
-        
-        .inquiry-info h2 {
+
+        .admin-inquiry-detail .inquiry-info h2 {
             margin: 0 0 10px 0;
             color: #333;
             font-size: 24px;
         }
-        
-        .inquiry-meta {
+
+        .admin-inquiry-detail .inquiry-meta {
             color: #666;
             font-size: 14px;
         }
-        
-        .inquiry-meta p {
+
+        .admin-inquiry-detail .inquiry-meta p {
             margin: 5px 0;
         }
-        
-        .inquiry-message {
+
+        .admin-inquiry-detail .inquiry-message {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 5px;
@@ -76,75 +77,75 @@
             white-space: pre-wrap;
             margin-bottom: 20px;
         }
-        
-        .comments-section {
+
+        .admin-inquiry-detail .comments-section {
             background: white;
             border-radius: 10px;
             padding: 30px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
-        
-        .comments-section h3 {
+
+        .admin-inquiry-detail .comments-section h3 {
             margin: 0 0 20px 0;
             color: #333;
             font-size: 20px;
         }
-        
-        .comment-item {
+
+        .admin-inquiry-detail .comment-item {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 5px;
             margin-bottom: 15px;
             border-left: 4px solid #28a745;
         }
-        
-        .comment-header {
+
+        .admin-inquiry-detail .comment-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-        
-        .comment-admin {
+
+        .admin-inquiry-detail .comment-admin {
             font-weight: 600;
             color: #333;
         }
-        
-        .comment-date {
+
+        .admin-inquiry-detail .comment-date {
             color: #999;
             font-size: 12px;
         }
-        
-        .comment-content {
+
+        .admin-inquiry-detail .comment-content {
             color: #333;
             line-height: 1.6;
             white-space: pre-wrap;
         }
-        
-        .reply-form {
+
+        .admin-inquiry-detail .reply-form {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 5px;
             border: 2px solid #667eea;
         }
-        
-        .reply-form h4 {
+
+        .admin-inquiry-detail .reply-form h4 {
             margin: 0 0 15px 0;
             color: #333;
         }
-        
-        .form-group {
+
+        .admin-inquiry-detail .form-group {
             margin-bottom: 15px;
         }
-        
-        .form-group label {
+
+        .admin-inquiry-detail .form-group label {
             display: block;
             margin-bottom: 5px;
             color: #555;
             font-weight: 500;
         }
-        
-        .form-group textarea {
+
+        .admin-inquiry-detail .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -155,13 +156,13 @@
             min-height: 100px;
             box-sizing: border-box;
         }
-        
-        .form-group textarea:focus {
+
+        .admin-inquiry-detail .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        
-        .submit-btn {
+
+        .admin-inquiry-detail .submit-btn {
             background: #667eea;
             color: white;
             border: none;
@@ -172,30 +173,28 @@
             cursor: pointer;
             transition: background 0.3s ease;
         }
-        
-        .submit-btn:hover {
+
+        .admin-inquiry-detail .submit-btn:hover {
             background: #5a6fd8;
         }
-        
-        .no-comments {
+
+        .admin-inquiry-detail .no-comments {
             text-align: center;
             padding: 40px 20px;
             color: #666;
         }
-        
-        .no-comments h4 {
+
+        .admin-inquiry-detail .no-comments h4 {
             margin: 0 0 10px 0;
             color: #333;
         }
     </style>
-</head>
-<body>
-    <!-- 공통 헤더 -->
-    <div th:replace="admin/fragments/header :: admin-header('inquiries')"></div>
-    
-    <div class="container">
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-inquiry-detail" th:data-inquiry-id="${inquiry.inquiryId}">
         <a href="/admin/inquiries" class="back-btn">문의 목록으로 돌아가기</a>
-        
+
         <div class="inquiry-detail">
             <div class="inquiry-header">
                 <div class="inquiry-info">
@@ -206,13 +205,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="inquiry-message" th:text="${inquiry.message}">문의 내용</div>
         </div>
-        
+
         <div class="comments-section">
             <h3>답변</h3>
-            
+
             <div class="comment-item" th:each="comment : ${comments}">
                 <div class="comment-header">
                     <span class="comment-admin" th:text="${comment.admin.adminName}">관리자명</span>
@@ -220,12 +219,12 @@
                 </div>
                 <div class="comment-content" th:text="${comment.content}">답변 내용</div>
             </div>
-            
+
             <div class="no-comments" th:if="${comments.size() == 0}">
                 <h4>아직 답변이 없습니다</h4>
                 <p>아래에서 답변을 작성해주세요.</p>
             </div>
-            
+
             <div class="reply-form">
                 <h4>답변 작성</h4>
                 <form id="replyForm">
@@ -237,40 +236,10 @@
                 </form>
             </div>
         </div>
-    </div>
-    
-    <script>
-        document.getElementById('replyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const content = document.getElementById('content').value;
-            const inquiryId = /*[[${inquiry.inquiryId}]]*/ 0; // 문의 ID
-            
-            if (!content.trim()) {
-                alert('답변 내용을 입력해주세요.');
-                return;
-            }
-            
-            fetch(`/admin/inquiry/${inquiryId}/comment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `content=${encodeURIComponent(content)}`
-            })
-            .then(response => response.text())
-            .then(result => {
-                if (result === 'success') {
-                    alert('답변이 등록되었습니다.');
-                    location.reload();
-                } else {
-                    alert('답변 등록 중 오류가 발생했습니다: ' + result);
-                }
-            })
-            .catch(error => {
-                alert('답변 등록 중 오류가 발생했습니다.');
-            });
-        });
-    </script>
-</body>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/admin-inquiry-detail.js}"></script>
+</th:block>
 </html>

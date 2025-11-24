@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${book.title} + ' - 세종족보'">책 제목 - 세종족보</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/site-layout :: layout(
+        pageTitle=${book.title + ' - 세종족보'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/notifications.css}">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
-</head>
-<body>
-    <div class="book-detail" th:data-book-id="${book.bookId}">
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="book-detail"
+         th:data-book-id="${book.bookId}"
+         th:data-active-tab="${activeTab}">
         <a href="/" class="back-link">홈으로 돌아가기</a>
-        
+
         <div class="main-layout">
-            <!-- 책 정보 섹션 -->
             <div class="book-info">
                 <img th:if="${book.imageUrl}" th:src="${book.imageUrl}" alt="책 표지" class="book-image">
                 <div class="book-details">
@@ -28,26 +35,29 @@
                     </p>
                 </div>
             </div>
-            
-            <!-- 족보 섹션 -->
+
             <div class="jokbo-section">
                 <h2>족보</h2>
-                
-                <!-- 족보 탭 -->
+
                 <div class="jokbo-tabs">
-                    <button class="jokbo-tab active" onclick="showJokboTab('register')">족보 등록</button>
-                    <button class="jokbo-tab" onclick="showJokboTab('list')">족보 목록</button>
+                    <button class="jokbo-tab active"
+                            type="button"
+                            data-tab-target="register">족보 등록</button>
+                    <button class="jokbo-tab"
+                            type="button"
+                            data-tab-target="list">족보 목록</button>
                 </div>
-                
-                <!-- 족보 등록 탭 -->
+
                 <div id="register" class="jokbo-content active">
-                    <!-- 등록 방식 탭 -->
                     <div class="register-tabs">
-                        <button class="register-tab active" onclick="showRegisterTab('text')">텍스트</button>
-                        <button class="register-tab" onclick="showRegisterTab('file')">파일</button>
+                        <button class="register-tab active"
+                                type="button"
+                                data-register-target="text">텍스트</button>
+                        <button class="register-tab"
+                                type="button"
+                                data-register-target="file">파일</button>
                     </div>
-                    
-                    <!-- 텍스트 족보 등록 -->
+
                     <div id="text-register" class="register-content active">
                         <div class="jokbo-form">
                             <h3>텍스트 족보 등록</h3>
@@ -60,14 +70,18 @@
                                     <label class="form-label">이메일</label>
                                     <div class="email-group">
                                         <input type="email" name="email" class="form-input email-input" required>
-                                        <button type="button" class="verify-button" onclick="sendVerificationCode(this)">인증번호 발송</button>
+                                        <button type="button"
+                                                class="verify-button"
+                                                data-action="send-verification">인증번호 발송</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">인증번호</label>
                                     <div class="verification-code-group">
                                         <input type="text" name="verificationCode" class="form-input verification-code-input" placeholder="인증번호를 입력하세요" required>
-                                        <button type="button" class="verify-button" onclick="verifyCode(this)">인증확인</button>
+                                        <button type="button"
+                                                class="verify-button"
+                                                data-action="verify-code">인증확인</button>
                                     </div>
                                     <div id="verificationStatus" class="verification-status" style="display: none;"></div>
                                 </div>
@@ -83,8 +97,7 @@
                             </form>
                         </div>
                     </div>
-                    
-                    <!-- 파일 족보 등록 -->
+
                     <div id="file-register" class="register-content">
                         <div class="jokbo-form">
                             <h3>파일 족보 등록</h3>
@@ -97,14 +110,18 @@
                                     <label class="form-label">이메일</label>
                                     <div class="email-group">
                                         <input type="email" name="email" class="form-input email-input" required>
-                                        <button type="button" class="verify-button" onclick="sendVerificationCode(this)">인증번호 발송</button>
+                                        <button type="button"
+                                                class="verify-button"
+                                                data-action="send-verification">인증번호 발송</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">인증번호</label>
                                     <div class="verification-code-group">
                                         <input type="text" name="verificationCode" class="form-input verification-code-input" placeholder="인증번호를 입력하세요" required>
-                                        <button type="button" class="verify-button" onclick="verifyCode(this)">인증확인</button>
+                                        <button type="button"
+                                                class="verify-button"
+                                                data-action="verify-code">인증확인</button>
                                     </div>
                                     <div id="verificationStatus" class="verification-status" style="display: none;"></div>
                                 </div>
@@ -117,7 +134,9 @@
                                     <div id="fileInfo" class="file-info" style="display: none;">
                                         <div class="file-details">
                                             <span id="fileName"></span>
-                                            <button type="button" class="file-remove-btn" onclick="removeFile()">삭제</button>
+                                            <button type="button"
+                                                    class="file-remove-btn"
+                                                    data-action="remove-file">삭제</button>
                                         </div>
                                     </div>
                                 </div>
@@ -130,122 +149,99 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- 족보 목록 탭 -->
+
                 <div id="list" class="jokbo-content">
                     <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
                         <p>등록된 족보가 없습니다.</p>
                     </div>
-                    
+
                     <div th:if="${!#lists.isEmpty(jokbos)}" class="jokbo-list">
                         <div th:each="jokbo : ${jokbos}" class="jokbo-item">
                             <div class="jokbo-header">
                                 <span class="jokbo-uploader" th:text="${jokbo.uploaderName}">등록자</span>
                                 <span class="jokbo-date" th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</span>
                             </div>
-                            
-                            <!-- 통일된 액션 버튼 -->
+
                             <div class="jokbo-actions">
-                                <!-- 텍스트 족보: PDF로 보기/다운로드 -->
                                 <a th:if="${jokbo.contentType == 'text'}" th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" target="_blank" class="btn-view">보기</a>
                                 <a th:if="${jokbo.contentType == 'text'}" th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" class="btn-download">다운로드</a>
-                                
-                                <!-- 파일 족보: 원본 파일로 보기/다운로드 -->
+
                                 <a th:if="${jokbo.contentType == 'file'}" th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" target="_blank" class="btn-view">보기</a>
                                 <a th:if="${jokbo.contentType == 'file'}" th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" class="btn-download">다운로드</a>
                             </div>
-                            
+
                             <div th:if="${jokbo.comment}" class="jokbo-comment">
                                 <strong>코멘트:</strong> <span th:text="${jokbo.comment}">코멘트</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 족보 목록 페이징 UI -->
+
                     <div th:if="${totalPages > 1}" class="jokbo-pagination">
-                        <!-- 이전 페이지 버튼 -->
-                        <a th:if="${hasPrevious}" 
-                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}" 
+                        <a th:if="${hasPrevious}"
+                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}"
                            class="page-btn prev-btn">이전</a>
-                        
-                        <!-- 페이지 번호 버튼들 -->
+
                         <div class="page-numbers">
-                            <!-- 첫 번째 페이지 (현재 페이지가 4보다 클 때만 표시) -->
-                            <a th:if="${currentPage > 3}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=0, tab=list)}" 
+                            <a th:if="${currentPage > 3}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=0, tab=list)}"
                                class="page-btn">1</a>
-                            
-                            <!-- ... 표시 (첫 페이지와 표시 범위 사이에 간격이 있을 때) -->
+
                             <span th:if="${currentPage > 4}" class="page-dots">...</span>
-                            
-                            <!-- 현재 페이지 앞 3개 -->
-                            <a th:if="${currentPage >= 3}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 3}, tab=list)}" 
+
+                            <a th:if="${currentPage >= 3}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 3}, tab=list)}"
                                th:text="${currentPage - 2}"
                                class="page-btn"></a>
-                            
-                            <a th:if="${currentPage >= 2}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 2}, tab=list)}" 
+
+                            <a th:if="${currentPage >= 2}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 2}, tab=list)}"
                                th:text="${currentPage - 1}"
                                class="page-btn"></a>
-                            
-                            <a th:if="${currentPage >= 1}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}" 
+
+                            <a th:if="${currentPage >= 1}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}"
                                th:text="${currentPage}"
                                class="page-btn"></a>
-                            
-                            <!-- 현재 페이지 -->
+
                             <span th:text="${currentPage + 1}" class="page-btn current"></span>
-                            
-                            <!-- 현재 페이지 뒤 3개 -->
-                            <a th:if="${currentPage < totalPages - 1}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}" 
+
+                            <a th:if="${currentPage < totalPages - 1}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}"
                                th:text="${currentPage + 2}"
                                class="page-btn"></a>
-                            
-                            <a th:if="${currentPage < totalPages - 2}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 2}, tab=list)}" 
+
+                            <a th:if="${currentPage < totalPages - 2}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 2}, tab=list)}"
                                th:text="${currentPage + 3}"
                                class="page-btn"></a>
-                            
-                            <a th:if="${currentPage < totalPages - 3}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 3}, tab=list)}" 
+
+                            <a th:if="${currentPage < totalPages - 3}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 3}, tab=list)}"
                                th:text="${currentPage + 4}"
                                class="page-btn"></a>
-                            
-                            <!-- ... 표시 (표시 범위와 마지막 페이지 사이에 간격이 있을 때) -->
+
                             <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
-                            
-                            <!-- 마지막 페이지 (현재 페이지가 마지막에서 4번째보다 작을 때만 표시) -->
-                            <a th:if="${currentPage < totalPages - 4}" 
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${totalPages - 1}, tab=list)}" 
+
+                            <a th:if="${currentPage < totalPages - 4}"
+                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${totalPages - 1}, tab=list)}"
                                th:text="${totalPages}"
                                class="page-btn"></a>
                         </div>
-                        
-                        <!-- 다음 페이지 버튼 -->
-                        <a th:if="${hasNext}" 
-                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}" 
+
+                        <a th:if="${hasNext}"
+                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}"
                            class="page-btn next-btn">다음</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <script th:inline="javascript">
-        const bookId = /*[[${book.bookId}]]*/ 0;
-        const activeTab = /*[[${activeTab}]]*/ 'register';
-    </script>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/utils.js}"></script>
     <script th:src="@{/js/detail.js}"></script>
-    
-    <!-- SSE 실시간 족보 승인 알림 기능 -->
-    <script src="/js/sse.js"></script>
-    <script>
-        // 페이지 로드 시 사용자용 SSE 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            initSSE('user');
-        });
-    </script>
-</body>
+    <script th:src="@{/js/sse.js}"></script>
+    <script th:src="@{/js/user-sse-init.js}"></script>
+</th:block>
 </html> 
