@@ -7,10 +7,10 @@ services:
     container_name: sejong-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: sejong_jokbo
-      MYSQL_USER: ${MYSQL_USER:-sj_admin}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sj_password}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Seoul
     ports:
       - "3306:3306"
