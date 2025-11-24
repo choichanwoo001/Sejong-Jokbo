@@ -80,7 +80,9 @@ jobs:
             cd sejong-jokbo
             
             # 최신 코드(docker-compose.yml 등) 가져오기
-            git pull origin main
+            git fetch --all
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
             
             # 실행 권한 부여
             chmod +x scripts/deploy.sh
