@@ -11,37 +11,25 @@ import java.util.List;
 
 @Repository
 public interface InquiryRepository extends JpaRepository<Inquiry, Integer> {
-    
+
     /**
      * 모든 문의를 페이징하여 최신순으로 조회합니다 (댓글 포함)
      */
     @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments ORDER BY i.createdAt DESC")
     Page<Inquiry> findAllByOrderByCreatedAtDesc(Pageable pageable);
-    
-    /**
-     * 공개된 문의만 페이징하여 최신순으로 조회합니다 (댓글 포함)
-     */
-    @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.isPublic = true ORDER BY i.createdAt DESC")
-    Page<Inquiry> findByIsPublicTrueOrderByCreatedAtDesc(Pageable pageable);
-    
+
     /**
      * 답변되지 않은 문의만 페이징하여 조회합니다 (댓글 포함)
      */
     @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.comments IS EMPTY ORDER BY i.createdAt DESC")
     Page<Inquiry> findByCommentsIsEmptyOrderByCreatedAtDesc(Pageable pageable);
-    
+
     /**
      * 모든 문의를 최신순으로 조회합니다 (페이징 없음, 댓글 포함)
      */
     @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments ORDER BY i.createdAt DESC")
     List<Inquiry> findAllByOrderByCreatedAtDesc();
-    
-    /**
-     * 공개된 문의만 최신순으로 조회합니다 (페이징 없음, 댓글 포함)
-     */
-    @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.isPublic = true ORDER BY i.createdAt DESC")
-    List<Inquiry> findByIsPublicTrueOrderByCreatedAtDesc();
-    
+
     /**
      * 답변되지 않은 문의만 조회합니다 (페이징 없음, 댓글 포함)
      */
