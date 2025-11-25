@@ -3,7 +3,7 @@ let verificationCode = '';
 let isEmailVerified = false;
 
 // 페이지 로드 시 초기화
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeFileUpload();
     initializeFormHandlers();
     updateSubmitButtonState();
@@ -92,16 +92,16 @@ function showRegisterTab(tabName, triggerElement = null) {
 function sendVerificationCode(button) {
     const emailInput = button.parentElement.querySelector('input[type="email"]');
     const email = emailInput.value;
-    
+
     if (!email) {
         alert('이메일을 입력해주세요.');
         return;
     }
-    
+
     // 버튼 상태 변경
     button.disabled = true;
     button.textContent = '발송 중...';
-    
+
     // 서버에 인증번호 발송 요청
     fetch('/api/send-verification', {
         method: 'POST',
@@ -110,29 +110,29 @@ function sendVerificationCode(button) {
         },
         body: JSON.stringify({ email: email })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('인증번호가 발송되었습니다.');
-            button.textContent = '재발송';
-            
-            // 1분 후 재발송 가능하도록 설정
-            setTimeout(() => {
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('인증번호가 발송되었습니다.');
+                button.textContent = '재발송';
+
+                // 1분 후 재발송 가능하도록 설정
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.textContent = '인증번호 발송';
+                }, 60000);
+            } else {
+                alert('인증번호 발송에 실패했습니다: ' + data.message);
                 button.disabled = false;
                 button.textContent = '인증번호 발송';
-            }, 60000);
-        } else {
-            alert('인증번호 발송에 실패했습니다: ' + data.message);
+            }
+        })
+        .catch(error => {
+            debugError('Error:', error);
+            alert('인증번호 발송 중 오류가 발생했습니다.');
             button.disabled = false;
             button.textContent = '인증번호 발송';
-        }
-    })
-    .catch(error => {
-        debugError('Error:', error);
-        alert('인증번호 발송 중 오류가 발생했습니다.');
-        button.disabled = false;
-        button.textContent = '인증번호 발송';
-    });
+        });
 }
 
 // 인증번호 확인
@@ -141,51 +141,51 @@ function verifyCode(button) {
     const codeInput = button.parentElement.querySelector('input[name="verificationCode"]');
     const email = emailInput.value;
     const inputCode = codeInput.value;
-    
+
     if (!email || !inputCode) {
         alert('이메일과 인증번호를 모두 입력해주세요.');
         return;
     }
-    
+
     // 버튼 상태 변경
     button.disabled = true;
     button.textContent = '확인 중...';
-    
+
     // 서버에 인증번호 확인 요청
     fetch('/api/verify-code', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             email: email,
-            code: inputCode 
+            code: inputCode
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            isEmailVerified = true;
-            button.textContent = '인증완료';
-            button.disabled = true;
-            button.style.backgroundColor = '#28a745';
-            
-            // 모든 인증 상태 표시 업데이트
-            updateVerificationStatus('이메일 인증이 완료되었습니다.', 'success');
-            updateSubmitButtonState();
-        } else {
-            isEmailVerified = false;
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                isEmailVerified = true;
+                button.textContent = '인증완료';
+                button.disabled = true;
+                button.style.backgroundColor = '#28a745';
+
+                // 모든 인증 상태 표시 업데이트
+                updateVerificationStatus('이메일 인증이 완료되었습니다.', 'success');
+                updateSubmitButtonState();
+            } else {
+                isEmailVerified = false;
+                button.disabled = false;
+                button.textContent = '인증확인';
+                updateVerificationStatus('인증번호가 일치하지 않습니다.', 'error');
+            }
+        })
+        .catch(error => {
+            debugError('Error:', error);
+            alert('인증번호 확인 중 오류가 발생했습니다.');
             button.disabled = false;
             button.textContent = '인증확인';
-            updateVerificationStatus('인증번호가 일치하지 않습니다.', 'error');
-        }
-    })
-    .catch(error => {
-        debugError('Error:', error);
-        alert('인증번호 확인 중 오류가 발생했습니다.');
-        button.disabled = false;
-        button.textContent = '인증확인';
-    });
+        });
 }
 
 // 인증 상태 표시 업데이트
@@ -222,26 +222,26 @@ function updateSubmitButtonState() {
 function initializeFileUpload() {
     const fileUpload = document.getElementById('fileUpload');
     const fileInput = document.getElementById('fileInput');
-    
+
     if (fileUpload && fileInput) {
         fileUpload.addEventListener('click', () => fileInput.click());
-        
+
         fileUpload.addEventListener('dragover', (e) => {
             e.preventDefault();
             fileUpload.classList.add('dragover');
         });
-        
+
         fileUpload.addEventListener('dragleave', () => {
             fileUpload.classList.remove('dragover');
         });
-        
+
         fileUpload.addEventListener('drop', (e) => {
             e.preventDefault();
             fileUpload.classList.remove('dragover');
             fileInput.files = e.dataTransfer.files;
             updateFileDisplay();
         });
-        
+
         fileInput.addEventListener('change', updateFileDisplay);
     }
 }
@@ -284,17 +284,17 @@ function updateFileDisplay() {
     const fileUpload = document.getElementById('fileUpload');
     const fileInfo = document.getElementById('fileInfo');
     const fileName = document.getElementById('fileName');
-    
+
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        
+
         // 파일 크기 검증 (10MB 제한)
         if (file.size > 10 * 1024 * 1024) {
             alert('파일 크기가 10MB를 초과합니다.');
             removeFile();
             return;
         }
-        
+
         // 파일 확장자 검증
         const allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'txt'];
         const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -303,7 +303,7 @@ function updateFileDisplay() {
             removeFile();
             return;
         }
-        
+
         // 파일 정보 표시
         fileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
         fileInfo.style.display = 'block';
@@ -319,7 +319,7 @@ function removeFile() {
     const fileInput = document.getElementById('fileInput');
     const fileUpload = document.getElementById('fileUpload');
     const fileInfo = document.getElementById('fileInfo');
-    
+
     fileInput.value = '';
     fileInfo.style.display = 'none';
     fileUpload.style.display = 'block';
@@ -330,11 +330,11 @@ function removeFile() {
 function initializeFormHandlers() {
     const textForm = document.getElementById('textJokboForm');
     const fileForm = document.getElementById('fileJokboForm');
-    
+
     if (textForm) {
         textForm.addEventListener('submit', handleTextJokboSubmit);
     }
-    
+
     if (fileForm) {
         fileForm.addEventListener('submit', handleFileJokboSubmit);
     }
@@ -343,111 +343,111 @@ function initializeFormHandlers() {
 // 텍스트 족보 등록 처리
 function handleTextJokboSubmit(e) {
     e.preventDefault();
-    
+
     if (!isEmailVerified) {
         alert('이메일 인증을 완료해주세요.');
         return;
     }
-    
+
     const formData = new FormData(this);
     const bookId = this.closest('.book-detail').dataset.bookId;
-    
+
     fetch(`/book/${bookId}/jokbo/text`, {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
-    .then(result => {
-        if (result === 'success') {
-            alert('족보가 성공적으로 등록되었습니다.');
-            this.reset();
-            isEmailVerified = false;
-            document.querySelectorAll('#verificationStatus').forEach(status => {
-                status.style.display = 'none';
-            });
-            updateSubmitButtonState();
-            
-            // 인증 버튼들 초기화
-            document.querySelectorAll('.verify-button').forEach(button => {
-                if (button.textContent.includes('인증확인')) {
-                    button.disabled = false;
-                    button.textContent = '인증확인';
-                    button.style.backgroundColor = '';
-                }
-            });
-        } else {
-            alert('족보 등록에 실패했습니다: ' + result);
-        }
-    })
-    .catch(error => {
-        alert('오류가 발생했습니다: ' + error);
-    });
+        .then(response => response.text())
+        .then(result => {
+            if (result === 'success') {
+                alert('족보 등록 요청이 완료되었습니다.\n관리자가 승인하면 족보 목록에 등록됩니다.');
+                this.reset();
+                isEmailVerified = false;
+                document.querySelectorAll('#verificationStatus').forEach(status => {
+                    status.style.display = 'none';
+                });
+                updateSubmitButtonState();
+
+                // 인증 버튼들 초기화
+                document.querySelectorAll('.verify-button').forEach(button => {
+                    if (button.textContent.includes('인증확인')) {
+                        button.disabled = false;
+                        button.textContent = '인증확인';
+                        button.style.backgroundColor = '';
+                    }
+                });
+            } else {
+                alert('족보 등록에 실패했습니다: ' + result);
+            }
+        })
+        .catch(error => {
+            alert('오류가 발생했습니다: ' + error);
+        });
 }
 
 // 파일 족보 등록 처리
 function handleFileJokboSubmit(e) {
     e.preventDefault();
-    
+
     if (!isEmailVerified) {
         alert('이메일 인증을 완료해주세요.');
         return;
     }
-    
+
     const fileInput = document.getElementById('fileInput');
     if (!fileInput.files || fileInput.files.length === 0) {
         alert('업로드할 파일을 선택해주세요.');
         return;
     }
-    
+
     const formData = new FormData(this);
     const bookId = this.closest('.book-detail').dataset.bookId;
-    
+
     // 제출 버튼 비활성화
     const submitButton = this.querySelector('.form-button');
     const originalText = submitButton.textContent;
     submitButton.disabled = true;
     submitButton.textContent = '업로드 중...';
-    
+
     fetch(`/book/${bookId}/jokbo/file`, {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text();
-    })
-    .then(result => {
-        if (result === 'success') {
-            alert('족보가 성공적으로 등록되었습니다.');
-            this.reset();
-            removeFile();
-            isEmailVerified = false;
-            document.querySelectorAll('#verificationStatus').forEach(status => {
-                status.style.display = 'none';
-            });
-            updateSubmitButtonState();
-            
-            // 인증 버튼들 초기화
-            document.querySelectorAll('.verify-button').forEach(button => {
-                if (button.textContent.includes('인증확인')) {
-                    button.disabled = false;
-                    button.textContent = '인증확인';
-                    button.style.backgroundColor = '';
-                }
-            });
-        } else {
-            alert('족보 등록에 실패했습니다: ' + result);
-        }
-    })
-    .catch(error => {
-        debugError('Upload error:', error);
-        alert('파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
-    })
-    .finally(() => {
-        // 제출 버튼 복원
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(result => {
+            if (result === 'success') {
+                alert('족보 등록 요청이 완료되었습니다.\n관리자가 승인하면 족보 목록에 등록됩니다.');
+                this.reset();
+                removeFile();
+                isEmailVerified = false;
+                document.querySelectorAll('#verificationStatus').forEach(status => {
+                    status.style.display = 'none';
+                });
+                updateSubmitButtonState();
+
+                // 인증 버튼들 초기화
+                document.querySelectorAll('.verify-button').forEach(button => {
+                    if (button.textContent.includes('인증확인')) {
+                        button.disabled = false;
+                        button.textContent = '인증확인';
+                        button.style.backgroundColor = '';
+                    }
+                });
+            } else {
+                alert('족보 등록에 실패했습니다: ' + result);
+            }
+        })
+        .catch(error => {
+            debugError('Upload error:', error);
+            alert('파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+        })
+        .finally(() => {
+            // 제출 버튼 복원
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
+        });
 } 
