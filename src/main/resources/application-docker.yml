@@ -58,6 +58,8 @@ server:
 app:
   storage:
     type: local
+  upload:
+    path: /app/uploads/
 
 # 확인용
 logging:

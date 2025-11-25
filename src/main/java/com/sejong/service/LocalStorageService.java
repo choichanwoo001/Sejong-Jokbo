@@ -21,9 +21,11 @@ import java.nio.file.StandardCopyOption;
 @Slf4j
 public class LocalStorageService implements FileStorageService {
 
-    private final Path uploadPath = Paths.get("uploads/jokbo/");
+    private final Path uploadPath;
 
-    public LocalStorageService() {
+    public LocalStorageService(
+            @org.springframework.beans.factory.annotation.Value("${app.upload.path}") String uploadPathStr) {
+        this.uploadPath = Paths.get(uploadPathStr).resolve("jokbo/");
         try {
             // 업로드 디렉토리 생성
             if (!Files.exists(uploadPath)) {
@@ -41,14 +43,14 @@ public class LocalStorageService implements FileStorageService {
     public String uploadFile(MultipartFile file, String filename) throws IOException {
         try {
             Path targetPath = uploadPath.resolve(filename);
-            
+
             // 상위 디렉토리가 없으면 생성
             Files.createDirectories(targetPath.getParent());
-            
+
             // 파일 저장
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             log.info("로컬 파일 업로드 성공: {}", targetPath.toAbsolutePath());
-            
+
             return filename;
         } catch (Exception e) {
             log.error("로컬 파일 업로드 실패: {}", e.getMessage());
