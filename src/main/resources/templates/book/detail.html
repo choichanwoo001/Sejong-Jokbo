@@ -24,19 +24,6 @@
                 <img th:if="${book.imageUrl}" th:src="${book.imageUrl}" alt="책 표지" class="book-image">
                 <div class="book-details">
                     <h1 class="book-title" th:text="${book.title}">책 제목</h1>
-                    <p class="book-author" th:if="${book.author}">
-                        <strong>저자:</strong> <span th:text="${book.author}">저자명</span>
-                    </p>
-                    <p class="book-publisher" th:if="${book.publisher}">
-                        <strong>출판사:</strong> <span th:text="${book.publisher}">출판사명</span>
-                    </p>
-                    <p class="book-category" th:if="${book.category}">
-                        <strong>카테고리:</strong> <span th:text="${book.category}">카테고리</span>
-                    </p>
-                </div>
-            </div>
-
-            <div class="jokbo-section">
                 <h2>족보</h2>
 
                 <div class="jokbo-tabs">

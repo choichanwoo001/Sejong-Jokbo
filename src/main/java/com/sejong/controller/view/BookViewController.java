@@ -31,27 +31,28 @@ public class BookViewController {
 
     private final BookService bookService;
     private final JokboService jokboService;
-    
+
     /**
      * 통합 검색을 수행합니다
      */
     @Operation(summary = "도서 통합 검색", description = "키워드로 도서를 검색합니다")
     @GetMapping("/search")
-    public String searchBooks(@Parameter(description = "검색 키워드") @RequestParam(required = false) String keyword, Model model) {
+    public String searchBooks(@Parameter(description = "검색 키워드") @RequestParam(required = false) String keyword,
+            Model model) {
         List<Book> searchResults = bookService.searchBooks(keyword);
         model.addAttribute("books", searchResults);
         model.addAttribute("keyword", keyword);
         model.addAttribute("isSearch", true);
         return "home";
     }
-    
+
     /**
      * 카테고리별 검색을 수행합니다
      */
     @GetMapping("/search/category")
-    public String searchBooksByCategory(@RequestParam String category, 
-                                      @RequestParam(required = false) String keyword, 
-                                      Model model) {
+    public String searchBooksByCategory(@RequestParam String category,
+            @RequestParam(required = false) String keyword,
+            Model model) {
         List<Book> searchResults = bookService.searchBooksByCategoryAndKeyword(category, keyword);
         model.addAttribute("books", searchResults);
         model.addAttribute("keyword", keyword);
@@ -59,29 +60,48 @@ public class BookViewController {
         model.addAttribute("isSearch", true);
         return "home";
     }
-    
+
     /**
      * 책 상세 페이지를 보여줍니다 (페이징 포함)
      */
     @GetMapping("/book/{bookId}")
-    public String bookDetail(@PathVariable Integer bookId, 
-                           @RequestParam(defaultValue = "0") int page,
-                           @RequestParam(required = false) String tab,
-                           Model model) {
+    public String bookDetail(@PathVariable Integer bookId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String tab,
+            Model model) {
         Book book = bookService.getBookById(bookId);
         Page<Jokbo> jokboPage = jokboService.getApprovedJokbosByBookId(bookId, page);
-        
+
         model.addAttribute("book", book);
+        model.addAttribute("translatedCategory", translateCategory(book.getCategory()));
         model.addAttribute("jokbos", jokboPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", jokboPage.getTotalPages());
         model.addAttribute("hasNext", jokboPage.hasNext());
         model.addAttribute("hasPrevious", jokboPage.hasPrevious());
         model.addAttribute("activeTab", tab != null ? tab : "register");
-        
+
         return "book/detail";
     }
-    
+
+    private String translateCategory(String category) {
+        if (category == null) {
+            return "";
+        }
+        switch (category.toLowerCase()) {
+            case "east":
+                return "동양";
+            case "west":
+                return "서양";
+            case "eastwest":
+                return "동서양";
+            case "science":
+                return "과학";
+            default:
+                return category;
+        }
+    }
+
     /**
      * 족보 파일을 다운로드합니다 (환경에 따라 자동 선택)
      */
@@ -92,7 +112,7 @@ public class BookViewController {
             try {
                 Path filePath = jokboService.getFilePath(filename);
                 Resource resource = new UrlResource(filePath.toUri());
-                
+
                 if (resource.exists() && resource.isReadable()) {
                     return ResponseEntity.ok()
                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
@@ -111,7 +131,7 @@ public class BookViewController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     /**
      * 텍스트 족보를 PDF로 보기 (브라우저에서 열기)
      */
@@ -119,16 +139,16 @@ public class BookViewController {
     public ResponseEntity<byte[]> viewTextJokboAsPdf(@PathVariable Integer jokboId) {
         try {
             byte[] pdfBytes = jokboService.getTextJokboAsPdf(jokboId);
-            
+
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(pdfBytes);
-                    
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     /**
      * 텍스트 족보를 PDF로 다운로드합니다
      */
@@ -136,19 +156,19 @@ public class BookViewController {
     public ResponseEntity<byte[]> downloadTextJokboAsPdf(@PathVariable Integer jokboId) {
         try {
             byte[] pdfBytes = jokboService.getTextJokboAsPdf(jokboId);
-            
+
             String filename = "jokbo_" + jokboId + ".pdf";
-            
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(pdfBytes);
-                    
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     /**
      * 족보 파일을 뷰어에서 보여줍니다
      */
@@ -159,7 +179,7 @@ public class BookViewController {
             try {
                 Path filePath = jokboService.getFilePath(filename);
                 Resource resource = new UrlResource(filePath.toUri());
-                
+
                 if (resource.exists() && resource.isReadable()) {
                     String contentType = getContentType(filename);
                     return ResponseEntity.ok()
@@ -182,7 +202,7 @@ public class BookViewController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     /**
      * 파일 확장자에 따른 Content-Type을 반환합니다
      */
@@ -204,6 +224,5 @@ public class BookViewController {
                 return "application/octet-stream";
         }
     }
-    
 
 }
