@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/site-layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
         pageTitle=${book.title + ' - 세종족보'},
         content=~{::content},
         extraHead=~{::extraHead},
@@ -14,9 +13,7 @@
 </th:block>
 
 <th:block th:fragment="content">
-    <div class="book-detail"
-         th:data-book-id="${book.bookId}"
-         th:data-active-tab="${activeTab}">
+    <div class="book-detail" th:data-book-id="${book.bookId}" th:data-active-tab="${activeTab}">
         <a href="/" class="back-link">홈으로 돌아가기</a>
 
         <div class="main-layout">
@@ -24,205 +21,164 @@
                 <img th:if="${book.imageUrl}" th:src="${book.imageUrl}" alt="책 표지" class="book-image">
                 <div class="book-details">
                     <h1 class="book-title" th:text="${book.title}">책 제목</h1>
-                <h2>족보</h2>
+                    <h2>족보</h2>
 
-                <div class="jokbo-tabs">
-                    <button class="jokbo-tab active"
-                            type="button"
-                            data-tab-target="register">족보 등록</button>
-                    <button class="jokbo-tab"
-                            type="button"
-                            data-tab-target="list">족보 목록</button>
-                </div>
-
-                <div id="register" class="jokbo-content active">
-                    <div class="register-tabs">
-                        <button class="register-tab active"
-                                type="button"
-                                data-register-target="text">텍스트</button>
-                        <button class="register-tab"
-                                type="button"
-                                data-register-target="file">파일</button>
+                    <div class="jokbo-tabs">
+                        <button class="jokbo-tab active" type="button" data-tab-target="register">족보 등록</button>
+                        <button class="jokbo-tab" type="button" data-tab-target="list">족보 목록</button>
                     </div>
 
-                    <div id="text-register" class="register-content active">
-                        <div class="jokbo-form">
-                            <h3>텍스트 족보 등록</h3>
-                            <form id="textJokboForm">
-                                <div class="form-group">
-                                    <label class="form-label">등록자 이름</label>
-                                    <input type="text" name="uploaderName" class="form-input" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">이메일</label>
-                                    <div class="email-group">
-                                        <input type="email" name="email" class="form-input email-input" required>
-                                        <button type="button"
-                                                class="verify-button"
-                                                data-action="send-verification">인증번호 발송</button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">인증번호</label>
-                                    <div class="verification-code-group">
-                                        <input type="text" name="verificationCode" class="form-input verification-code-input" placeholder="인증번호를 입력하세요" required>
-                                        <button type="button"
-                                                class="verify-button"
-                                                data-action="verify-code">인증확인</button>
-                                    </div>
-                                    <div id="verificationStatus" class="verification-status" style="display: none;"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">족보 내용</label>
-                                    <textarea name="content" class="form-textarea" placeholder="족보 내용을 입력하세요..." required></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">코멘트 (선택사항)</label>
-                                    <textarea name="comment" class="form-textarea" placeholder="추가 코멘트를 입력하세요..."></textarea>
-                                </div>
-                                <button type="submit" class="form-button">텍스트 족보 등록</button>
-                            </form>
+                    <div id="register" class="jokbo-content active">
+                        <div class="register-tabs">
+                            <button class="register-tab active" type="button" data-register-target="text">텍스트</button>
+                            <button class="register-tab" type="button" data-register-target="file">파일</button>
                         </div>
-                    </div>
 
-                    <div id="file-register" class="register-content">
-                        <div class="jokbo-form">
-                            <h3>파일 족보 등록</h3>
-                            <form id="fileJokboForm" enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <label class="form-label">등록자 이름</label>
-                                    <input type="text" name="uploaderName" class="form-input" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">이메일</label>
-                                    <div class="email-group">
-                                        <input type="email" name="email" class="form-input email-input" required>
-                                        <button type="button"
-                                                class="verify-button"
-                                                data-action="send-verification">인증번호 발송</button>
+                        <div id="text-register" class="register-content active">
+                            <div class="jokbo-form">
+                                <h3>텍스트 족보 등록</h3>
+                                <form id="textJokboForm">
+                                    <div class="form-group">
+                                        <label class="form-label">등록자 이름</label>
+                                        <input type="text" name="uploaderName" class="form-input" required>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">인증번호</label>
-                                    <div class="verification-code-group">
-                                        <input type="text" name="verificationCode" class="form-input verification-code-input" placeholder="인증번호를 입력하세요" required>
-                                        <button type="button"
-                                                class="verify-button"
-                                                data-action="verify-code">인증확인</button>
+                                    <div class="form-group">
+                                        <label class="form-label">족보 내용</label>
+                                        <textarea name="content" class="form-textarea" placeholder="족보 내용을 입력하세요..."
+                                            required></textarea>
                                     </div>
-                                    <div id="verificationStatus" class="verification-status" style="display: none;"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">족보 파일</label>
-                                    <div class="file-upload" id="fileUpload">
-                                        <p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
-                                        <input type="file" name="file" id="fileInput" style="display: none;" accept=".pdf,.jpg,.jpeg,.png,.gif,.txt" required>
+                                    <div class="form-group">
+                                        <label class="form-label">코멘트 (선택사항)</label>
+                                        <textarea name="comment" class="form-textarea"
+                                            placeholder="추가 코멘트를 입력하세요..."></textarea>
                                     </div>
-                                    <div id="fileInfo" class="file-info" style="display: none;">
-                                        <div class="file-details">
-                                            <span id="fileName"></span>
-                                            <button type="button"
-                                                    class="file-remove-btn"
+                                    <button type="submit" class="form-button">텍스트 족보 등록</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div id="file-register" class="register-content">
+                            <div class="jokbo-form">
+                                <h3>파일 족보 등록</h3>
+                                <form id="fileJokboForm" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label class="form-label">등록자 이름</label>
+                                        <input type="text" name="uploaderName" class="form-input" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">족보 파일</label>
+                                        <div class="file-upload" id="fileUpload">
+                                            <p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
+                                            <input type="file" name="file" id="fileInput" style="display: none;"
+                                                accept=".pdf,.jpg,.jpeg,.png,.gif,.txt" required>
+                                        </div>
+                                        <div id="fileInfo" class="file-info" style="display: none;">
+                                            <div class="file-details">
+                                                <span id="fileName"></span>
+                                                <button type="button" class="file-remove-btn"
                                                     data-action="remove-file">삭제</button>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="form-label">코멘트 (선택사항)</label>
+                                        <textarea name="comment" class="form-textarea"
+                                            placeholder="추가 코멘트를 입력하세요..."></textarea>
+                                    </div>
+                                    <button type="submit" class="form-button">파일 족보 등록</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="list" class="jokbo-content">
+                        <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
+                            <p>등록된 족보가 없습니다.</p>
+                        </div>
+
+                        <div th:if="${!#lists.isEmpty(jokbos)}" class="jokbo-list">
+                            <div th:each="jokbo : ${jokbos}" class="jokbo-item">
+                                <div class="jokbo-header">
+                                    <span class="jokbo-uploader" th:text="${jokbo.uploaderName}">등록자</span>
+                                    <span class="jokbo-date"
+                                        th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</span>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">코멘트 (선택사항)</label>
-                                    <textarea name="comment" class="form-textarea" placeholder="추가 코멘트를 입력하세요..."></textarea>
+
+                                <div class="jokbo-actions">
+                                    <a th:if="${jokbo.contentType == 'text'}"
+                                        th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" target="_blank"
+                                        class="btn-view">보기</a>
+                                    <a th:if="${jokbo.contentType == 'text'}"
+                                        th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}"
+                                        class="btn-download">다운로드</a>
+
+                                    <a th:if="${jokbo.contentType == 'file'}"
+                                        th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" target="_blank"
+                                        class="btn-view">보기</a>
+                                    <a th:if="${jokbo.contentType == 'file'}"
+                                        th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}"
+                                        class="btn-download">다운로드</a>
                                 </div>
-                                <button type="submit" class="form-button">파일 족보 등록</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
 
-                <div id="list" class="jokbo-content">
-                    <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
-                        <p>등록된 족보가 없습니다.</p>
-                    </div>
-
-                    <div th:if="${!#lists.isEmpty(jokbos)}" class="jokbo-list">
-                        <div th:each="jokbo : ${jokbos}" class="jokbo-item">
-                            <div class="jokbo-header">
-                                <span class="jokbo-uploader" th:text="${jokbo.uploaderName}">등록자</span>
-                                <span class="jokbo-date" th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</span>
-                            </div>
-
-                            <div class="jokbo-actions">
-                                <a th:if="${jokbo.contentType == 'text'}" th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}" target="_blank" class="btn-view">보기</a>
-                                <a th:if="${jokbo.contentType == 'text'}" th:href="@{'/jokbo/download/text/' + ${jokbo.jokboId}}" class="btn-download">다운로드</a>
-
-                                <a th:if="${jokbo.contentType == 'file'}" th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}" target="_blank" class="btn-view">보기</a>
-                                <a th:if="${jokbo.contentType == 'file'}" th:href="@{'/jokbo/download/' + ${jokbo.contentUrl}}" class="btn-download">다운로드</a>
-                            </div>
-
-                            <div th:if="${jokbo.comment}" class="jokbo-comment">
-                                <strong>코멘트:</strong> <span th:text="${jokbo.comment}">코멘트</span>
+                                <div th:if="${jokbo.comment}" class="jokbo-comment">
+                                    <strong>코멘트:</strong> <span th:text="${jokbo.comment}">코멘트</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div th:if="${totalPages > 1}" class="jokbo-pagination">
-                        <a th:if="${hasPrevious}"
-                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}"
-                           class="page-btn prev-btn">이전</a>
+                        <div th:if="${totalPages > 1}" class="jokbo-pagination">
+                            <a th:if="${hasPrevious}"
+                                th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}"
+                                class="page-btn prev-btn">이전</a>
 
-                        <div class="page-numbers">
-                            <a th:if="${currentPage > 3}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=0, tab=list)}"
-                               class="page-btn">1</a>
+                            <div class="page-numbers">
+                                <a th:if="${currentPage > 3}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=0, tab=list)}"
+                                    class="page-btn">1</a>
 
-                            <span th:if="${currentPage > 4}" class="page-dots">...</span>
+                                <span th:if="${currentPage > 4}" class="page-dots">...</span>
 
-                            <a th:if="${currentPage >= 3}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 3}, tab=list)}"
-                               th:text="${currentPage - 2}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage >= 3}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 3}, tab=list)}"
+                                    th:text="${currentPage - 2}" class="page-btn"></a>
 
-                            <a th:if="${currentPage >= 2}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 2}, tab=list)}"
-                               th:text="${currentPage - 1}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage >= 2}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 2}, tab=list)}"
+                                    th:text="${currentPage - 1}" class="page-btn"></a>
 
-                            <a th:if="${currentPage >= 1}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}"
-                               th:text="${currentPage}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage >= 1}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage - 1}, tab=list)}"
+                                    th:text="${currentPage}" class="page-btn"></a>
 
-                            <span th:text="${currentPage + 1}" class="page-btn current"></span>
+                                <span th:text="${currentPage + 1}" class="page-btn current"></span>
 
-                            <a th:if="${currentPage < totalPages - 1}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}"
-                               th:text="${currentPage + 2}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage < totalPages - 1}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}"
+                                    th:text="${currentPage + 2}" class="page-btn"></a>
 
-                            <a th:if="${currentPage < totalPages - 2}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 2}, tab=list)}"
-                               th:text="${currentPage + 3}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage < totalPages - 2}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 2}, tab=list)}"
+                                    th:text="${currentPage + 3}" class="page-btn"></a>
 
-                            <a th:if="${currentPage < totalPages - 3}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 3}, tab=list)}"
-                               th:text="${currentPage + 4}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage < totalPages - 3}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 3}, tab=list)}"
+                                    th:text="${currentPage + 4}" class="page-btn"></a>
 
-                            <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+                                <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
 
-                            <a th:if="${currentPage < totalPages - 4}"
-                               th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${totalPages - 1}, tab=list)}"
-                               th:text="${totalPages}"
-                               class="page-btn"></a>
+                                <a th:if="${currentPage < totalPages - 4}"
+                                    th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${totalPages - 1}, tab=list)}"
+                                    th:text="${totalPages}" class="page-btn"></a>
+                            </div>
+
+                            <a th:if="${hasNext}"
+                                th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}"
+                                class="page-btn next-btn">다음</a>
                         </div>
-
-                        <a th:if="${hasNext}"
-                           th:href="@{/book/{bookId}(bookId=${book.bookId}, page=${currentPage + 1}, tab=list)}"
-                           class="page-btn next-btn">다음</a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </th:block>
 
 <th:block th:fragment="extraScripts">
@@ -231,4 +187,5 @@
     <script th:src="@{/js/sse.js}"></script>
     <script th:src="@{/js/user-sse-init.js}"></script>
 </th:block>
-</html> 
+
+</html>

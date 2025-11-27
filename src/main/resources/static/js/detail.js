@@ -1,7 +1,3 @@
-// 전역 변수
-let verificationCode = '';
-let isEmailVerified = false;
-
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function () {
     initializeFileUpload();
@@ -9,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSubmitButtonState();
     checkTabParameter();
     initializeTabHandlers();
-    initializeVerificationButtons();
     initializeFileRemovalButtons();
 });
 
@@ -88,133 +83,17 @@ function showRegisterTab(tabName, triggerElement = null) {
     }
 }
 
-// 인증번호 발송
-function sendVerificationCode(button) {
-    const emailInput = button.parentElement.querySelector('input[type="email"]');
-    const email = emailInput.value;
-
-    if (!email) {
-        alert('이메일을 입력해주세요.');
-        return;
-    }
-
-    // 버튼 상태 변경
-    button.disabled = true;
-    button.textContent = '발송 중...';
-
-    // 서버에 인증번호 발송 요청
-    fetch('/api/send-verification', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('인증번호가 발송되었습니다.');
-                button.textContent = '재발송';
-
-                // 1분 후 재발송 가능하도록 설정
-                setTimeout(() => {
-                    button.disabled = false;
-                    button.textContent = '인증번호 발송';
-                }, 60000);
-            } else {
-                alert('인증번호 발송에 실패했습니다: ' + data.message);
-                button.disabled = false;
-                button.textContent = '인증번호 발송';
-            }
-        })
-        .catch(error => {
-            debugError('Error:', error);
-            alert('인증번호 발송 중 오류가 발생했습니다.');
-            button.disabled = false;
-            button.textContent = '인증번호 발송';
-        });
-}
-
-// 인증번호 확인
-function verifyCode(button) {
-    const emailInput = button.closest('.form-group').parentElement.querySelector('input[type="email"]');
-    const codeInput = button.parentElement.querySelector('input[name="verificationCode"]');
-    const email = emailInput.value;
-    const inputCode = codeInput.value;
-
-    if (!email || !inputCode) {
-        alert('이메일과 인증번호를 모두 입력해주세요.');
-        return;
-    }
-
-    // 버튼 상태 변경
-    button.disabled = true;
-    button.textContent = '확인 중...';
-
-    // 서버에 인증번호 확인 요청
-    fetch('/api/verify-code', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email: email,
-            code: inputCode
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                isEmailVerified = true;
-                button.textContent = '인증완료';
-                button.disabled = true;
-                button.style.backgroundColor = '#28a745';
-
-                // 모든 인증 상태 표시 업데이트
-                updateVerificationStatus('이메일 인증이 완료되었습니다.', 'success');
-                updateSubmitButtonState();
-            } else {
-                isEmailVerified = false;
-                button.disabled = false;
-                button.textContent = '인증확인';
-                updateVerificationStatus('인증번호가 일치하지 않습니다.', 'error');
-            }
-        })
-        .catch(error => {
-            debugError('Error:', error);
-            alert('인증번호 확인 중 오류가 발생했습니다.');
-            button.disabled = false;
-            button.textContent = '인증확인';
-        });
-}
-
-// 인증 상태 표시 업데이트
-function updateVerificationStatus(message, type) {
-    const statusDivs = document.querySelectorAll('#verificationStatus');
-    statusDivs.forEach(statusDiv => {
-        statusDiv.className = `verification-status verification-${type}`;
-        statusDiv.textContent = message;
-        statusDiv.style.display = 'block';
-    });
-}
-
 // 제출 버튼 상태 업데이트
 function updateSubmitButtonState() {
     const submitButtons = document.querySelectorAll('.form-button');
     submitButtons.forEach(button => {
-        if (!isEmailVerified) {
-            button.disabled = true;
-            button.textContent = '이메일 인증 후 등록 가능';
-            button.style.backgroundColor = '#6c757d';
-        } else {
-            button.disabled = false;
-            if (button.textContent.includes('텍스트')) {
-                button.textContent = '텍스트 족보 등록';
-            } else if (button.textContent.includes('파일')) {
-                button.textContent = '파일 족보 등록';
-            }
-            button.style.backgroundColor = '#007bff';
+        button.disabled = false;
+        if (button.textContent.includes('텍스트')) {
+            button.textContent = '텍스트 족보 등록';
+        } else if (button.textContent.includes('파일')) {
+            button.textContent = '파일 족보 등록';
         }
+        button.style.backgroundColor = '#007bff';
     });
 }
 
@@ -259,16 +138,6 @@ function initializeTabHandlers() {
             const tabName = tabButton.getAttribute('data-register-target');
             showRegisterTab(tabName, tabButton);
         });
-    });
-}
-
-function initializeVerificationButtons() {
-    document.querySelectorAll('.verify-button[data-action="send-verification"]').forEach((button) => {
-        button.addEventListener('click', () => sendVerificationCode(button));
-    });
-
-    document.querySelectorAll('.verify-button[data-action="verify-code"]').forEach((button) => {
-        button.addEventListener('click', () => verifyCode(button));
     });
 }
 
@@ -344,11 +213,6 @@ function initializeFormHandlers() {
 function handleTextJokboSubmit(e) {
     e.preventDefault();
 
-    if (!isEmailVerified) {
-        alert('이메일 인증을 완료해주세요.');
-        return;
-    }
-
     const formData = new FormData(this);
     const bookId = this.closest('.book-detail').dataset.bookId;
 
@@ -361,20 +225,7 @@ function handleTextJokboSubmit(e) {
             if (result === 'success') {
                 alert('족보 등록 요청이 완료되었습니다.\n관리자가 승인하면 족보 목록에 등록됩니다.');
                 this.reset();
-                isEmailVerified = false;
-                document.querySelectorAll('#verificationStatus').forEach(status => {
-                    status.style.display = 'none';
-                });
                 updateSubmitButtonState();
-
-                // 인증 버튼들 초기화
-                document.querySelectorAll('.verify-button').forEach(button => {
-                    if (button.textContent.includes('인증확인')) {
-                        button.disabled = false;
-                        button.textContent = '인증확인';
-                        button.style.backgroundColor = '';
-                    }
-                });
             } else {
                 alert('족보 등록에 실패했습니다: ' + result);
             }
@@ -387,11 +238,6 @@ function handleTextJokboSubmit(e) {
 // 파일 족보 등록 처리
 function handleFileJokboSubmit(e) {
     e.preventDefault();
-
-    if (!isEmailVerified) {
-        alert('이메일 인증을 완료해주세요.');
-        return;
-    }
 
     const fileInput = document.getElementById('fileInput');
     if (!fileInput.files || fileInput.files.length === 0) {
@@ -423,20 +269,7 @@ function handleFileJokboSubmit(e) {
                 alert('족보 등록 요청이 완료되었습니다.\n관리자가 승인하면 족보 목록에 등록됩니다.');
                 this.reset();
                 removeFile();
-                isEmailVerified = false;
-                document.querySelectorAll('#verificationStatus').forEach(status => {
-                    status.style.display = 'none';
-                });
                 updateSubmitButtonState();
-
-                // 인증 버튼들 초기화
-                document.querySelectorAll('.verify-button').forEach(button => {
-                    if (button.textContent.includes('인증확인')) {
-                        button.disabled = false;
-                        button.textContent = '인증확인';
-                        button.style.backgroundColor = '';
-                    }
-                });
             } else {
                 alert('족보 등록에 실패했습니다: ' + result);
             }
@@ -450,4 +283,4 @@ function handleFileJokboSubmit(e) {
             submitButton.disabled = false;
             submitButton.textContent = originalText;
         });
-} 
+}
