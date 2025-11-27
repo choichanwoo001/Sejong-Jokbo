@@ -105,7 +105,7 @@ public class BookViewController {
     /**
      * 족보 파일을 다운로드합니다 (환경에 따라 자동 선택)
      */
-    @GetMapping("/jokbo/download/{filename}")
+    @GetMapping("/jokbo/download/{filename:.+}")
     public ResponseEntity<Resource> downloadJokboFile(@PathVariable String filename) {
         try {
             // 로컬 환경에서는 getFilePath, GCP 환경에서는 downloadFile 사용
@@ -172,7 +172,7 @@ public class BookViewController {
     /**
      * 족보 파일을 뷰어에서 보여줍니다
      */
-    @GetMapping("/jokbo/view/{filename}")
+    @GetMapping("/jokbo/view/{filename:.+}")
     public ResponseEntity<Resource> viewJokboFile(@PathVariable String filename) {
         try {
             // GCP 환경에서는 getFilePath가 지원되지 않으므로 downloadFile 사용
