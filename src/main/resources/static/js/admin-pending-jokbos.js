@@ -23,11 +23,21 @@ window.approveJokbo = function (jokboId) {
 };
 
 window.rejectJokbo = function (jokboId) {
-    if (!confirm('이 족보를 반려하시겠습니까?')) {
+    const reason = prompt('반려 사유를 입력해주세요:');
+    if (reason === null) {
+        return; // 취소 버튼 누름
+    }
+
+    if (!reason.trim()) {
+        alert('반려 사유를 입력해야 합니다.');
         return;
     }
 
-    fetch(`/admin/jokbo/${jokboId}/reject`, {
+    if (!confirm('정말로 이 족보를 반려하시겠습니까?')) {
+        return;
+    }
+
+    fetch(`/admin/jokbo/${jokboId}/reject?comment=${encodeURIComponent(reason)}`, {
         method: 'POST'
     })
         .then(function (response) {
