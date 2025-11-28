@@ -3,6 +3,8 @@ package com.sejong.controller.api;
 import com.sejong.global.dto.ApiResponse;
 import com.sejong.service.BookService;
 import com.sejong.service.JokboService;
+import com.sejong.repository.InquiryRepository;
+import com.sejong.repository.JokboRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Tag(name = "통계 API", description = "시스템 통계 관련 API")
 public class StatsRestController {
-    
+
     private final BookService bookService;
     private final JokboService jokboService;
-    
+    private final JokboRepository jokboRepository;
+    private final InquiryRepository inquiryRepository;
+
     /**
      * 메인 페이지 통계 정보
      */
@@ -29,15 +33,14 @@ public class StatsRestController {
     @GetMapping("/stats")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getMainStats() {
         Map<String, Object> stats = new HashMap<>();
-        
-        // TODO: 서비스에 통계 메서드들 구현 필요
+
         stats.put("totalBooks", (long) bookService.getAllBooks().size());
-        stats.put("totalJokbos", 0L); // 임시값
-        stats.put("totalDownloads", 0L); // 임시값
-        
+        stats.put("totalJokbos", jokboRepository.countByStatus(com.sejong.entity.Jokbo.JokboStatus.승인));
+        stats.put("totalDownloads", 0L); // 다운로드 수는 아직 집계되지 않음
+
         return ResponseEntity.ok(ApiResponse.success(stats));
     }
-    
+
     /**
      * 관리자 대시보드 통계 정보
      */
@@ -45,13 +48,12 @@ public class StatsRestController {
     @GetMapping("/admin/stats")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getAdminStats() {
         Map<String, Object> stats = new HashMap<>();
-        
-        // TODO: 서비스에 통계 메서드들 구현 필요
+
         stats.put("pendingJokbos", jokboService.getPendingJokbosCount());
-        stats.put("totalJokbos", 0L); // 임시값
+        stats.put("totalJokbos", jokboRepository.count());
         stats.put("totalBooks", (long) bookService.getAllBooks().size());
-        stats.put("pendingInquiries", 0L); // 임시값
-        
+        stats.put("pendingInquiries", inquiryRepository.countByCommentsIsEmpty());
+
         return ResponseEntity.ok(ApiResponse.success(stats));
     }
 }

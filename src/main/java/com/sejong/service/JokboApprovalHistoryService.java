@@ -1,12 +1,42 @@
-JokboApprovalHistory.ApprovalAction action,
+package com.sejong.service;
+
+import com.sejong.entity.Admin;
+import com.sejong.entity.Jokbo;
+import com.sejong.entity.JokboApprovalHistory;
+import com.sejong.repository.AdminRepository;
+import com.sejong.repository.JokboApprovalHistoryRepository;
+import com.sejong.repository.JokboRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class JokboApprovalHistoryService {
+
+    private final JokboApprovalHistoryRepository historyRepository;
+    private final JokboRepository jokboRepository;
+    private final AdminRepository adminRepository;
+
+    /**
+     * 승인 이력 저장
+     */
+    @Transactional
+    public JokboApprovalHistory save(Integer jokboId, Integer adminId,
+            JokboApprovalHistory.ApprovalAction action,
             Jokbo.JokboStatus previousStatus,
             Jokbo.JokboStatus newStatus,
             String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
-                .orElseThrow(() -> new EntityNotFoundException("족보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("족보를 찾을 수 없습니다."));
 
         Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new EntityNotFoundException("관리자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("관리자를 찾을 수 없습니다."));
 
         JokboApprovalHistory history = new JokboApprovalHistory();
         history.setJokbo(jokbo);

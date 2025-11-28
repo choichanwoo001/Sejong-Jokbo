@@ -37,6 +37,11 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Integer> {
     List<Inquiry> findByCommentsIsEmptyOrderByCreatedAtDesc();
 
     /**
+     * 답변되지 않은 문의 수를 반환합니다
+     */
+    long countByCommentsIsEmpty();
+
+    /**
      * 문의 ID로 문의를 조회합니다 (댓글 포함)
      */
     @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.inquiryId = :inquiryId")

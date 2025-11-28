@@ -29,22 +29,6 @@ function getCategoryId(categoryName) {
 }
 
 /**
- * 디버그 모드 확인 (개발 환경에서만 로그 출력)
- */
-const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-/**
- * 조건부 콘솔 로그 (개발 환경에서만 출력)
- */
-function debugLog(...args) {
-    if (DEBUG_MODE) {
-        console.log(...args);
-    }
-}
-
-/**
- * 조건부 콘솔 에러 (항상 출력)
- */
 function debugError(...args) {
     if (DEBUG_MODE) {
         console.error(...args);
