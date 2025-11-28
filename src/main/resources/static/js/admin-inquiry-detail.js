@@ -19,7 +19,7 @@
     }
 
     function extractInquiryId() {
-        const container = document.querySelector(CONTAINER_SELECTOR);
+        const container = document.querySelector('.admin-inquiry-detail');
         return container ? container.getAttribute('data-inquiry-id') : null;
     }
 
@@ -42,23 +42,24 @@
             submitButton.disabled = true;
         }
 
-        fetch(`/admin/inquiry/${inquiryId}/comment`, {
+        fetch(`/api/comments/inquiry/${inquiryId}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
-            body: `content=${encodeURIComponent(content)}`
+            body: JSON.stringify({ content: content })
         })
-            .then((response) => response.text())
+            .then((response) => response.json())
             .then((result) => {
-                if (result === 'success') {
+                if (result.success) {
                     alert('답변이 등록되었습니다.');
                     window.location.reload();
                 } else {
-                    alert(`답변 등록 중 오류가 발생했습니다: ${result}`);
+                    alert(`답변 등록 중 오류가 발생했습니다: ${result.message || '알 수 없는 오류'}`);
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Error:', error);
                 alert('답변 등록 중 오류가 발생했습니다.');
             })
             .finally(() => {
