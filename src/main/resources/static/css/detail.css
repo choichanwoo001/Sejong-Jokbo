@@ -13,7 +13,7 @@
 .book-info {
     flex: 1;
     padding: 20px;
-    background: #f8f9fa;
+    background: white;
     border-radius: 10px;
     height: fit-content;
 }
@@ -117,7 +117,7 @@
 }
 
 .jokbo-form {
-    background: #f8f9fa;
+    background: white;
     padding: 30px;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -236,7 +236,7 @@
 }
 
 .jokbo-content-text {
-    background: #f8f9fa;
+    background: white;
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
@@ -303,7 +303,7 @@
 .file-info {
     margin-top: 10px;
     padding: 12px;
-    background: #f8f9fa;
+    background: white;
     border: 1px solid #e9ecef;
     border-radius: 6px;
 }

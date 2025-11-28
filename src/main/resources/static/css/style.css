@@ -6,7 +6,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: white;
     min-height: 100vh;
     color: #000000;
 }
@@ -286,7 +286,7 @@ body {
 }
 
 .book-display {
-    background: #fefefe;
+    background: white;
     border: 2px solid #f9fafb;
     border-radius: 12px;
     padding: 10px 40px;
@@ -328,7 +328,7 @@ body {
 }
 
 .book-item {
-    background: #fafbfc;
+    background: white;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -355,7 +355,7 @@ body {
     margin-bottom: 12px;
     border-radius: 8px;
     overflow: hidden;
-    background: #f8fafc;
+    background: white;
     border: 1px solid #f1f5f9;
     align-self: center;
 }
@@ -381,7 +381,8 @@ body {
     margin-bottom: 8px;
 }
 
-.book-author, .book-publisher {
+.book-author,
+.book-publisher {
     font-size: 14px;
     color: #000000;
     margin-bottom: 4px;
@@ -408,7 +409,7 @@ body {
     .search-section {
         flex-direction: column;
     }
-    
+
     .category-section {
         flex-direction: column;
         align-items: center;
@@ -419,7 +420,7 @@ body {
         gap: 15px;
         text-align: center;
     }
-    
+
     .left-controls {
         flex-direction: column;
         gap: 10px;
@@ -497,6 +498,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -637,6 +639,7 @@ body {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -644,8 +647,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* 반응형 파일 업로드 UI */
@@ -654,11 +662,11 @@ body {
         font-size: 13px;
         padding: 10px 12px;
     }
-    
+
     .file-upload-area {
         padding: 15px;
     }
-    
+
     .file-restriction-notice {
         font-size: 12px;
         padding: 8px 12px;
@@ -825,42 +833,42 @@ body {
         margin-top: 40px;
         padding: 20px;
     }
-    
+
     .package-header h2 {
         font-size: 1.5rem;
     }
-    
+
     .package-description {
         font-size: 1rem;
     }
-    
+
     .package-book {
         flex-direction: column;
         gap: 10px;
         text-align: center;
     }
-    
+
     .book-category {
         align-self: center;
     }
-    
+
     .package-notice-banner {
         padding: 12px 15px;
         margin-bottom: 20px;
     }
-    
+
     .notice-content {
         flex-direction: column;
         gap: 8px;
         text-align: center;
     }
-    
+
     .notice-text {
         font-size: 0.9rem;
     }
-    
+
     .notice-link {
         padding: 8px 16px;
         font-size: 0.85rem;
     }
-} 
+}
