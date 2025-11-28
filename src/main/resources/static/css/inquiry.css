@@ -1,4 +1,10 @@
 /* 문의 게시판 스타일 */
+.inquiry-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
 .inquiry-header {
     display: flex;
     justify-content: space-between;
