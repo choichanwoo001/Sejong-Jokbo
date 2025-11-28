@@ -67,6 +67,13 @@ public class InquiryService {
     }
 
     /**
+     * 문의 ID로 문의를 조회합니다 (댓글 포함)
+     */
+    public Inquiry getInquiryWithComments(Integer inquiryId) {
+        return inquiryRepository.findByIdWithComments(inquiryId).orElse(null);
+    }
+
+    /**
      * 새로운 문의를 등록합니다
      */
     public Inquiry registerInquiry(String name, String email, String message, Boolean isPublic) {

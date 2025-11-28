@@ -1,3 +1,4 @@
+
 package com.sejong.repository;
 
 import com.sejong.entity.JokboApprovalHistory;
@@ -80,5 +81,11 @@ public interface JokboApprovalHistoryRepository extends JpaRepository<JokboAppro
        Page<JokboApprovalHistory> findAllWithFilters(@Param("action") JokboApprovalHistory.ApprovalAction action,
                      @Param("previousStatus") com.sejong.entity.Jokbo.JokboStatus previousStatus,
                      @Param("newStatus") com.sejong.entity.Jokbo.JokboStatus newStatus,
+                     Pageable pageable);
+
+       /**
+        * 특정 액션 목록에 포함된 이력 조회 (최신순)
+        */
+       Page<JokboApprovalHistory> findByActionInOrderByCreatedAtDesc(List<JokboApprovalHistory.ApprovalAction> actions,
                      Pageable pageable);
 }

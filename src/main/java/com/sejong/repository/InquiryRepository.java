@@ -35,4 +35,11 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Integer> {
      */
     @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.comments IS EMPTY ORDER BY i.createdAt DESC")
     List<Inquiry> findByCommentsIsEmptyOrderByCreatedAtDesc();
+
+    /**
+     * 문의 ID로 문의를 조회합니다 (댓글 포함)
+     */
+    @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.inquiryId = :inquiryId")
+    java.util.Optional<Inquiry> findByIdWithComments(
+            @org.springframework.web.bind.annotation.PathVariable("inquiryId") Integer inquiryId);
 }

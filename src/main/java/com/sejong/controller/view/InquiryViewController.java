@@ -64,7 +64,7 @@ public class InquiryViewController {
      */
     @GetMapping("/inquiry/{inquiryId}")
     public String inquiryDetail(@PathVariable Integer inquiryId, Model model) {
-        Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
+        Inquiry inquiry = inquiryService.getInquiryWithComments(inquiryId);
         if (inquiry == null) {
             return "redirect:/inquiry";
         }
