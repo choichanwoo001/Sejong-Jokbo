@@ -29,21 +29,6 @@ public class StatsRestController {
     /**
      * 메인 페이지 통계 정보
      */
-    @Operation(summary = "메인 페이지 통계", description = "메인 페이지에 표시할 통계 정보를 반환합니다")
-    @GetMapping("/stats")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getMainStats() {
-        Map<String, Object> stats = new HashMap<>();
-
-        stats.put("totalBooks", (long) bookService.getAllBooks().size());
-        stats.put("totalJokbos", jokboRepository.countByStatus(com.sejong.entity.Jokbo.JokboStatus.승인));
-        stats.put("totalDownloads", 0L); // 다운로드 수는 아직 집계되지 않음
-
-        return ResponseEntity.ok(ApiResponse.success(stats));
-    }
-
-    /**
-     * 관리자 대시보드 통계 정보
-     */
     @Operation(summary = "관리자 대시보드 통계", description = "관리자 대시보드에 표시할 통계 정보를 반환합니다")
     @GetMapping("/admin/stats")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getAdminStats() {

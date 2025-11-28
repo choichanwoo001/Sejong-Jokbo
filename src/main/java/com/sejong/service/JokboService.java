@@ -34,7 +34,7 @@ public class JokboService {
     /**
      * 특정 책의 승인된 족보 목록을 페이징하여 가져옵니다 (5개씩)
      */
-    public Page<Jokbo> getApprovedJokbosByBookId(Integer bookId, int page) {
+    public Page<Jokbo> getApprovedJokbosByBookId(@org.springframework.lang.NonNull Integer bookId, int page) {
         Pageable pageable = PageRequest.of(page, 5); // 5개씩 페이징
         return jokboRepository.findApprovedJokbosByBookId(bookId, pageable);
     }
@@ -42,7 +42,7 @@ public class JokboService {
     /**
      * 특정 책의 모든 족보 목록을 페이징하여 가져옵니다 (관리자용, 5개씩)
      */
-    public Page<Jokbo> getAllJokbosByBookId(Integer bookId, int page) {
+    public Page<Jokbo> getAllJokbosByBookId(@org.springframework.lang.NonNull Integer bookId, int page) {
         Pageable pageable = PageRequest.of(page, 5); // 5개씩 페이징
         return jokboRepository.findAllJokbosByBookId(bookId, pageable);
     }
@@ -50,21 +50,22 @@ public class JokboService {
     /**
      * 특정 책의 승인된 족보 목록을 가져옵니다 (페이징 없음)
      */
-    public List<Jokbo> getApprovedJokbosByBookId(Integer bookId) {
+    public List<Jokbo> getApprovedJokbosByBookId(@org.springframework.lang.NonNull Integer bookId) {
         return jokboRepository.findApprovedJokbosByBookId(bookId);
     }
 
     /**
      * 특정 책의 모든 족보 목록을 가져옵니다 (관리자용, 페이징 없음)
      */
-    public List<Jokbo> getAllJokbosByBookId(Integer bookId) {
+    public List<Jokbo> getAllJokbosByBookId(@org.springframework.lang.NonNull Integer bookId) {
         return jokboRepository.findAllJokbosByBookId(bookId);
     }
 
     /**
      * 텍스트 족보를 등록합니다
      */
-    public Jokbo registerTextJokbo(Integer bookId, String uploaderName, String content, String comment) {
+    public Jokbo registerTextJokbo(@org.springframework.lang.NonNull Integer bookId, String uploaderName,
+            String content, String comment) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다"));
 
@@ -91,7 +92,8 @@ public class JokboService {
     /**
      * 파일 족보를 등록합니다
      */
-    public Jokbo registerFileJokbo(Integer bookId, String uploaderName, MultipartFile file, String comment)
+    public Jokbo registerFileJokbo(@org.springframework.lang.NonNull Integer bookId, String uploaderName,
+            MultipartFile file, String comment)
             throws IOException {
         // 파일 유효성 검사
         if (file == null || file.isEmpty()) {
@@ -147,56 +149,6 @@ public class JokboService {
     }
 
     /**
-     * 파일 확장자를 추출합니다
-     */
-    private String getFileExtension(String filename) {
-        int lastDotIndex = filename.lastIndexOf(".");
-        if (lastDotIndex == -1) {
-            return "";
-        }
-        return filename.substring(lastDotIndex + 1).toLowerCase();
-    }
-
-    /**
-     * 허용된 파일 확장자인지 확인합니다
-     */
-    private boolean isAllowedFileExtension(String extension) {
-        String[] allowedExtensions = { "pdf", "jpg", "jpeg", "png", "gif", "txt" };
-        for (String allowed : allowedExtensions) {
-            if (allowed.equals(extension)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 족보를 승인합니다
-     */
-    public Jokbo approveJokbo(Integer jokboId) {
-        Jokbo jokbo = jokboRepository.findById(jokboId)
-                .orElseThrow(() -> new RuntimeException("족보를 찾을 수 없습니다"));
-        jokbo.setStatus(Jokbo.JokboStatus.승인);
-        Jokbo savedJokbo = jokboRepository.save(jokbo);
-
-        // 사용자에게 족보 승인 알림 전송
-        sseService.sendJokboApprovalNotification(jokbo.getBook().getTitle(),
-                jokbo.getContentType().equals("text") ? "텍스트 족보" : "파일 족보");
-
-        return savedJokbo;
-    }
-
-    /**
-     * 족보를 반려합니다
-     */
-    public Jokbo rejectJokbo(Integer jokboId) {
-        Jokbo jokbo = jokboRepository.findById(jokboId)
-                .orElseThrow(() -> new RuntimeException("족보를 찾을 수 없습니다"));
-        jokbo.setStatus(Jokbo.JokboStatus.반려);
-        return jokboRepository.save(jokbo);
-    }
-
-    /**
      * 파일 경로를 가져옵니다 (환경에 따라 자동 선택)
      */
     public Path getFilePath(String filename) {
@@ -236,7 +188,7 @@ public class JokboService {
     /**
      * ID로 족보를 가져옵니다
      */
-    public Jokbo getJokboById(Integer jokboId) {
+    public Jokbo getJokboById(@org.springframework.lang.NonNull Integer jokboId) {
         return jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new RuntimeException("족보를 찾을 수 없습니다"));
     }
@@ -244,7 +196,7 @@ public class JokboService {
     /**
      * 텍스트 족보를 PDF 바이트 배열로 변환합니다 (실시간 변환)
      */
-    public byte[] getTextJokboAsPdf(Integer jokboId) throws Exception {
+    public byte[] getTextJokboAsPdf(@org.springframework.lang.NonNull Integer jokboId) throws Exception {
         Jokbo jokbo = getJokboById(jokboId);
 
         if (!"text".equals(jokbo.getContentType())) {
@@ -262,6 +214,7 @@ public class JokboService {
      * 상태별 족보 목록을 페이징하여 가져옵니다
      */
     @Transactional(readOnly = true)
+    @SuppressWarnings("null")
     public Page<Jokbo> getJokbosByStatus(Jokbo.JokboStatus status, int page, int size) {
         // JOIN FETCH로 Book 정보까지 함께 로딩
         List<Jokbo> allJokbos = jokboRepository.findByStatusWithBookOrderByCreatedAtDesc(status);
@@ -279,6 +232,7 @@ public class JokboService {
      * 모든 족보 목록을 페이징하여 가져옵니다 (관리자용)
      */
     @Transactional(readOnly = true)
+    @SuppressWarnings("null")
     public Page<Jokbo> getAllJokbos(int page, int size) {
         // JOIN FETCH로 Book 정보까지 함께 로딩
         List<Jokbo> allJokbos = jokboRepository.findAllWithBookOrderByCreatedAtDesc();
@@ -290,5 +244,46 @@ public class JokboService {
 
         List<Jokbo> pageContent = start >= allJokbos.size() ? new ArrayList<>() : allJokbos.subList(start, end);
         return new PageImpl<>(pageContent, pageable, allJokbos.size());
+    }
+
+    /**
+     * 파일 확장자를 추출합니다
+     */
+    private String getFileExtension(String filename) {
+        return filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+    }
+
+    /**
+     * 허용된 파일 확장자인지 확인합니다
+     */
+    private boolean isAllowedFileExtension(String extension) {
+        return List.of("pdf", "jpg", "jpeg", "png", "gif", "txt").contains(extension);
+    }
+
+    /**
+     * 파일명으로 족보를 찾습니다 (contentUrl 기준)
+     */
+    public Jokbo getJokboByContentUrl(String contentUrl) {
+        return jokboRepository.findByContentUrl(contentUrl).orElse(null);
+    }
+
+    /**
+     * 다운로드 카운트를 증가시킵니다
+     */
+    @Transactional
+    public void increaseDownloadCount(@org.springframework.lang.NonNull Integer jokboId) {
+        Jokbo jokbo = jokboRepository.findById(jokboId).orElse(null);
+        if (jokbo != null) {
+            jokbo.setDownloadCount(jokbo.getDownloadCount() + 1);
+            jokboRepository.save(jokbo);
+        }
+    }
+
+    /**
+     * 총 다운로드 수를 반환합니다
+     */
+    public long getTotalDownloadCount() {
+        Long count = jokboRepository.sumDownloadCount();
+        return count != null ? count : 0L;
     }
 }

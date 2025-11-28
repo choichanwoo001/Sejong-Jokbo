@@ -65,7 +65,7 @@ public class BookViewController {
      * 책 상세 페이지를 보여줍니다 (페이징 포함)
      */
     @GetMapping("/book/{bookId}")
-    public String bookDetail(@PathVariable Integer bookId,
+    public String bookDetail(@PathVariable @org.springframework.lang.NonNull Integer bookId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String tab,
             Model model) {
@@ -108,10 +108,26 @@ public class BookViewController {
     @GetMapping("/jokbo/download/{filename:.+}")
     public ResponseEntity<Resource> downloadJokboFile(@PathVariable String filename) {
         try {
+            // 파일명에서 족보 ID 추출을 시도하거나, 별도의 로직으로 족보를 찾아야 함
+            // 현재 구조상 filename만으로는 족보 ID를 알기 어려움
+            // 따라서 JokboService에서 filename으로 족보를 찾는 메서드가 필요하거나,
+            // 다운로드 URL에 jokboId를 포함시켜야 함.
+            // 기존 API 유지를 위해 filename으로 족보를 찾는 방식을 사용하거나,
+            // 일단 여기서는 파일 다운로드 카운트를 증가시키지 못하는 한계가 있음.
+            // 하지만 구현 계획에 따라 진행해야 하므로, filename으로 족보를 찾는 메서드를 추가하는 것이 좋겠음.
+            // 일단은 텍스트 족보 다운로드 부분만 적용하고, 파일 다운로드는 추후 보완하거나
+            // JokboService에 filename으로 Jokbo를 찾는 메서드를 추가해야 함.
+
+            // JokboService에 findByContentUrl 메서드를 추가하여 해결
+            Jokbo jokbo = jokboService.getJokboByContentUrl(filename);
+            if (jokbo != null) {
+                jokboService.increaseDownloadCount(java.util.Objects.requireNonNull(jokbo.getJokboId()));
+            }
+
             // 로컬 환경에서는 getFilePath, GCP 환경에서는 downloadFile 사용
             try {
                 Path filePath = jokboService.getFilePath(filename);
-                Resource resource = new UrlResource(filePath.toUri());
+                Resource resource = new UrlResource(java.util.Objects.requireNonNull(filePath.toUri()));
 
                 if (resource.exists() && resource.isReadable()) {
                     return ResponseEntity.ok()
@@ -136,12 +152,12 @@ public class BookViewController {
      * 텍스트 족보를 PDF로 보기 (브라우저에서 열기)
      */
     @GetMapping("/jokbo/view/text/{jokboId}")
-    public ResponseEntity<byte[]> viewTextJokboAsPdf(@PathVariable Integer jokboId) {
+    public ResponseEntity<byte[]> viewTextJokboAsPdf(@PathVariable @org.springframework.lang.NonNull Integer jokboId) {
         try {
             byte[] pdfBytes = jokboService.getTextJokboAsPdf(jokboId);
 
             return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_PDF))
                     .body(pdfBytes);
 
         } catch (Exception e) {
@@ -153,15 +169,17 @@ public class BookViewController {
      * 텍스트 족보를 PDF로 다운로드합니다
      */
     @GetMapping("/jokbo/download/text/{jokboId}")
-    public ResponseEntity<byte[]> downloadTextJokboAsPdf(@PathVariable Integer jokboId) {
+    public ResponseEntity<byte[]> downloadTextJokboAsPdf(
+            @PathVariable @org.springframework.lang.NonNull Integer jokboId) {
         try {
+            jokboService.increaseDownloadCount(jokboId);
             byte[] pdfBytes = jokboService.getTextJokboAsPdf(jokboId);
 
             String filename = "jokbo_" + jokboId + ".pdf";
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_PDF))
                     .body(pdfBytes);
 
         } catch (Exception e) {
@@ -178,12 +196,13 @@ public class BookViewController {
             // GCP 환경에서는 getFilePath가 지원되지 않으므로 downloadFile 사용
             try {
                 Path filePath = jokboService.getFilePath(filename);
-                Resource resource = new UrlResource(filePath.toUri());
+                Resource resource = new UrlResource(java.util.Objects.requireNonNull(filePath.toUri()));
 
                 if (resource.exists() && resource.isReadable()) {
                     String contentType = getContentType(filename);
                     return ResponseEntity.ok()
-                            .contentType(MediaType.parseMediaType(contentType))
+                            .contentType(java.util.Objects.requireNonNull(
+                                    MediaType.parseMediaType(java.util.Objects.requireNonNull(contentType))))
                             .body(resource);
                 } else {
                     return ResponseEntity.notFound().build();
@@ -193,7 +212,8 @@ public class BookViewController {
                 Resource resource = jokboService.getFileStorageService().downloadFile(filename);
                 String contentType = getContentType(filename);
                 return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
+                        .contentType(java.util.Objects.requireNonNull(
+                                MediaType.parseMediaType(java.util.Objects.requireNonNull(contentType))))
                         .body(resource);
             }
         } catch (MalformedURLException e) {

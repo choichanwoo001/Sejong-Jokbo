@@ -49,7 +49,7 @@ public class AdminService {
      * 족보를 승인합니다
      */
     @Transactional
-    public void approveJokbo(Integer jokboId, String comment) {
+    public void approveJokbo(@org.springframework.lang.NonNull Integer jokboId, String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
 
@@ -59,7 +59,7 @@ public class AdminService {
 
         // 승인된 경우 해당 책의 jokboCount 업데이트
         if (previousStatus != Jokbo.JokboStatus.승인) {
-            updateBookJokboCount(jokbo.getBook().getBookId());
+            updateBookJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
         }
 
         // 승인 이력 저장
@@ -81,7 +81,7 @@ public class AdminService {
      * 족보를 반려합니다
      */
     @Transactional
-    public void rejectJokbo(Integer jokboId, String comment) {
+    public void rejectJokbo(@org.springframework.lang.NonNull Integer jokboId, String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
 
@@ -91,7 +91,7 @@ public class AdminService {
 
         // 이전에 승인되었던 족보를 반려하는 경우 jokboCount 업데이트
         if (previousStatus == Jokbo.JokboStatus.승인) {
-            updateBookJokboCount(jokbo.getBook().getBookId());
+            updateBookJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
         }
 
         // 반려 이력 저장
@@ -103,7 +103,7 @@ public class AdminService {
      * 족보 승인을 취소합니다 (승인 -> 대기)
      */
     @Transactional
-    public void cancelApproval(Integer jokboId, String comment) {
+    public void cancelApproval(@org.springframework.lang.NonNull Integer jokboId, String comment) {
         Jokbo jokbo = jokboRepository.findById(jokboId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
 
@@ -116,7 +116,7 @@ public class AdminService {
         jokboRepository.save(jokbo);
 
         // 승인 취소 시 jokboCount 업데이트
-        updateBookJokboCount(jokbo.getBook().getBookId());
+        updateBookJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
 
         // 승인 취소 이력 저장
         saveApprovalHistory(jokbo, JokboApprovalHistory.ApprovalAction.승인취소, previousStatus, Jokbo.JokboStatus.대기,
@@ -243,7 +243,7 @@ public class AdminService {
     /**
      * 책의 승인된 족보 수를 업데이트합니다
      */
-    private void updateBookJokboCount(Integer bookId) {
+    private void updateBookJokboCount(@org.springframework.lang.NonNull Integer bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
 
