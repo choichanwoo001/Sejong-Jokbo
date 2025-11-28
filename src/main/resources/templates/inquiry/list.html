@@ -50,59 +50,119 @@
                     </div>
                     <div class="inquiry-footer">
                         <a th:href="@{/inquiry/{id}(id=${inquiry.inquiryId})}" class="view-button">보기</a>
-                        <div class="inquiry-status">
-                            <span th:if="${!inquiry.isPublic}" class="private-badge">비공개</span>
-                            <span th:if="${inquiry.comments != null and !inquiry.comments.isEmpty()}"
-                                class="has-answer">답변완료</span>
-                        </div>
-                    </div>
-                    class="page-btn prev-btn">이전</a>
+                        <!DOCTYPE html>
+                        <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
+        pageTitle=${'문의 게시판 - 고전독서 족보'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
 
-                    <div class="page-numbers">
-                        <a th:if="${currentPage > 3}" th:href="@{/inquiry(page=0, tab=${currentTab})}"
-                            class="page-btn">1</a>
+                        <th:block th:fragment="extraHead">
+                            <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+                        </th:block>
 
-                        <span th:if="${currentPage > 4}" class="page-dots">...</span>
+                        <th:block th:fragment="content">
+                            <div class="inquiry-container">
+                                <div class="inquiry-header">
+                                    <h1>문의 게시판</h1>
+                                    <a href="/" class="home-button">홈으로</a>
+                                </div>
 
-                        <a th:if="${currentPage >= 3}" th:href="@{/inquiry(page=${currentPage - 3}, tab=${currentTab})}"
-                            th:text="${currentPage - 2}" class="page-btn"></a>
+                                <div class="tabs">
+                                    <a th:href="@{/inquiry(tab='inquiry')}"
+                                        th:class="${currentTab == 'inquiry' ? 'tab-item active' : 'tab-item'}">문의 목록</a>
+                                    <a th:href="@{/inquiry(tab='history')}"
+                                        th:class="${currentTab == 'history' ? 'tab-item active' : 'tab-item'}">승인 이력</a>
+                                </div>
 
-                        <a th:if="${currentPage >= 2}" th:href="@{/inquiry(page=${currentPage - 2}, tab=${currentTab})}"
-                            th:text="${currentPage - 1}" class="page-btn"></a>
+                                <div th:if="${currentTab == 'inquiry'}">
+                                    <div class="inquiry-actions">
+                                        <a href="/inquiry/write" class="write-button">문의 작성</a>
+                                    </div>
 
-                        <a th:if="${currentPage >= 1}" th:href="@{/inquiry(page=${currentPage - 1}, tab=${currentTab})}"
-                            th:text="${currentPage}" class="page-btn"></a>
+                                    <div class="inquiry-list">
+                                        <div th:if="${#lists.isEmpty(inquiries)}" class="no-inquiries">
+                                            <p>등록된 문의가 없습니다.</p>
+                                        </div>
 
-                        <span th:text="${currentPage + 1}" class="page-btn current"></span>
+                                        <div th:each="inquiry : ${inquiries}" class="inquiry-item">
+                                            <div class="inquiry-header-info">
+                                                <h3 class="inquiry-title" th:text="${inquiry.name}">작성자</h3>
+                                                <span class="inquiry-date"
+                                                    th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                                            </div>
+                                            <div class="inquiry-content">
+                                                <div th:if="${inquiry.isPublic}">
+                                                    <p th:text="${#strings.abbreviate(inquiry.message, 100)}">문의 내용</p>
+                                                </div>
+                                                <div th:unless="${inquiry.isPublic}" class="private-inquiry">
+                                                    <p class="private-message">비공개 문의입니다.</p>
+                                                </div>
+                                            </div>
+                                            <div class="inquiry-footer">
+                                                <a th:href="@{/inquiry/{id}(id=${inquiry.inquiryId})}"
+                                                    class="view-button">보기</a>
+                                                <div class="inquiry-status">
+                                                    <span th:if="${!inquiry.isPublic}" class="private-badge">비공개</span>
+                                                    <span
+                                                        th:if="${inquiry.comments != null and !inquiry.comments.isEmpty()}"
+                                                        class="has-answer">답변완료</span>
+                                                </div>
+                                            </div>
 
-                        <a th:if="${currentPage < totalPages - 1}"
-                            th:href="@{/inquiry(page=${currentPage + 1}, tab=${currentTab})}"
-                            th:text="${currentPage + 2}" class="page-btn"></a>
+                                        </div>
+                                    </div>
 
-                        <a th:if="${currentPage < totalPages - 2}"
-                            th:href="@{/inquiry(page=${currentPage + 2}, tab=${currentTab})}"
-                            th:text="${currentPage + 3}" class="page-btn"></a>
+                                    <div class="pagination" th:if="${!#lists.isEmpty(inquiries)}">
+                                        <a th:if="${hasPrev}"
+                                            th:href="@{/inquiry(page=${currentPage - 1}, tab=${currentTab})}"
+                                            class="page-btn prev-btn">이전</a>
 
-                        <a th:if="${currentPage < totalPages - 3}"
-                            th:href="@{/inquiry(page=${currentPage + 3}, tab=${currentTab})}"
-                            th:text="${currentPage + 4}" class="page-btn"></a>
+                                        <div class="page-numbers">
+                                            <a th:if="${currentPage > 3}"
+                                                th:href="@{/inquiry(page=0, tab=${currentTab})}" class="page-btn">1</a>
 
-                        <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+                                            <span th:if="${currentPage > 4}" class="page-dots">...</span>
 
-                        <a th:if="${currentPage < totalPages - 4}"
-                            th:href="@{/inquiry(page=${totalPages - 1}, tab=${currentTab})}" th:text="${totalPages}"
-                            class="page-btn"></a>
-                    </div>
+                                            <a th:if="${currentPage >= 3}"
+                                                th:href="@{/inquiry(page=${currentPage - 3}, tab=${currentTab})}"
+                                                th:text="${currentPage - 2}" class="page-btn"></a>
+                                            <a th:if="${currentPage >= 2}"
+                                                th:href="@{/inquiry(page=${currentPage - 2}, tab=${currentTab})}"
+                                                th:text="${currentPage - 1}" class="page-btn"></a>
+                                            <a th:if="${currentPage >= 1}"
+                                                th:href="@{/inquiry(page=${currentPage - 1}, tab=${currentTab})}"
+                                                th:text="${currentPage}" class="page-btn"></a>
 
-                    <a th:if="${hasNext}" th:href="@{/inquiry(page=${currentPage + 1}, tab=${currentTab})}"
-                        class="page-btn next-btn">다음</a>
-                </div>
-            </div>
-</th:block>
+                                            <span th:text="${currentPage + 1}" class="page-btn current"></span>
 
-<th:block th:fragment="extraScripts">
-    <script th:src="@{/js/utils.js}"></script>
-    <script th:src="@{/js/inquiry.js}"></script>
-</th:block>
+                                            <a th:if="${currentPage < totalPages - 1}"
+                                                th:href="@{/inquiry(page=${currentPage + 1}, tab=${currentTab})}"
+                                                th:text="${currentPage + 2}" class="page-btn"></a>
+                                            <a th:if="${currentPage < totalPages - 2}"
+                                                th:href="@{/inquiry(page=${currentPage + 2}, tab=${currentTab})}"
+                                                th:text="${currentPage + 3}" class="page-btn"></a>
+                                            <a th:if="${currentPage < totalPages - 3}"
+                                                th:href="@{/inquiry(page=${currentPage + 3}, tab=${currentTab})}"
+                                                th:text="${currentPage + 4}" class="page-btn"></a>
 
-</html>
+                                            <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+
+                                            <a th:if="${currentPage < totalPages - 4}"
+                                                th:href="@{/inquiry(page=${totalPages - 1}, tab=${currentTab})}"
+                                                th:text="${totalPages}" class="page-btn"></a>
+                                        </div>
+
+                                        <a th:if="${hasNext}"
+                                            th:href="@{/inquiry(page=${currentPage + 1}, tab=${currentTab})}"
+                                            class="page-btn next-btn">다음</a>
+                                    </div>
+                        </th:block>
+
+                        <th:block th:fragment="extraScripts">
+                            <script th:src="@{/js/utils.js}"></script>
+                            <script th:src="@{/js/inquiry.js}"></script>
+                        </th:block>
+
+                        </html>
