@@ -130,7 +130,7 @@ public class SseService {
                 String message = String.format("족보가 승인되었습니다: %s - %s", bookTitle, jokboTitle);
                 userEmitter.send(SseEmitter.event()
                         .name("jokbo_approved")
-                        .data(message));
+                        .data(java.util.Objects.requireNonNull(message)));
                 log.info("족보 승인 알림 전송: {}", message);
             } catch (IOException e) {
                 log.error("족보 승인 알림 전송 실패: {}", e.getMessage());
@@ -153,7 +153,7 @@ public class SseService {
             try {
                 entry.getValue().send(SseEmitter.event()
                         .name("new_jokbo_request")
-                        .data(message));
+                        .data(java.util.Objects.requireNonNull(message)));
                 return false;
             } catch (IOException e) {
                 log.error("관리자 {} 알림 전송 실패: {}", entry.getKey(), e.getMessage());

@@ -18,45 +18,47 @@ import lombok.RequiredArgsConstructor;
 public class BookRestController {
 
     private final JokboService jokboService;
-    
+
     /**
      * 텍스트 족보를 등록합니다
      */
     @Operation(summary = "텍스트 족보 등록", description = "텍스트 형태의 족보를 등록합니다")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "등록 성공/실패 메시지")
+            @ApiResponse(responseCode = "200", description = "등록 성공/실패 메시지")
     })
     @PostMapping("/book/{bookId}/jokbo/text")
-    public String registerTextJokbo(@Parameter(description = "도서 ID") @PathVariable Integer bookId,
-                                   @Parameter(description = "업로더 이름") @RequestParam String uploaderName,
-                                   @Parameter(description = "족보 내용") @RequestParam String content,
-                                   @Parameter(description = "댓글") @RequestParam(required = false) String comment) {
+    public String registerTextJokbo(
+            @Parameter(description = "도서 ID") @PathVariable @org.springframework.lang.NonNull Integer bookId,
+            @Parameter(description = "업로더 이름") @RequestParam String uploaderName,
+            @Parameter(description = "족보 내용") @RequestParam String content,
+            @Parameter(description = "댓글") @RequestParam(required = false) String comment) {
         jokboService.registerTextJokbo(bookId, uploaderName, content, comment);
         return "success";
     }
-    
+
     /**
      * 파일 족보를 등록합니다
      */
     @Operation(summary = "파일 족보 등록", description = "파일 형태의 족보를 등록합니다")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "등록 성공/실패 메시지")
+            @ApiResponse(responseCode = "200", description = "등록 성공/실패 메시지")
     })
     @PostMapping("/book/{bookId}/jokbo/file")
-    public String registerFileJokbo(@Parameter(description = "도서 ID") @PathVariable Integer bookId,
-                                   @Parameter(description = "업로더 이름") @RequestParam String uploaderName,
-                                   @Parameter(description = "업로드 파일") @RequestParam MultipartFile file,
-                                   @Parameter(description = "댓글") @RequestParam(required = false) String comment) {
+    public String registerFileJokbo(
+            @Parameter(description = "도서 ID") @PathVariable @org.springframework.lang.NonNull Integer bookId,
+            @Parameter(description = "업로더 이름") @RequestParam String uploaderName,
+            @Parameter(description = "업로드 파일") @RequestParam MultipartFile file,
+            @Parameter(description = "댓글") @RequestParam(required = false) String comment) {
         try {
             // 입력값 검증
             if (uploaderName == null || uploaderName.trim().isEmpty()) {
                 return "error: 업로더 이름을 입력해주세요.";
             }
-            
+
             if (file == null || file.isEmpty()) {
                 return "error: 업로드할 파일을 선택해주세요.";
             }
-            
+
             jokboService.registerFileJokbo(bookId, uploaderName.trim(), file, comment);
             return "success";
         } catch (IllegalArgumentException e) {

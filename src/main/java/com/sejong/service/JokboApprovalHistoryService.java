@@ -27,7 +27,8 @@ public class JokboApprovalHistoryService {
      * 승인 이력 저장
      */
     @Transactional
-    public JokboApprovalHistory save(Integer jokboId, Integer adminId,
+    public JokboApprovalHistory save(@org.springframework.lang.NonNull Integer jokboId,
+            @org.springframework.lang.NonNull Integer adminId,
             JokboApprovalHistory.ApprovalAction action,
             Jokbo.JokboStatus previousStatus,
             Jokbo.JokboStatus newStatus,
@@ -52,14 +53,15 @@ public class JokboApprovalHistoryService {
     /**
      * 특정 족보의 승인 이력 조회
      */
-    public List<JokboApprovalHistory> getHistoryByJokboId(Integer jokboId) {
+    public List<JokboApprovalHistory> getHistoryByJokboId(@org.springframework.lang.NonNull Integer jokboId) {
         return historyRepository.findByJokboJokboIdOrderByCreatedAtDesc(jokboId);
     }
 
     /**
      * 관리자별 승인 이력 조회
      */
-    public Page<JokboApprovalHistory> getHistoryByAdminId(Integer adminId, Pageable pageable) {
+    public Page<JokboApprovalHistory> getHistoryByAdminId(@org.springframework.lang.NonNull Integer adminId,
+            Pageable pageable) {
         return historyRepository.findByAdminAdminIdOrderByCreatedAtDesc(adminId, pageable);
     }
 

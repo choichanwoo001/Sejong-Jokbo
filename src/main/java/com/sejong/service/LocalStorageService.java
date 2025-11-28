@@ -68,7 +68,7 @@ public class LocalStorageService implements FileStorageService {
                 throw new IOException("파일을 찾을 수 없습니다: " + filename);
             }
 
-            Resource resource = new UrlResource(filePath.toUri());
+            Resource resource = new UrlResource(java.util.Objects.requireNonNull(filePath.toUri()));
             if (resource.exists() && resource.isReadable()) {
                 return resource;
             } else {

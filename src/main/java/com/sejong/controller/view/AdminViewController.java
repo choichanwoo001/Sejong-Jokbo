@@ -24,12 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "관리자 뷰", description = "관리자 페이지 관련")
 public class AdminViewController {
-    
+
     private final AdminService adminService;
     private final BookService bookService;
     private final JokboService jokboService;
     private final InquiryService inquiryService;
-    
+
     /**
      * 관리자 대시보드
      */
@@ -37,16 +37,16 @@ public class AdminViewController {
     public String dashboard(Model model) {
         // 승인 대기 중인 족보 수
         long pendingJokbos = jokboService.getPendingJokbosCount();
-        
+
         // 답변되지 않은 문의 수
         List<Inquiry> unansweredInquiries = inquiryService.getUnansweredInquiries();
-        
+
         model.addAttribute("pendingJokbos", pendingJokbos);
         model.addAttribute("unansweredInquiries", unansweredInquiries);
-        
+
         return "admin/dashboard";
     }
-    
+
     /**
      * 모든 책 목록 (관리자용)
      */
@@ -54,10 +54,10 @@ public class AdminViewController {
     public String adminBooks(Model model) {
         List<Book> books = bookService.getAllBooks();
         model.addAttribute("books", books);
-        
+
         return "admin/books";
     }
-    
+
     /**
      * 승인 대기 중인 족보 목록 (페이징 없음)
      */
@@ -65,78 +65,76 @@ public class AdminViewController {
     public String pendingJokbos(Model model) {
         List<Jokbo> pendingJokbos = jokboService.getPendingJokbos();
         model.addAttribute("jokbos", pendingJokbos);
-        
+
         return "admin/pending-jokbos";
     }
-    
+
     /**
      * 승인 대기 중인 족보 목록 (페이징 포함)
      */
     @GetMapping("/jokbos/pending/page/{page}")
-    public String pendingJokbosWithPaging(@PathVariable int page, 
-                                         Model model) {
+    public String pendingJokbosWithPaging(@PathVariable int page,
+            Model model) {
         Page<Jokbo> jokboPage = jokboService.getPendingJokbos(page);
-        
+
         model.addAttribute("jokbos", jokboPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", jokboPage.getTotalPages());
         model.addAttribute("hasNext", jokboPage.hasNext());
         model.addAttribute("hasPrevious", jokboPage.hasPrevious());
-        
+
         return "admin/pending-jokbos";
     }
-    
+
     /**
      * 문의 목록 (페이징 포함)
      */
     @GetMapping("/inquiries")
     public String inquiries(@RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "15") int size,
-                           Model model) {
+            @RequestParam(defaultValue = "15") int size,
+            Model model) {
         Page<Inquiry> inquiryPage = inquiryService.getAllInquiries(page, size);
-        
+
         model.addAttribute("inquiries", inquiryPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", inquiryPage.getTotalPages());
         model.addAttribute("hasNext", inquiryPage.hasNext());
         model.addAttribute("hasPrevious", inquiryPage.hasPrevious());
         model.addAttribute("totalElements", inquiryPage.getTotalElements());
-        
+
         return "admin/inquiries";
     }
-    
 
-    
     /**
      * 문의 상세 페이지
      */
     @GetMapping("/inquiry/{inquiryId}")
-    public String inquiryDetail(@PathVariable Integer inquiryId, 
-                               Model model) {
+    public String inquiryDetail(@PathVariable @org.springframework.lang.NonNull Integer inquiryId,
+            Model model) {
         Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
         List<Comment> comments = inquiryService.getCommentsByInquiryId(inquiryId);
-        
+
         model.addAttribute("inquiry", inquiry);
         model.addAttribute("comments", comments);
-        
+
         return "admin/inquiry-detail";
     }
-    
+
     /**
      * 족보 승인 이력 조회 (페이징 및 필터링)
      */
     @GetMapping("/jokbo/{jokboId}/history")
-    public String jokboHistory(@PathVariable Integer jokboId,
-                              @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "15") int size,
-                              @RequestParam(required = false) String action,
-                              @RequestParam(required = false) String previousStatus,
-                              @RequestParam(required = false) String newStatus,
-                              Model model) {
+    public String jokboHistory(@PathVariable @org.springframework.lang.NonNull Integer jokboId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(required = false) String action,
+            @RequestParam(required = false) String previousStatus,
+            @RequestParam(required = false) String newStatus,
+            Model model) {
         Page<JokboApprovalHistory> historyPage = adminService.getJokboApprovalHistoryWithFilters(
-            jokboId, page, size, action, previousStatus, newStatus);
+                jokboId, page, size, action, previousStatus, newStatus);
         Jokbo jokbo = jokboService.getJokboById(jokboId);
-        
+
         model.addAttribute("jokbo", jokbo);
         model.addAttribute("history", historyPage.getContent());
         model.addAttribute("currentPage", page);
@@ -146,23 +144,23 @@ public class AdminViewController {
         model.addAttribute("selectedAction", action);
         model.addAttribute("selectedPreviousStatus", previousStatus);
         model.addAttribute("selectedNewStatus", newStatus);
-        
+
         return "admin/jokbo-history";
     }
-    
+
     /**
      * 모든 승인 이력 조회 (페이징 및 필터링)
      */
     @GetMapping("/approval-history")
     public String approvalHistory(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "15") int size,
-                                 @RequestParam(required = false) String action,
-                                 @RequestParam(required = false) String previousStatus,
-                                 @RequestParam(required = false) String newStatus,
-                                 Model model) {
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(required = false) String action,
+            @RequestParam(required = false) String previousStatus,
+            @RequestParam(required = false) String newStatus,
+            Model model) {
         Page<JokboApprovalHistory> historyPage = adminService.getAllApprovalHistoryWithFilters(
-            page, size, action, previousStatus, newStatus);
-        
+                page, size, action, previousStatus, newStatus);
+
         model.addAttribute("history", historyPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", historyPage.getTotalPages());
@@ -171,64 +169,64 @@ public class AdminViewController {
         model.addAttribute("selectedAction", action);
         model.addAttribute("selectedPreviousStatus", previousStatus);
         model.addAttribute("selectedNewStatus", newStatus);
-        
+
         return "admin/approval-history";
     }
-    
+
     /**
      * 관리자용 책 상세 페이지 (페이징 없음)
      */
     @GetMapping("/book/{bookId}")
-    public String adminBookDetail(@PathVariable Integer bookId, 
-                                 Model model) {
+    public String adminBookDetail(@PathVariable @org.springframework.lang.NonNull Integer bookId,
+            Model model) {
         Book book = bookService.getBookById(bookId);
         List<Jokbo> jokbos = jokboService.getApprovedJokbosByBookId(bookId);
-        
+
         model.addAttribute("book", book);
         model.addAttribute("jokbos", jokbos);
-        
+
         return "admin/book-detail";
     }
-    
+
     /**
      * 관리자용 책 상세 페이지 (페이징 포함)
      */
     @GetMapping("/book/{bookId}/page/{page}")
-    public String adminBookDetailWithPaging(@PathVariable Integer bookId, 
-                                           @PathVariable int page,
-                                           Model model) {
+    public String adminBookDetailWithPaging(@PathVariable @org.springframework.lang.NonNull Integer bookId,
+            @PathVariable int page,
+            Model model) {
         Book book = bookService.getBookById(bookId);
         Page<Jokbo> jokboPage = jokboService.getApprovedJokbosByBookId(bookId, page);
-        
+
         model.addAttribute("book", book);
         model.addAttribute("jokbos", jokboPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", jokboPage.getTotalPages());
         model.addAttribute("hasNext", jokboPage.hasNext());
         model.addAttribute("hasPrevious", jokboPage.hasPrevious());
-        
+
         return "admin/book-detail";
     }
-    
+
     /**
      * 특정 책의 족보 관리 페이지
      */
     @GetMapping("/book/{bookId}/jokbos")
-    public String bookJokbos(@PathVariable Integer bookId,
-                            @RequestParam(defaultValue = "0") int page,
-                            @RequestParam(defaultValue = "20") int size,
-                            @RequestParam(required = false) String status,
-                            Model model) {
+    public String bookJokbos(@PathVariable @org.springframework.lang.NonNull Integer bookId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String status,
+            Model model) {
         Book book = bookService.getBookById(bookId);
         Page<Jokbo> jokboPage;
-        
+
         if (status != null && !status.isEmpty()) {
             Jokbo.JokboStatus jokboStatus = Jokbo.JokboStatus.valueOf(status);
             jokboPage = jokboService.getJokbosByStatus(jokboStatus, page, size);
         } else {
             jokboPage = jokboService.getAllJokbos(page, size);
         }
-        
+
         model.addAttribute("book", book);
         model.addAttribute("jokbos", jokboPage.getContent());
         model.addAttribute("currentPage", page);
@@ -236,18 +234,18 @@ public class AdminViewController {
         model.addAttribute("hasNext", jokboPage.hasNext());
         model.addAttribute("hasPrevious", jokboPage.hasPrevious());
         model.addAttribute("selectedStatus", status);
-        
+
         return "admin/jokbo-management";
     }
-    
+
     /**
      * 족보 관리 페이지 (모든 족보 - 승인, 반려, 대기 포함)
      */
     @GetMapping("/jokbos")
     public String allJokbos(@RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "20") int size,
-                           @RequestParam(required = false) String status,
-                           Model model) {
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String status,
+            Model model) {
         Page<Jokbo> jokboPage;
         if (status != null && !status.isEmpty()) {
             Jokbo.JokboStatus jokboStatus = Jokbo.JokboStatus.valueOf(status);
@@ -255,14 +253,14 @@ public class AdminViewController {
         } else {
             jokboPage = jokboService.getAllJokbos(page, size);
         }
-        
+
         model.addAttribute("jokbos", jokboPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", jokboPage.getTotalPages());
         model.addAttribute("hasNext", jokboPage.hasNext());
         model.addAttribute("hasPrevious", jokboPage.hasPrevious());
         model.addAttribute("selectedStatus", status);
-        
+
         return "admin/jokbo-management";
     }
 }

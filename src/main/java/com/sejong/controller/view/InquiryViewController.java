@@ -62,7 +62,7 @@ public class InquiryViewController {
      * 문의 상세 보기
      */
     @GetMapping("/inquiry/{inquiryId}")
-    public String inquiryDetail(@PathVariable Integer inquiryId, Model model) {
+    public String inquiryDetail(@PathVariable @org.springframework.lang.NonNull Integer inquiryId, Model model) {
         Inquiry inquiry = inquiryService.getInquiryWithComments(inquiryId);
         if (inquiry == null) {
             return "redirect:/inquiry";

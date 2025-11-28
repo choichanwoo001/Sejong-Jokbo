@@ -62,14 +62,14 @@ public class InquiryService {
     /**
      * 문의 ID로 문의를 조회합니다
      */
-    public Inquiry getInquiryById(Integer inquiryId) {
+    public Inquiry getInquiryById(@org.springframework.lang.NonNull Integer inquiryId) {
         return inquiryRepository.findById(inquiryId).orElse(null);
     }
 
     /**
      * 문의 ID로 문의를 조회합니다 (댓글 포함)
      */
-    public Inquiry getInquiryWithComments(Integer inquiryId) {
+    public Inquiry getInquiryWithComments(@org.springframework.lang.NonNull Integer inquiryId) {
         return inquiryRepository.findByIdWithComments(inquiryId).orElse(null);
     }
 
@@ -89,7 +89,7 @@ public class InquiryService {
     /**
      * 문의에 답변을 추가합니다
      */
-    public Comment addComment(Integer inquiryId, String content) {
+    public Comment addComment(@org.springframework.lang.NonNull Integer inquiryId, String content) {
         Inquiry inquiry = getInquiryById(inquiryId);
         Admin admin = adminService.getOrCreateDefaultAdmin();
 
@@ -108,7 +108,7 @@ public class InquiryService {
     /**
      * 문의 ID로 답변들을 조회합니다
      */
-    public List<Comment> getCommentsByInquiryId(Integer inquiryId) {
+    public List<Comment> getCommentsByInquiryId(@org.springframework.lang.NonNull Integer inquiryId) {
         return commentRepository.findByInquiryInquiryIdOrderByCreatedAtAsc(inquiryId);
     }
 }
