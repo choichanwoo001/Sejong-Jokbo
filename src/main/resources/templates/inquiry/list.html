@@ -44,12 +44,6 @@
                         <div th:if="${inquiry.isPublic}">
                             <p th:text="${#strings.abbreviate(inquiry.message, 100)}">문의 내용</p>
                         </div>
-                        <div th:unless="${inquiry.isPublic}" class="private-inquiry">
-                            <p class="private-message">비공개 문의입니다.</p>
-                        </div>
-                    </div>
-                    <div class="inquiry-footer">
-                        <a th:href="@{/inquiry/{id}(id=${inquiry.inquiryId})}" class="view-button">보기</a>
                         <!DOCTYPE html>
                         <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
         pageTitle=${'문의 게시판 - 고전독서 족보'},
@@ -110,7 +104,6 @@
                                                         class="has-answer">답변완료</span>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -158,6 +151,7 @@
                                             th:href="@{/inquiry(page=${currentPage + 1}, tab=${currentTab})}"
                                             class="page-btn next-btn">다음</a>
                                     </div>
+                                </div>
                         </th:block>
 
                         <th:block th:fragment="extraScripts">
