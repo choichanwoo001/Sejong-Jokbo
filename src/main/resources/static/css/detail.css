@@ -1,13 +1,13 @@
 .book-detail {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px 20px;
 }
 
 .main-layout {
     display: flex;
     gap: 40px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .book-info {
@@ -23,7 +23,7 @@
     height: 280px;
     object-fit: cover;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
@@ -34,13 +34,26 @@
     color: #333;
 }
 
-.book-author, .book-publisher, .book-category {
+.book-author,
+.book-publisher,
+.book-category {
     margin-bottom: 8px;
     color: #666;
 }
 
 .jokbo-section {
     flex: 2;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    margin: 0;
 }
 
 .jokbo-tabs {
@@ -121,7 +134,8 @@
     color: #333;
 }
 
-.form-input, .form-textarea {
+.form-input,
+.form-textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -201,7 +215,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .jokbo-header {
@@ -241,7 +255,8 @@
     margin-top: 15px;
 }
 
-.btn-view, .btn-download {
+.btn-view,
+.btn-download {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
@@ -260,7 +275,8 @@
     color: white;
 }
 
-.btn-view:hover, .btn-download:hover {
+.btn-view:hover,
+.btn-download:hover {
     opacity: 0.8;
 }
 
@@ -320,7 +336,6 @@
 
 .back-link {
     display: inline-block;
-    margin-bottom: 20px;
     background: #dc2626;
     color: white;
     padding: 8px 16px;
@@ -328,6 +343,7 @@
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
+    font-size: 0.9rem;
 }
 
 .back-link:hover {
@@ -436,45 +452,46 @@
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .book-info {
         order: 1;
     }
-    
+
     .jokbo-section {
         order: 2;
     }
-    
-    .email-group, .verification-code-group {
+
+    .email-group,
+    .verification-code-group {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .jokbo-pagination {
         gap: 8px;
         margin-top: 20px;
         padding: 16px 0;
     }
-    
+
     .jokbo-pagination .page-numbers {
         gap: 4px;
     }
-    
+
     .jokbo-pagination .page-btn {
         min-width: 32px;
         height: 32px;
         padding: 4px 8px;
         font-size: 0.8rem;
     }
-    
+
     .jokbo-pagination .prev-btn,
     .jokbo-pagination .next-btn {
         padding: 4px 10px;
         font-size: 0.8rem;
     }
-    
+
     .jokbo-pagination .page-dots {
         padding: 0 4px;
         font-size: 0.8rem;
     }
-} 
+}
