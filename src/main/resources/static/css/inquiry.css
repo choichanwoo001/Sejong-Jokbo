@@ -487,58 +487,129 @@
         gap: 16px;
         text-align: center;
     }
-    
+
     .inquiry-header h1 {
         font-size: 1.75rem;
     }
-    
+
     .inquiry-actions {
         text-align: center;
     }
-    
+
     .inquiry-form {
         padding: 24px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .inquiry-meta {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
-    
+
     .inquiry-detail {
         padding: 24px;
     }
-    
+
     .pagination {
         gap: 8px;
         margin-top: 24px;
         padding: 20px 0;
     }
-    
+
     .page-numbers {
         gap: 4px;
     }
-    
+
     .page-btn {
         min-width: 36px;
         height: 36px;
         padding: 6px 10px;
         font-size: 0.875rem;
     }
-    
+
     .prev-btn,
     .next-btn {
         padding: 6px 12px;
         font-size: 0.875rem;
     }
-    
+
     .page-dots {
         padding: 0 4px;
         font-size: 0.875rem;
     }
+}
+
+/* 탭 스타일 */
+.inquiry-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-item {
+    padding: 12px 24px;
+    font-weight: 600;
+    color: #6b7280;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tab-item:hover {
+    color: #1f2937;
+}
+
+.tab-item.active {
+    color: #dc2626;
+    border-bottom-color: #dc2626;
+}
+
+/* 승인 이력 스타일 */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.history-item {
+    border-left: 4px solid #dc2626;
+}
+
+.history-book-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px !important;
+}
+
+.history-reason {
+    color: #4b5563 !important;
+    background: #fef2f2;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #fee2e2;
+}
+
+.label {
+    font-weight: 600;
+    color: #dc2626;
+    margin-right: 8px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-badge.reject {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
 }
