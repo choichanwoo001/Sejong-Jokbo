@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/site-layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
         pageTitle=${'문의 작성 - 고전독서 족보'},
         content=~{::content},
         extraHead=~{::extraHead},
@@ -33,16 +32,12 @@
 
                 <div class="form-group">
                     <label for="message">문의 내용 *</label>
-                    <textarea id="message" name="message" rows="8" required placeholder="문의하실 내용을 자세히 작성해주세요."></textarea>
+                    <textarea id="message" name="message" rows="8" required
+                        placeholder="문의하실 내용을 자세히 작성해주세요."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="isPublic" name="isPublic" checked>
-                        <span class="checkmark"></span>
-                        공개로 설정 (다른 사용자들이 볼 수 있습니다)
-                    </label>
-                    <p class="form-help">체크 해제 시 비공개로 설정됩니다. 비공개 문의는 목록에는 표시되지만 내용은 숨겨집니다.</p>
+                    <p class="form-help" style="color: #666; margin-top: 0;">※ 문의는 공개로만 등록 가능하며, 모든 사용자가 볼 수 있습니다.</p>
                 </div>
 
                 <div class="form-actions">
@@ -58,4 +53,5 @@
     <script th:src="@{/js/utils.js}"></script>
     <script th:src="@{/js/inquiry.js}"></script>
 </th:block>
+
 </html>
