@@ -30,9 +30,8 @@ public class InquiryViewController {
             Model model) {
 
         if ("history".equals(tab)) {
-            Page<com.sejong.entity.JokboApprovalHistory> historyPage = historyService.getHistoryByAction(
-                    com.sejong.entity.JokboApprovalHistory.ApprovalAction.반려,
-                    org.springframework.data.domain.PageRequest.of(page, 20));
+            Page<com.sejong.entity.JokboApprovalHistory> historyPage = historyService
+                    .getPublicApprovalHistory(org.springframework.data.domain.PageRequest.of(page, 15));
             model.addAttribute("approvalHistories", historyPage.getContent());
             model.addAttribute("totalPages", historyPage.getTotalPages());
             model.addAttribute("hasNext", historyPage.hasNext());
