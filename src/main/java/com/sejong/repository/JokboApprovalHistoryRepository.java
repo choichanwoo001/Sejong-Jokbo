@@ -86,6 +86,11 @@ public interface JokboApprovalHistoryRepository extends JpaRepository<JokboAppro
        /**
         * 특정 액션 목록에 포함된 이력 조회 (최신순)
         */
-       Page<JokboApprovalHistory> findByActionInOrderByCreatedAtDesc(List<JokboApprovalHistory.ApprovalAction> actions,
+       /**
+        * 특정 액션 목록에 포함된 이력 조회 (최신순)
+        */
+       @Query("SELECT h FROM JokboApprovalHistory h JOIN FETCH h.jokbo j JOIN FETCH j.book JOIN FETCH h.admin WHERE h.action IN :actions ORDER BY h.createdAt DESC")
+       Page<JokboApprovalHistory> findByActionInOrderByCreatedAtDesc(
+                     @Param("actions") List<JokboApprovalHistory.ApprovalAction> actions,
                      Pageable pageable);
 }
