@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/fragments/layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: layout(
         pageTitle=${'책 관리 - 세종족보'},
         currentPage=${'books'},
         content=~{::content},
@@ -120,9 +119,9 @@
 
         <div class="book-display subtle-shadow" id="category-western" style="display: block;">
             <div class="books-grid" id="western-books">
-                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '서양'}"
-                     th:data-title="${book.title}" th:data-author="${book.author}"
-                     th:data-category="${book.category}">
+                <div class="book-item" th:each="book : ${books}"
+                    th:if="${book.category == 'west' or book.category == '서양'}" th:data-title="${book.title}"
+                    th:data-author="${book.author}" th:data-category="서양">
                     <div class="book-cover">
                         <a th:href="'/admin/book/' + ${book.bookId}">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
@@ -134,7 +133,8 @@
                         <p class="book-author" th:text="${book.author}">저자</p>
                         <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         <div class="admin-actions">
-                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보
+                                관리</a>
                         </div>
                     </div>
                 </div>
@@ -143,9 +143,9 @@
 
         <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
             <div class="books-grid" id="eastwest-books">
-                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동서양'}"
-                     th:data-title="${book.title}" th:data-author="${book.author}"
-                     th:data-category="${book.category}">
+                <div class="book-item" th:each="book : ${books}"
+                    th:if="${book.category == 'eastwest' or book.category == '동서양'}" th:data-title="${book.title}"
+                    th:data-author="${book.author}" th:data-category="동서양">
                     <div class="book-cover">
                         <a th:href="'/admin/book/' + ${book.bookId}">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
@@ -157,7 +157,8 @@
                         <p class="book-author" th:text="${book.author}">저자</p>
                         <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         <div class="admin-actions">
-                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보
+                                관리</a>
                         </div>
                     </div>
                 </div>
@@ -166,9 +167,9 @@
 
         <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
             <div class="books-grid" id="eastern-books">
-                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '동양'}"
-                     th:data-title="${book.title}" th:data-author="${book.author}"
-                     th:data-category="${book.category}">
+                <div class="book-item" th:each="book : ${books}"
+                    th:if="${book.category == 'east' or book.category == '동양'}" th:data-title="${book.title}"
+                    th:data-author="${book.author}" th:data-category="동양">
                     <div class="book-cover">
                         <a th:href="'/admin/book/' + ${book.bookId}">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
@@ -180,7 +181,8 @@
                         <p class="book-author" th:text="${book.author}">저자</p>
                         <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         <div class="admin-actions">
-                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보
+                                관리</a>
                         </div>
                     </div>
                 </div>
@@ -189,9 +191,9 @@
 
         <div class="book-display subtle-shadow" id="category-science" style="display: none;">
             <div class="books-grid" id="science-books">
-                <div class="book-item" th:each="book : ${books}" th:if="${book.category == '과학'}"
-                     th:data-title="${book.title}" th:data-author="${book.author}"
-                     th:data-category="${book.category}">
+                <div class="book-item" th:each="book : ${books}"
+                    th:if="${book.category == 'science' or book.category == '과학'}" th:data-title="${book.title}"
+                    th:data-author="${book.author}" th:data-category="과학">
                     <div class="book-cover">
                         <a th:href="'/admin/book/' + ${book.bookId}">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
@@ -203,7 +205,8 @@
                         <p class="book-author" th:text="${book.author}">저자</p>
                         <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         <div class="admin-actions">
-                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보 관리</a>
+                            <a th:href="'/admin/book/' + ${book.bookId} + '/jokbos'" class="admin-btn manage-btn">족보
+                                관리</a>
                         </div>
                     </div>
                 </div>
@@ -216,4 +219,5 @@
     <script th:src="@{/js/admin-search.js}"></script>
     <script th:src="@{/js/admin-books.js}"></script>
 </th:block>
+
 </html>
