@@ -1,3 +1,18 @@
+function getCategoryId(category) {
+    switch (category) {
+        case '서양':
+            return 'category-western';
+        case '동서양':
+            return 'category-east-west';
+        case '동양':
+            return 'category-eastern';
+        case '과학':
+            return 'category-science';
+        default:
+            return null;
+    }
+}
+
 function setupCategoryTabs() {
     const categoryTabs = document.querySelectorAll('.category-tab');
     const bookDisplays = document.querySelectorAll('.book-display');

@@ -28,7 +28,21 @@ function getCategoryId(categoryName) {
     return categoryMap[categoryName] || null;
 }
 
+// 디버그 모드 설정
+const DEBUG_MODE = true;
+
 /**
+ * 조건부 콘솔 로그
+ */
+function debugLog(...args) {
+    if (DEBUG_MODE) {
+        console.log(...args);
+    }
+}
+
+/**
+ * 조건부 콘솔 에러
+ */
 function debugError(...args) {
     if (DEBUG_MODE) {
         console.error(...args);
