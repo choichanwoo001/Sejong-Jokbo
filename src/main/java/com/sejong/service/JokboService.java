@@ -196,6 +196,7 @@ public class JokboService {
     /**
      * 텍스트 족보를 PDF 바이트 배열로 변환합니다 (실시간 변환)
      */
+    @Transactional(readOnly = true)
     public byte[] getTextJokboAsPdf(@org.springframework.lang.NonNull Integer jokboId) throws Exception {
         Jokbo jokbo = getJokboById(jokboId);
 
