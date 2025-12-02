@@ -50,17 +50,36 @@ document.querySelectorAll('.category-tab').forEach(tab => {
             // 현재 필터 적용
             const sortFilter = document.getElementById('sortFilter');
             const currentFilter = sortFilter ? sortFilter.value : 'name';
-            debugLog('카테고리 변경, 필터 적용:', currentFilter);
+
+            // debugLog 안전하게 사용
+            const log = (typeof debugLog === 'function') ? debugLog : console.log;
+            log('카테고리 변경, 필터 적용:', currentFilter);
+
             sortBooks(currentFilter);
         }
+
+        // 선택된 카테고리 저장
+        localStorage.setItem('selectedCategory', tabText);
     });
 });
 
-// 페이지 로드 시 검색 결과가 있으면 검색 입력 필드에 포커스
+// 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function () {
     const searchResults = document.querySelector('.search-results');
     if (searchResults) {
         searchInput.focus();
+    }
+
+    // 저장된 카테고리 복원
+    const savedCategory = localStorage.getItem('selectedCategory');
+    if (savedCategory) {
+        const tabToSelect = Array.from(document.querySelectorAll('.category-tab'))
+            .find(tab => tab.textContent.trim() === savedCategory);
+
+        // 저장된 카테고리가 있고, 현재 active가 아닌 경우에만 클릭 트리거
+        if (tabToSelect && !tabToSelect.classList.contains('active')) {
+            tabToSelect.click();
+        }
     }
 
     document.querySelectorAll('.book-item[data-book-url]').forEach((item) => {
