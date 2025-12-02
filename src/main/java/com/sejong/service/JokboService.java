@@ -207,7 +207,8 @@ public class JokboService {
             throw new IllegalArgumentException("족보 내용이 없습니다.");
         }
 
-        return pdfService.createPdfBytesFromText(jokbo.getContent(), jokbo.getUploaderName());
+        return pdfService.createPdfBytesFromText(jokbo.getBook().getTitle(), jokbo.getContent(),
+                jokbo.getUploaderName());
     }
 
     /**

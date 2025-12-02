@@ -17,7 +17,7 @@ public class PdfService {
     /**
      * 텍스트 내용을 PDF로 변환하여 바이트 배열로 반환
      */
-    public byte[] createPdfBytesFromText(String content, String uploaderName) throws Exception {
+    public byte[] createPdfBytesFromText(String title, String content, String uploaderName) throws Exception {
         // U+000D (CR) 문자 제거 - 폰트가 지원하지 않아 에러 발생 방지
         content = content.replace("\r", "");
 
@@ -56,8 +56,8 @@ public class PdfService {
                 // 제목
                 contentStream.beginText();
                 contentStream.setFont(font, 18);
-                contentStream.newLineAtOffset((pageWidth - getTextWidth("족보", font, 18)) / 2, pageHeight - 80);
-                contentStream.showText("족보");
+                contentStream.newLineAtOffset((pageWidth - getTextWidth(title, font, 18)) / 2, pageHeight - 80);
+                contentStream.showText(title);
                 contentStream.endText();
 
                 // 업로더 정보
