@@ -19,6 +19,9 @@
                 <img th:if="${book.imageUrl}" th:src="${book.imageUrl}" alt="책 표지" class="book-image">
                 <div class="book-details">
                     <h1 class="book-title" th:text="${book.title}">책 제목</h1>
+                    <p class="book-publisher" th:text="'출판사: ' + ${book.publisher}">출판사</p>
+                    <p class="book-category" th:text="'카테고리: ' + ${translatedCategory}">카테고리</p>
+                    <p class="book-author" th:text="'저자: ' + ${book.author}">저자</p>
                 </div>
             </div>
 
