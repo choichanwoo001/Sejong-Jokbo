@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @Tag(name = "도서 뷰", description = "도서 검색 및 상세 페이지 관련")
+@Slf4j
 public class BookViewController {
 
     private final BookService bookService;
@@ -127,7 +129,8 @@ public class BookViewController {
             // 로컬 환경에서는 getFilePath, GCP 환경에서는 downloadFile 사용
             try {
                 Path filePath = jokboService.getFilePath(filename);
-                Resource resource = new UrlResource(java.util.Objects.requireNonNull(filePath.toUri()));
+                Resource resource = new UrlResource(
+                        java.util.Objects.requireNonNull(filePath.toAbsolutePath().toUri()));
 
                 if (resource.exists() && resource.isReadable()) {
                     return ResponseEntity.ok()
@@ -144,6 +147,7 @@ public class BookViewController {
                         .body(resource);
             }
         } catch (Exception e) {
+            log.error("족보 파일 다운로드 중 오류 발생: {}", filename, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -161,6 +165,7 @@ public class BookViewController {
                     .body(pdfBytes);
 
         } catch (Exception e) {
+            log.error("텍스트 족보 PDF 보기 중 오류 발생: {}", jokboId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -183,6 +188,7 @@ public class BookViewController {
                     .body(pdfBytes);
 
         } catch (Exception e) {
+            log.error("텍스트 족보 PDF 다운로드 중 오류 발생: {}", jokboId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -196,7 +202,8 @@ public class BookViewController {
             // GCP 환경에서는 getFilePath가 지원되지 않으므로 downloadFile 사용
             try {
                 Path filePath = jokboService.getFilePath(filename);
-                Resource resource = new UrlResource(java.util.Objects.requireNonNull(filePath.toUri()));
+                Resource resource = new UrlResource(
+                        java.util.Objects.requireNonNull(filePath.toAbsolutePath().toUri()));
 
                 if (resource.exists() && resource.isReadable()) {
                     String contentType = getContentType(filename);
@@ -219,6 +226,7 @@ public class BookViewController {
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
+            log.error("족보 파일 보기 중 오류 발생: {}", filename, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
