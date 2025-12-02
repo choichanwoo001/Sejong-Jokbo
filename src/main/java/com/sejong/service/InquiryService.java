@@ -24,30 +24,56 @@ public class InquiryService {
     /**
      * 모든 문의를 페이징하여 조회합니다 (15개씩)
      */
+    /**
+     * 모든 문의를 페이징하여 조회합니다 (15개씩)
+     */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<Inquiry> getAllInquiries(int page) {
         Pageable pageable = PageRequest.of(page, 15); // 15개씩 페이징
-        return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Inquiry> inquiries = inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        // 댓글 초기화 (Lazy Loading 해결)
+        inquiries.getContent().forEach(inquiry -> {
+            if (inquiry.getComments() != null) {
+                inquiry.getComments().size();
+            }
+        });
+
+        return inquiries;
     }
 
     /**
      * 모든 문의를 페이징하여 조회합니다 (커스텀 페이지 크기)
      */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<Inquiry> getAllInquiries(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Inquiry> inquiries = inquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        // 댓글 초기화 (Lazy Loading 해결)
+        inquiries.getContent().forEach(inquiry -> {
+            if (inquiry.getComments() != null) {
+                inquiry.getComments().size();
+            }
+        });
+
+        return inquiries;
     }
 
     /**
      * 답변되지 않은 문의만 페이징하여 조회합니다 (10개씩)
      */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<Inquiry> getUnansweredInquiries(int page) {
         Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
+        // 답변이 없는 문의이므로 댓글 초기화 불필요 (비어있음)
         return inquiryRepository.findByCommentsIsEmptyOrderByCreatedAtDesc(pageable);
     }
 
     /**
      * 모든 문의를 조회합니다 (페이징 없음)
      */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<Inquiry> getAllInquiries() {
         return inquiryRepository.findAllByOrderByCreatedAtDesc();
     }
@@ -55,6 +81,7 @@ public class InquiryService {
     /**
      * 답변되지 않은 문의만 조회합니다 (페이징 없음)
      */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<Inquiry> getUnansweredInquiries() {
         return inquiryRepository.findByCommentsIsEmptyOrderByCreatedAtDesc();
     }
@@ -108,8 +135,18 @@ public class InquiryService {
     /**
      * 문의 ID로 답변들을 조회합니다
      */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<Comment> getCommentsByInquiryId(@org.springframework.lang.NonNull Integer inquiryId) {
-        return commentRepository.findByInquiryInquiryIdOrderByCreatedAtAsc(inquiryId);
+        List<Comment> comments = commentRepository.findByInquiryInquiryIdOrderByCreatedAtAsc(inquiryId);
+
+        // 관리자 정보 초기화 (Lazy Loading 해결)
+        comments.forEach(comment -> {
+            if (comment.getAdmin() != null) {
+                comment.getAdmin().getAdminName();
+            }
+        });
+
+        return comments;
     }
 
     /**
