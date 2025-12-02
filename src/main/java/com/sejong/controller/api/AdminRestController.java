@@ -110,4 +110,48 @@ public class AdminRestController {
         long count = jokboService.getPendingJokbosCount();
         return java.util.Map.of("count", count);
     }
+
+    /**
+     * 족보 삭제 (반려 또는 대기 상태만 가능)
+     */
+    @Operation(summary = "족보 삭제", description = "반려 또는 대기 상태의 족보를 영구 삭제합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공/실패 메시지")
+    })
+    @DeleteMapping("/jokbo/{jokboId}")
+    public String deleteJokbo(
+            @Parameter(description = "족보 ID") @PathVariable @org.springframework.lang.NonNull Integer jokboId) {
+        try {
+            adminService.deleteJokbo(jokboId);
+            return "success";
+        } catch (Exception e) {
+            return "error: 족보 삭제 중 오류가 발생했습니다. - " + e.getMessage();
+        }
+    }
+
+    /**
+     * 특정 책의 족보 목록 조회
+     */
+    @Operation(summary = "책별 족보 목록 조회", description = "특정 책에 등록된 모든 족보 목록을 조회합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "족보 목록 조회 성공")
+    })
+    @GetMapping("/api/book/{bookId}/jokbos")
+    public java.util.List<java.util.Map<String, Object>> getJokbosByBook(
+            @Parameter(description = "책 ID") @PathVariable @org.springframework.lang.NonNull Integer bookId) {
+        return jokboService.getAllJokbosByBookId(bookId).stream()
+                .map(jokbo -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("jokboId", jokbo.getJokboId());
+                    map.put("uploaderName", jokbo.getUploaderName());
+                    map.put("status", jokbo.getStatus());
+                    map.put("contentType", jokbo.getContentType());
+                    map.put("contentUrl", jokbo.getContentUrl());
+                    map.put("content", jokbo.getContent());
+                    map.put("comment", jokbo.getComment());
+                    map.put("createdAt", jokbo.getCreatedAt());
+                    return map;
+                })
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

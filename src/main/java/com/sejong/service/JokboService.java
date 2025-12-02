@@ -286,4 +286,21 @@ public class JokboService {
         Long count = jokboRepository.sumDownloadCount();
         return count != null ? count : 0L;
     }
+
+    /**
+     * 족보를 삭제합니다 (파일 포함)
+     */
+    @Transactional
+    public void deleteJokbo(@org.springframework.lang.NonNull Integer jokboId) {
+        Jokbo jokbo = jokboRepository.findById(jokboId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
+
+        // 파일 족보인 경우 실제 파일 삭제
+        if ("file".equals(jokbo.getContentType()) && jokbo.getContentUrl() != null) {
+            fileStorageService.deleteFile(jokbo.getContentUrl());
+        }
+
+        jokboRepository.delete(jokbo);
+        log.info("족보 삭제 완료: ID {}", jokboId);
+    }
 }
