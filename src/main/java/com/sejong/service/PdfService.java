@@ -98,7 +98,7 @@ public class PdfService {
                             page = new PDPage();
                             document.addPage(page);
                             contentStream = new PDPageContentStream(document, page);
-                            yPosition = pageHeight - marginTop;
+                            yPosition = pageHeight - marginTop - 20;
                         }
 
                         // 텍스트 출력
