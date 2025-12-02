@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/fragments/layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: layout(
         pageTitle=${'관리자 대시보드 - 세종족보'},
         currentPage=${'dashboard'},
         content=~{::content},
@@ -170,10 +169,12 @@
     </div>
 
     <div class="action-buttons">
-        <a href="/admin/books" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">📖 모든 책 관리</a>
-        <a href="/admin/jokbos/pending" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">⏳ 승인 대기 족보</a>
+
+        <a href="/admin/jokbos/pending" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">⏳ 승인 대기
+            족보</a>
         <a href="/admin/jokbos" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">🗂️ 전체 족보</a>
-        <a href="/admin/approval-history" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">📊 승인 이력</a>
+        <a href="/admin/approval-history" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">📊 승인
+            이력</a>
         <a href="/admin/inquiries" class="admin-btn admin-btn--primary admin-btn--full admin-btn--lg">💬 문의 관리</a>
         <button id="syncBtn" class="admin-btn admin-btn--success admin-btn--full admin-btn--lg">🔄 동기화</button>
     </div>
@@ -183,7 +184,8 @@
         <div class="inquiry-item" th:each="inquiry : ${unansweredInquiries}">
             <div class="inquiry-header">
                 <span class="inquiry-name" th:text="${inquiry.name}">사용자명</span>
-                <span class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
+                <span class="inquiry-date"
+                    th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
             </div>
             <div class="inquiry-message" th:text="${inquiry.message}">문의 내용</div>
         </div>
@@ -194,4 +196,5 @@
 </th:block>
 
 <th:block th:fragment="extraScripts"></th:block>
+
 </html>

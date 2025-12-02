@@ -1,4 +1,4 @@
-/* 문의 게시판 스타일 */
+﻿/* 臾몄쓽 寃뚯떆???ㅽ???*/
 .inquiry-container {
     max-width: 1000px;
     margin: 60px auto;
@@ -37,18 +37,21 @@
 }
 
 .home-button {
-    background: #dc2626;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: 8px;
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .home-button:hover {
-    background: #b91c1c;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .inquiry-actions {
@@ -207,7 +210,7 @@
     margin: 0;
 }
 
-/* 문의 작성 폼 스타일 */
+/* 臾몄쓽 ?묒꽦 ???ㅽ???*/
 .inquiry-form-container {
     max-width: 800px;
     margin: 0 auto;
@@ -320,7 +323,7 @@
     transform: translateY(-2px);
 }
 
-/* 문의 상세 보기 스타일 */
+/* 臾몄쓽 ?곸꽭 蹂닿린 ?ㅽ???*/
 .inquiry-detail {
     background: white;
     border: 1px solid #e5e7eb;
@@ -411,7 +414,7 @@
     margin: 0;
 }
 
-/* 페이징 스타일 */
+/* ?섏씠吏??ㅽ???*/
 .pagination {
     display: flex;
     justify-content: center;
@@ -431,15 +434,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 8px 12px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
     background: white;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border-radius: 6px;
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -486,7 +490,7 @@
     padding: 0 8px;
 }
 
-/* 반응형 디자인 */
+/* 諛섏쓳???붿옄??*/
 @media (max-width: 768px) {
     .inquiry-header {
         flex-direction: column;
@@ -531,11 +535,22 @@
     }
 
     .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
     .prev-btn,
     .next-btn {
@@ -549,7 +564,7 @@
     }
 }
 
-/* 탭 스타일 */
+/* ???ㅽ???*/
 .inquiry-tabs {
     display: flex;
     gap: 10px;
@@ -606,7 +621,7 @@
     margin: 0;
 }
 
-/* 페이징 스타일 */
+/* ?섏씠吏??ㅽ???*/
 .pagination {
     display: flex;
     justify-content: center;
@@ -626,15 +641,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 8px 12px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
     background: white;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border-radius: 6px;
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -681,7 +697,7 @@
     padding: 0 8px;
 }
 
-/* 반응형 디자인 */
+/* 諛섏쓳???붿옄??*/
 @media (max-width: 768px) {
     .inquiry-header {
         flex-direction: column;
@@ -726,11 +742,22 @@
     }
 
     .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
     .prev-btn,
     .next-btn {
@@ -744,7 +771,7 @@
     }
 }
 
-/* 탭 스타일 */
+/* ???ㅽ???*/
 .inquiry-tabs {
     display: flex;
     gap: 10px;
@@ -801,7 +828,7 @@
     margin: 0;
 }
 
-/* 페이징 스타일 */
+/* ?섏씠吏??ㅽ???*/
 .pagination {
     display: flex;
     justify-content: center;
@@ -821,15 +848,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 8px 12px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
     background: white;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border-radius: 6px;
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -876,7 +904,7 @@
     padding: 0 8px;
 }
 
-/* 반응형 디자인 */
+/* 諛섏쓳???붿옄??*/
 @media (max-width: 768px) {
     .inquiry-header {
         flex-direction: column;
@@ -921,11 +949,22 @@
     }
 
     .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
     .prev-btn,
     .next-btn {
@@ -939,7 +978,7 @@
     }
 }
 
-/* 탭 스타일 */
+/* ???ㅽ???*/
 .inquiry-tabs {
     display: flex;
     gap: 10px;
@@ -965,7 +1004,7 @@
     border-bottom-color: #dc2626;
 }
 
-/* 승인 이력 스타일 */
+/* ?뱀씤 ?대젰 ?ㅽ???*/
 .history-list {
     display: flex;
     flex-direction: column;

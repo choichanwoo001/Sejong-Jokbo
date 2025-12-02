@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/site-layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
         pageTitle=${'고전독서 족보'},
         content=~{::content},
         extraHead=~{::extraHead},
@@ -15,13 +14,14 @@
 <th:block th:fragment="content">
     <div class="container fade-in">
         <div class="site-title">
-            <h1>고전독서 족보 사이트</h1>
+            <h1>고전독서 도우미</h1>
         </div>
 
         <div class="search-section">
             <div class="search-container">
                 <form id="searchForm" method="get" action="/search">
-                    <input type="text" name="keyword" class="search-input subtle-shadow" placeholder="도서명, 저자, 출판사로 검색" th:value="${keyword}">
+                    <input type="text" name="keyword" class="search-input subtle-shadow" placeholder="도서명, 저자, 출판사로 검색"
+                        th:value="${keyword}">
                 </form>
             </div>
         </div>
@@ -40,11 +40,8 @@
                 <a href="/" class="home-button">홈으로 가기</a>
             </div>
             <div class="books-grid">
-                <div class="book-item"
-                     th:each="book : ${books}"
-                     th:data-book-url="@{'/book/' + ${book.bookId}}"
-                     style="cursor: pointer;"
-                     tabindex="0">
+                <div class="book-item" th:each="book : ${books}" th:data-book-url="@{'/book/' + ${book.bookId}}"
+                    style="cursor: pointer;" tabindex="0">
                     <div class="book-cover">
                         <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                     </div>
@@ -77,12 +74,9 @@
 
             <div class="book-display subtle-shadow" id="category-western" style="display: block;">
                 <div class="books-grid">
-                    <div class="book-item"
-                         th:each="book : ${westernBooks}"
-                         th:data-book-url="@{'/book/' + ${book.bookId}}"
-                         th:data-book-id="${book.bookId}"
-                         style="cursor: pointer;"
-                         tabindex="0">
+                    <div class="book-item" th:each="book : ${westernBooks}"
+                        th:data-book-url="@{'/book/' + ${book.bookId}}" th:data-book-id="${book.bookId}"
+                        style="cursor: pointer;" tabindex="0">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -98,12 +92,9 @@
 
             <div class="book-display subtle-shadow" id="category-east-west" style="display: none;">
                 <div class="books-grid">
-                    <div class="book-item"
-                         th:each="book : ${eastWestBooks}"
-                         th:data-book-url="@{'/book/' + ${book.bookId}}"
-                         th:data-book-id="${book.bookId}"
-                         style="cursor: pointer;"
-                         tabindex="0">
+                    <div class="book-item" th:each="book : ${eastWestBooks}"
+                        th:data-book-url="@{'/book/' + ${book.bookId}}" th:data-book-id="${book.bookId}"
+                        style="cursor: pointer;" tabindex="0">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -119,12 +110,9 @@
 
             <div class="book-display subtle-shadow" id="category-eastern" style="display: none;">
                 <div class="books-grid">
-                    <div class="book-item"
-                         th:each="book : ${easternBooks}"
-                         th:data-book-url="@{'/book/' + ${book.bookId}}"
-                         th:data-book-id="${book.bookId}"
-                         style="cursor: pointer;"
-                         tabindex="0">
+                    <div class="book-item" th:each="book : ${easternBooks}"
+                        th:data-book-url="@{'/book/' + ${book.bookId}}" th:data-book-id="${book.bookId}"
+                        style="cursor: pointer;" tabindex="0">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -140,12 +128,9 @@
 
             <div class="book-display subtle-shadow" id="category-science" style="display: none;">
                 <div class="books-grid">
-                    <div class="book-item"
-                         th:each="book : ${scienceBooks}"
-                         th:data-book-url="@{'/book/' + ${book.bookId}}"
-                         th:data-book-id="${book.bookId}"
-                         style="cursor: pointer;"
-                         tabindex="0">
+                    <div class="book-item" th:each="book : ${scienceBooks}"
+                        th:data-book-url="@{'/book/' + ${book.bookId}}" th:data-book-id="${book.bookId}"
+                        style="cursor: pointer;" tabindex="0">
                         <div class="book-cover">
                             <img th:src="@{${book.imageUrl}}" th:alt="${book.title}">
                         </div>
@@ -190,4 +175,5 @@
     <script th:src="@{/js/sse.js}"></script>
     <script th:src="@{/js/user-sse-init.js}"></script>
 </th:block>
+
 </html>
