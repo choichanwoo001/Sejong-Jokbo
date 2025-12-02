@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/fragments/layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: layout(
         pageTitle=${'족보 관리 - 세종족보'},
         currentPage=${'jokbos'},
         content=~{::content},
@@ -65,66 +64,90 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="jokbo : ${jokbos}"
-                        th:data-book-title="${jokbo.book.title}"
-                        th:data-registrant="${jokbo.uploaderName}"
-                        th:data-registration-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}">
+                    <tr th:each="jokbo : ${jokbos}" th:data-jokbo-id="${jokbo.jokboId}"
+                        th:data-book-title="${jokbo.book.title}" th:data-registrant="${jokbo.uploaderName}"
+                        th:data-registration-date="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd')}"
+                        th:data-content-type="${jokbo.contentType}" th:data-status="${jokbo.status}"
+                        th:data-comment="${jokbo.comment}" th:data-content="${jokbo.content}"
+                        th:data-content-url="${jokbo.contentUrl}">
                         <td th:text="${jokbo.jokboId}">ID</td>
                         <td th:text="${jokbo.book.title}">책 제목</td>
                         <td th:text="${jokbo.uploaderName}">등록자</td>
                         <td th:text="${#temporals.format(jokbo.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</td>
                         <td>
-                            <span th:if="${jokbo.contentType == 'text'}" class="content-type-badge text">텍스트</span>
-                            <span th:if="${jokbo.contentType == 'file'}" class="content-type-badge file">파일</span>
+                            <span th:if="${jokbo.contentType == 'text'}" class="badge badge-text">텍스트</span>
+                            <span th:if="${jokbo.contentType == 'file'}" class="badge badge-file">파일</span>
                         </td>
                         <td>
-                            <span th:class="${'status-badge status-' + jokbo.status.name().toLowerCase()}"
-                                  th:text="${jokbo.status.name()}">상태</span>
+                            <span th:if="${jokbo.status.name() == '대기'}" class="status-badge status-pending">대기</span>
+                            <span th:if="${jokbo.status.name() == '승인'}" class="status-badge status-approved">승인</span>
+                            <span th:if="${jokbo.status.name() == '반려'}" class="status-badge status-rejected">반려</span>
                         </td>
-                        <td class="comment-cell" th:text="${jokbo.comment}">코멘트</td>
                         <td>
-                            <div class="action-buttons">
-                                <div th:if="${jokbo.status.name() == '대기'}">
-                                    <button class="btn-approve approval-trigger"
-                                            data-approval-action="approve"
-                                            th:data-jokbo-id="${jokbo.jokboId}">승인</button>
-                                    <button class="btn-reject approval-trigger"
-                                            data-approval-action="reject"
-                                            th:data-jokbo-id="${jokbo.jokboId}">반려</button>
-                                </div>
-
-                                <div th:if="${jokbo.status.name() == '승인'}">
-                                    <button class="btn-cancel approval-trigger"
-                                            data-approval-action="cancel"
-                                            th:data-jokbo-id="${jokbo.jokboId}">승인취소</button>
-                                </div>
-
-                                <div th:if="${jokbo.status.name() == '승인'}">
-                                    <a th:if="${jokbo.contentType == 'text'}"
-                                       th:href="@{'/jokbo/view/text/' + ${jokbo.jokboId}}"
-                                       target="_blank" class="btn-view">보기</a>
-                                    <a th:if="${jokbo.contentType == 'file'}"
-                                       th:href="@{'/jokbo/view/' + ${jokbo.contentUrl}}"
-                                       target="_blank" class="btn-view">보기</a>
-                                </div>
-                            </div>
+                            <span th:text="${#strings.abbreviate(jokbo.comment, 20)}">코멘트</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn-view" onclick="openDetailModal(this)">자세히 보기</button>
+                            <button th:if="${jokbo.status.name() == '승인'}" type="button"
+                                class="btn-cancel approval-trigger" th:data-jokbo-id="${jokbo.jokboId}"
+                                data-approval-action="cancel">승인 취소</button>
+                            <button type="button" class="btn-reject delete-trigger"
+                                th:data-jokbo-id="${jokbo.jokboId}">삭제</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${hasPrevious}"
-                   th:href="@{/admin/jokbos(page=${currentPage - 1}, status=${selectedStatus})}"
-                   class="page-link">이전</a>
+                <a th:if="${hasPrevious}" th:href="@{/admin/jokbos(page=${currentPage - 1}, status=${selectedStatus})}"
+                    class="page-link">이전</a>
 
                 <span class="page-info">
                     <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
                 </span>
 
-                <a th:if="${hasNext}"
-                   th:href="@{/admin/jokbos(page=${currentPage + 1}, status=${selectedStatus})}"
-                   class="page-link">다음</a>
+                <a th:if="${hasNext}" th:href="@{/admin/jokbos(page=${currentPage + 1}, status=${selectedStatus})}"
+                    class="page-link">다음</a>
+            </div>
+        </div>
+
+        <!-- 상세 보기 모달 -->
+        <div id="detailModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeDetailModal()">&times;</span>
+                <h3>족보 상세 정보</h3>
+                <div class="detail-group">
+                    <label>책 제목:</label>
+                    <span id="detailBookTitle"></span>
+                </div>
+                <div class="detail-group">
+                    <label>등록자:</label>
+                    <span id="detailRegistrant"></span>
+                </div>
+                <div class="detail-group">
+                    <label>등록일:</label>
+                    <span id="detailDate"></span>
+                </div>
+                <div class="detail-group">
+                    <label>타입:</label>
+                    <span id="detailType"></span>
+                </div>
+                <div class="detail-group">
+                    <label>상태:</label>
+                    <span id="detailStatus"></span>
+                </div>
+                <div class="detail-group">
+                    <label>사용자 코멘트:</label>
+                    <div id="detailComment" class="detail-box"></div>
+                </div>
+                <div class="detail-group">
+                    <label>족보 내용:</label>
+                    <div id="detailContent" class="detail-box"></div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" onclick="closeDetailModal()">닫기</button>
+                </div>
             </div>
         </div>
 
@@ -155,4 +178,5 @@
     <script th:src="@{/js/admin-search.js}"></script>
     <script th:src="@{/js/jokbo-management.js}"></script>
 </th:block>
-</html> 
+
+</html>

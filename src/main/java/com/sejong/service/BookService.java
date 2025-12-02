@@ -32,7 +32,7 @@ public class BookService {
      * @return 해당 카테고리의 도서 목록
      */
     public List<Book> getBooksByCategory(String category) {
-        return bookRepository.findByCategory(category);
+        return bookRepository.findByCategoryOrderByTitleAsc(category);
     }
 
     /**

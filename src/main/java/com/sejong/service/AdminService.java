@@ -28,6 +28,7 @@ public class AdminService {
     private final JokboApprovalHistoryRepository jokboApprovalHistoryRepository;
     private final BookRepository bookRepository;
     private final SseService sseService;
+    private final JokboService jokboService;
     private static final String DEFAULT_ADMIN_NAME = "기본 관리자";
     private static final String DEFAULT_ADMIN_PASSWORD = "";
 
@@ -251,5 +252,27 @@ public class AdminService {
         long approvedCount = jokboRepository.countByBookIdAndStatus(bookId, Jokbo.JokboStatus.승인);
         book.setJokboCount((int) approvedCount);
         bookRepository.save(book);
+    }
+
+    /**
+     * 족보를 삭제합니다 (반려 또는 대기 상태인 경우만 가능)
+     */
+    @Transactional
+    public void deleteJokbo(@org.springframework.lang.NonNull Integer jokboId) {
+        Jokbo jokbo = jokboRepository.findById(jokboId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 족보입니다."));
+
+        // 상태 확인: 반려 또는 대기 상태만 삭제 가능
+        if (jokbo.getStatus() == Jokbo.JokboStatus.승인) {
+            throw new IllegalStateException("승인된 족보는 삭제할 수 없습니다. 먼저 승인 취소를 해주세요.");
+        }
+
+        // 연관된 승인 이력 삭제
+        List<JokboApprovalHistory> histories = jokboApprovalHistoryRepository
+                .findByJokboJokboIdOrderByCreatedAtDesc(jokboId);
+        jokboApprovalHistoryRepository.deleteAll(histories);
+
+        // 족보 삭제 (파일 포함)
+        jokboService.deleteJokbo(jokboId);
     }
 }

@@ -1,5 +1,6 @@
 package com.sejong.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -8,131 +9,123 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
+@Slf4j
 public class PdfService {
-
-    /**
-     * 텍스트 내용을 PDF로 변환하여 파일로 저장
-     */
-    public String createPdfFromText(String content, String uploaderName, String fileName) throws Exception {
-        // 업로드 디렉토리 생성
-        String uploadDir = "uploads/jokbo";
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // PDF 파일 경로
-        String pdfFileName = fileName + ".pdf";
-        String pdfPath = uploadPath.resolve(pdfFileName).toString();
-
-        // PDF 바이트 배열 생성
-        byte[] pdfBytes = createPdfBytesFromText(content, uploaderName);
-
-        // 파일로 저장
-        Files.write(Paths.get(pdfPath), pdfBytes);
-
-        return pdfPath;
-    }
 
     /**
      * 텍스트 내용을 PDF로 변환하여 바이트 배열로 반환
      */
-    public byte[] createPdfBytesFromText(String content, String uploaderName) throws Exception {
-        PDDocument document = new PDDocument();
+    public byte[] createPdfBytesFromText(String title, String content, String uploaderName) throws Exception {
+        // U+000D (CR) 문자 제거 - 폰트가 지원하지 않아 에러 발생 방지
+        content = content.replace("\r", "");
 
-        // 한글 폰트 로드
-        // ClassPathResource를 사용하여 JAR/Docker 환경에서도 폰트 파일을 찾을 수 있도록 수정
-        org.springframework.core.io.ClassPathResource fontResource = new org.springframework.core.io.ClassPathResource(
-                "fonts/NanumGothic.ttf");
-        PDType0Font font = PDType0Font.load(document, fontResource.getInputStream());
+        try (PDDocument document = new PDDocument()) {
+            // 한글 폰트 로드
+            // ClassPathResource를 사용하여 JAR/Docker 환경에서도 폰트 파일을 찾을 수 있도록 수정
+            org.springframework.core.io.ClassPathResource fontResource = new org.springframework.core.io.ClassPathResource(
+                    "fonts/NanumGothic.ttf");
 
-        // 페이지 설정
-        float pageWidth = 595; // A4 너비
-        float pageHeight = 842; // A4 높이
-        float marginLeft = 50;
-        float marginRight = 50;
-        float marginTop = 50;
-        float marginBottom = 50;
-        float contentWidth = pageWidth - marginLeft - marginRight;
-
-        // 첫 페이지 생성
-        PDPage page = new PDPage();
-        document.addPage(page);
-        PDPageContentStream contentStream = new PDPageContentStream(document, page);
-
-        // 제목
-        contentStream.beginText();
-        contentStream.setFont(font, 18);
-        contentStream.newLineAtOffset((pageWidth - getTextWidth("족보", font, 18)) / 2, pageHeight - 80);
-        contentStream.showText("족보");
-        contentStream.endText();
-
-        // 업로더 정보
-        String uploaderText = "업로더: " + uploaderName;
-        contentStream.beginText();
-        contentStream.setFont(font, 10);
-        contentStream.newLineAtOffset(pageWidth - marginRight - getTextWidth(uploaderText, font, 10), pageHeight - 110);
-        contentStream.showText(uploaderText);
-        contentStream.endText();
-
-        // 구분선
-        contentStream.setLineWidth(1);
-        contentStream.moveTo(marginLeft, pageHeight - 130);
-        contentStream.lineTo(pageWidth - marginRight, pageHeight - 130);
-        contentStream.stroke();
-
-        // 텍스트 내용 처리
-        float yPosition = pageHeight - 160;
-        float lineHeight = 18;
-        int fontSize = 12;
-
-        // 문단별로 분리
-        String[] paragraphs = content.split("\n\n");
-
-        for (String paragraph : paragraphs) {
-            if (paragraph.trim().isEmpty()) {
-                continue;
+            // 폰트 스트림도 try-with-resources로 관리
+            PDType0Font font;
+            try (java.io.InputStream fontStream = fontResource.getInputStream()) {
+                log.info("폰트 로딩 시작: {}", fontResource.getFilename());
+                font = PDType0Font.load(document, fontStream);
+                log.info("폰트 로딩 성공");
+            } catch (IOException e) {
+                log.error("폰트 로딩 실패: {}", e.getMessage());
+                throw new IOException("폰트 파일을 로드할 수 없습니다.", e);
             }
 
-            // 각 문단을 줄바꿈 처리
-            java.util.List<String> wrappedLines = wrapText(paragraph.trim(), font, fontSize, contentWidth);
+            // 페이지 설정
+            float pageWidth = 595; // A4 너비
+            float pageHeight = 842; // A4 높이
+            float marginLeft = 50;
+            float marginRight = 50;
+            float marginTop = 50;
+            float marginBottom = 50;
+            float contentWidth = pageWidth - marginLeft - marginRight;
 
-            for (String line : wrappedLines) {
-                // 페이지 끝에 도달하면 새 페이지 생성
-                if (yPosition < marginBottom + lineHeight) {
-                    contentStream.close();
-                    page = new PDPage();
-                    document.addPage(page);
-                    contentStream = new PDPageContentStream(document, page);
-                    yPosition = pageHeight - marginTop;
-                }
+            // 첫 페이지 생성
+            PDPage page = new PDPage();
+            document.addPage(page);
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-                // 텍스트 출력
+            try {
+                // 제목
                 contentStream.beginText();
-                contentStream.setFont(font, fontSize);
-                contentStream.newLineAtOffset(marginLeft, yPosition);
-                contentStream.showText(line);
+                contentStream.setFont(font, 18);
+                contentStream.newLineAtOffset((pageWidth - getTextWidth(title, font, 18)) / 2, pageHeight - 80);
+                contentStream.showText(title);
                 contentStream.endText();
 
-                yPosition -= lineHeight;
+                // 업로더 정보
+                String uploaderText = "업로더: " + uploaderName;
+                contentStream.beginText();
+                contentStream.setFont(font, 10);
+                contentStream.newLineAtOffset(pageWidth - marginRight - getTextWidth(uploaderText, font, 10),
+                        pageHeight - 110);
+                contentStream.showText(uploaderText);
+                contentStream.endText();
+
+                // 구분선
+                contentStream.setLineWidth(1);
+                contentStream.moveTo(marginLeft, pageHeight - 130);
+                contentStream.lineTo(pageWidth - marginRight, pageHeight - 130);
+                contentStream.stroke();
+
+                // 텍스트 내용 처리
+                float yPosition = pageHeight - 160;
+                float lineHeight = 18;
+                int fontSize = 12;
+
+                // 문단별로 분리
+                String[] paragraphs = content.split("\n\n");
+
+                for (String paragraph : paragraphs) {
+                    if (paragraph.trim().isEmpty()) {
+                        continue;
+                    }
+
+                    // 각 문단을 줄바꿈 처리
+                    java.util.List<String> wrappedLines = wrapText(paragraph.trim(), font, fontSize, contentWidth);
+
+                    for (String line : wrappedLines) {
+                        // 페이지 끝에 도달하면 새 페이지 생성
+                        if (yPosition < marginBottom + lineHeight) {
+                            contentStream.close(); // 현재 스트림 닫기
+                            page = new PDPage();
+                            document.addPage(page);
+                            contentStream = new PDPageContentStream(document, page);
+                            yPosition = pageHeight - marginTop - 20;
+                        }
+
+                        // 텍스트 출력
+                        contentStream.beginText();
+                        contentStream.setFont(font, fontSize);
+                        contentStream.newLineAtOffset(marginLeft, yPosition);
+                        contentStream.showText(line);
+                        contentStream.endText();
+
+                        yPosition -= lineHeight;
+                    }
+
+                    // 문단 간격 추가
+                    yPosition -= lineHeight / 2;
+                }
+            } finally {
+                // 마지막 스트림 닫기
+                if (contentStream != null) {
+                    contentStream.close();
+                }
             }
 
-            // 문단 간격 추가
-            yPosition -= lineHeight / 2;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            document.save(baos);
+
+            return baos.toByteArray();
         }
-
-        contentStream.close();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        document.save(baos);
-        document.close();
-
-        return baos.toByteArray();
     }
 
     /**

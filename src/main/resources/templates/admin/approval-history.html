@@ -12,32 +12,32 @@
     <link rel="stylesheet" th:href="@{/css/admin-search.css}">
     <style>
         .approval-history {
-            padding: 20px 40px;
+            padding: 1.25rem 2.5rem;
         }
 
         .approval-history .history-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 1.25rem;
             background: white;
-            border-radius: 10px;
+            border-radius: 0.625rem;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
         }
 
         .approval-history .history-table th {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 12px;
+            padding: 0.9375rem 0.75rem;
             text-align: left;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.875rem;
         }
 
         .approval-history .history-table td {
-            padding: 15px 12px;
+            padding: 0.9375rem 0.75rem;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 0.0625rem solid #eee;
             vertical-align: middle;
         }
 
@@ -47,12 +47,12 @@
 
         .approval-history .status-badge,
         .approval-history .action-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 0.375rem 0.75rem;
+            border-radius: 1.25rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.0312rem;
         }
 
         .approval-history .action-승인 {
@@ -103,7 +103,7 @@
         }
 
         .approval-history .comment-cell {
-            max-width: 200px;
+            max-width: 12.5rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -111,15 +111,15 @@
 
         .approval-history .no-data {
             text-align: center;
-            padding: 60px 20px;
+            padding: 3.75rem 1.25rem;
             color: #6c757d;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0.625rem;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
         }
 
         .approval-history .no-data p {
-            font-size: 18px;
+            font-size: 1.125rem;
             margin: 0;
         }
 
@@ -127,45 +127,45 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 30px;
-            gap: 15px;
+            margin-top: 1.875rem;
+            gap: 0.9375rem;
         }
 
         .approval-history .page-link {
-            padding: 10px 20px;
+            padding: 0.625rem 1.25rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .approval-history .page-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.25rem 0.75rem rgba(102, 126, 234, 0.3);
         }
 
         .approval-history .page-info {
             font-weight: 600;
             color: #495057;
             background: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
         }
 
         .approval-history .filter-section {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.875rem;
+            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
         }
 
         .approval-history .filter-row {
             display: flex;
-            gap: 20px;
+            gap: 1.25rem;
             align-items: end;
             flex-wrap: wrap;
         }
@@ -173,21 +173,21 @@
         .approval-history .filter-item {
             display: flex;
             flex-direction: column;
-            min-width: 150px;
+            min-width: 9.375rem;
         }
 
         .approval-history .filter-item label {
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 0.3125rem;
             color: #495057;
         }
 
         .approval-history .filter-item select {
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            border: 0.0625rem solid #ced4da;
+            border-radius: 0.25rem;
             background: white;
-            font-size: 14px;
+            font-size: 0.875rem;
         }
 
         .approval-history .filter-item select:focus {

@@ -15,13 +15,13 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Integer> {
     /**
      * 모든 문의를 페이징하여 최신순으로 조회합니다 (댓글 포함)
      */
-    @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments ORDER BY i.createdAt DESC")
+    @Query("SELECT DISTINCT i FROM Inquiry i ORDER BY i.createdAt DESC")
     Page<Inquiry> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     /**
      * 답변되지 않은 문의만 페이징하여 조회합니다 (댓글 포함)
      */
-    @Query("SELECT DISTINCT i FROM Inquiry i LEFT JOIN FETCH i.comments WHERE i.comments IS EMPTY ORDER BY i.createdAt DESC")
+    @Query("SELECT DISTINCT i FROM Inquiry i WHERE i.comments IS EMPTY ORDER BY i.createdAt DESC")
     Page<Inquiry> findByCommentsIsEmptyOrderByCreatedAtDesc(Pageable pageable);
 
     /**

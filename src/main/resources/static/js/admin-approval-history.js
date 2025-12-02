@@ -119,7 +119,7 @@
         const messageRow = document.createElement('tr');
         messageRow.className = NO_RESULTS_CLASS;
         messageRow.innerHTML = `
-            <td colspan="9" style="text-align: center; padding: 40px 0; color: #666;">
+            <td colspan="9" style="text-align: center; padding: 2.5rem 0; color: #666;">
                 검색 조건에 해당하는 승인 이력이 없습니다.
             </td>
         `;

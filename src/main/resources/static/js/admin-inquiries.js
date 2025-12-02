@@ -19,6 +19,41 @@
         if (resetButton) {
             resetButton.addEventListener('click', resetSearch);
         }
+
+        // 삭제 버튼 이벤트 리스너 추가
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('delete-inquiry-btn')) {
+                const inquiryId = e.target.getAttribute('data-inquiry-id');
+                if (inquiryId) {
+                    confirmDelete(inquiryId);
+                }
+            }
+        });
+    }
+
+    function confirmDelete(inquiryId) {
+        if (confirm('정말로 이 문의를 삭제하시겠습니까? 삭제된 문의는 복구할 수 없습니다.')) {
+            deleteInquiry(inquiryId);
+        }
+    }
+
+    function deleteInquiry(inquiryId) {
+        fetch(`/admin/inquiry/${inquiryId}`, {
+            method: 'DELETE'
+        })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'success') {
+                    alert('문의가 삭제되었습니다.');
+                    location.reload();
+                } else {
+                    alert('문의 삭제에 실패했습니다: ' + result);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('문의 삭제 중 오류가 발생했습니다.');
+            });
     }
 
     function performSearch() {

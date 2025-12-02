@@ -1,17 +1,17 @@
-/* 문의 게시판 스타일 */
+﻿/* 臾몄쓽 寃뚯떆???ㅽ???*/
 .inquiry-container {
-    max-width: 1000px;
-    margin: 60px auto;
-    padding: 0 20px;
+    max-width: 62.5rem;
+    margin: 3.75rem auto;
+    padding: 0 1.25rem;
 }
 
 .inquiry-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 1.875rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 0.125rem solid #e5e7eb;
 }
 
 .inquiry-header h1 {
@@ -24,8 +24,8 @@
 .home-link {
     background: #dc2626;
     color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -33,72 +33,75 @@
 
 .home-link:hover {
     background: #b91c1c;
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
 }
 
 .home-button {
-    background: #dc2626;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 0.25rem 0.75rem rgba(220, 38, 38, 0.3);
 }
 
 .home-button:hover {
-    background: #b91c1c;
-    transform: translateY(-1px);
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.375rem 1.25rem rgba(220, 38, 38, 0.4);
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .inquiry-actions {
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
     text-align: right;
 }
 
 .write-button {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
     display: inline-block;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 0.25rem 0.75rem rgba(220, 38, 38, 0.3);
 }
 
 .write-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.375rem 1.25rem rgba(220, 38, 38, 0.4);
     background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .inquiry-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 .inquiry-item {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 24px;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.05);
 }
 
 .inquiry-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.5rem 1.5625rem rgba(0, 0, 0, 0.1);
 }
 
 .inquiry-header-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
 }
 
 .inquiry-title {
@@ -114,7 +117,7 @@
 }
 
 .inquiry-content {
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
 }
 
 .inquiry-content p {
@@ -131,15 +134,15 @@
 
 .inquiry-status {
     display: flex;
-    gap: 8px;
+    gap: 0.5rem;
     align-items: center;
 }
 
 .view-button {
     background: #dc2626;
     color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -147,14 +150,14 @@
 
 .view-button:hover {
     background: #b91c1c;
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
 }
 
 .has-answer {
     background: #10b981;
     color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1.25rem;
     font-size: 0.75rem;
     font-weight: 600;
 }
@@ -162,17 +165,17 @@
 .private-badge {
     background: #6b7280;
     color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1.25rem;
     font-size: 0.75rem;
     font-weight: 600;
 }
 
 .private-inquiry {
     background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 16px;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
 }
 
 .private-message {
@@ -184,21 +187,21 @@
 
 .private-inquiry-detail {
     background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 24px;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
     text-align: center;
 }
 
 .private-note {
     color: #9ca3af;
     font-size: 0.875rem;
-    margin: 8px 0 0 0;
+    margin: 0.5rem 0 0 0;
 }
 
 .no-inquiries {
     text-align: center;
-    padding: 60px 20px;
+    padding: 3.75rem 1.25rem;
     color: #6b7280;
 }
 
@@ -207,27 +210,27 @@
     margin: 0;
 }
 
-/* 문의 작성 폼 스타일 */
+/* 臾몄쓽 ?묒꽦 ???ㅽ???*/
 .inquiry-form-container {
-    max-width: 800px;
+    max-width: 50rem;
     margin: 0 auto;
 }
 
 .inquiry-form {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 32px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
 
 .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
     color: #374151;
     font-weight: 600;
     font-size: 0.875rem;
@@ -236,9 +239,9 @@
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.5rem;
     font-size: 1rem;
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -248,12 +251,12 @@
 .form-group textarea:focus {
     outline: none;
     border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    box-shadow: 0 0 0 0.1875rem rgba(220, 38, 38, 0.1);
 }
 
 .form-group textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 7.5rem;
 }
 
 .checkbox-label {
@@ -266,48 +269,48 @@
 
 .checkbox-label input[type="checkbox"] {
     width: auto;
-    margin-right: 12px;
+    margin-right: 0.75rem;
     transform: scale(1.2);
 }
 
 .form-help {
     color: #6b7280;
     font-size: 0.875rem;
-    margin: 8px 0 0 0;
+    margin: 0.5rem 0 0 0;
     line-height: 1.4;
 }
 
 .form-actions {
     display: flex;
-    gap: 16px;
-    margin-top: 32px;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .submit-button {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
-    padding: 12px 32px;
+    padding: 0.75rem 2rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 0.25rem 0.75rem rgba(220, 38, 38, 0.3);
 }
 
 .submit-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.375rem 1.25rem rgba(220, 38, 38, 0.4);
     background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .cancel-button {
     background: #6b7280;
     color: white;
-    padding: 12px 32px;
+    padding: 0.75rem 2rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     font-weight: 600;
     font-size: 1rem;
     text-decoration: none;
@@ -317,29 +320,29 @@
 
 .cancel-button:hover {
     background: #4b5563;
-    transform: translateY(-2px);
+    transform: translateY(-0.125rem);
 }
 
-/* 문의 상세 보기 스타일 */
+/* 臾몄쓽 ?곸꽭 蹂닿린 ?ㅽ???*/
 .inquiry-detail {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 32px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
 
 .inquiry-info {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.0625rem solid #e5e7eb;
 }
 
 .inquiry-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
 }
 
 .inquiry-author {
@@ -361,37 +364,37 @@
 }
 
 .comments-section {
-    margin-top: 32px;
+    margin-top: 2rem;
 }
 
 .comments-section h3 {
     color: #1f2937;
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
 }
 
 .no-comments {
     text-align: center;
-    padding: 40px 20px;
+    padding: 2.5rem 1.25rem;
     color: #6b7280;
     background: #f9fafb;
-    border-radius: 8px;
+    border-radius: 0.5rem;
 }
 
 .comment-item {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 16px;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
 }
 
 .comment-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
 }
 
 .comment-author {
@@ -411,35 +414,36 @@
     margin: 0;
 }
 
-/* 페이징 스타일 */
+/* ?섏씠吏??ㅽ???*/
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-top: 40px;
-    padding: 24px 0;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.5rem 0;
 }
 
 .page-numbers {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .page-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 8px 12px;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.375rem;
     background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.375rem;
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -447,7 +451,7 @@
 .page-btn:hover {
     background: #f3f4f6;
     border-color: #9ca3af;
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
 }
 
 .page-btn.current {
@@ -466,7 +470,7 @@
 
 .prev-btn,
 .next-btn {
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     font-weight: 600;
     background: #dc2626;
     border-color: #dc2626;
@@ -483,14 +487,14 @@
 .page-dots {
     color: #9ca3af;
     font-weight: 500;
-    padding: 0 8px;
+    padding: 0 0.5rem;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
+/* 諛섏쓳???붿옄??*/
+@media (max-width: 48rem) {
     .inquiry-header {
         flex-direction: column;
-        gap: 16px;
+        gap: 1rem;
         text-align: center;
     }
 
@@ -503,7 +507,7 @@
     }
 
     .inquiry-form {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .form-actions {
@@ -513,80 +517,91 @@
     .inquiry-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     .inquiry-detail {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .pagination {
-        gap: 8px;
-        margin-top: 24px;
-        padding: 20px 0;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 1.25rem 0;
     }
 
     .page-numbers {
-        gap: 4px;
+        gap: 0.25rem;
     }
 
     .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.375rem;
+    background: white;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.375rem;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
     .prev-btn,
     .next-btn {
-        padding: 6px 12px;
+        padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
     }
 
     .page-dots {
-        padding: 0 4px;
+        padding: 0 0.25rem;
         font-size: 0.875rem;
     }
 }
 
-/* 탭 스타일 */
+/* ???ㅽ???*/
 .inquiry-tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #e5e7eb;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 0.0625rem solid #e5e7eb;
 }
 
 .tab-item {
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem;
     font-weight: 600;
     color: #6b7280;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 0.125rem solid transparent;
     transition: all 0.2s ease;
 }
 
 .no-comments {
     text-align: center;
-    padding: 40px 20px;
+    padding: 2.5rem 1.25rem;
     color: #6b7280;
     background: #f9fafb;
-    border-radius: 8px;
+    border-radius: 0.5rem;
 }
 
 .comment-item {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 16px;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
 }
 
 .comment-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
 }
 
 .comment-author {
@@ -606,35 +621,36 @@
     margin: 0;
 }
 
-/* 페이징 스타일 */
+/* ?섏씠吏??ㅽ???*/
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-top: 40px;
-    padding: 24px 0;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.5rem 0;
 }
 
 .page-numbers {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .page-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 8px 12px;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.375rem;
     background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.375rem;
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -642,7 +658,7 @@
 .page-btn:hover {
     background: #f3f4f6;
     border-color: #9ca3af;
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
 }
 
 .page-btn.current {
@@ -661,7 +677,7 @@
 
 .prev-btn,
 .next-btn {
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     font-weight: 600;
     background: #dc2626;
     border-color: #dc2626;
@@ -678,14 +694,14 @@
 .page-dots {
     color: #9ca3af;
     font-weight: 500;
-    padding: 0 8px;
+    padding: 0 0.5rem;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
+/* 諛섏쓳???붿옄??*/
+@media (max-width: 48rem) {
     .inquiry-header {
         flex-direction: column;
-        gap: 16px;
+        gap: 1rem;
         text-align: center;
     }
 
@@ -698,7 +714,7 @@
     }
 
     .inquiry-form {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .form-actions {
@@ -708,80 +724,91 @@
     .inquiry-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     .inquiry-detail {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .pagination {
-        gap: 8px;
-        margin-top: 24px;
-        padding: 20px 0;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 1.25rem 0;
     }
 
     .page-numbers {
-        gap: 4px;
+        gap: 0.25rem;
     }
 
     .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.375rem;
+    background: white;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.375rem;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
     .prev-btn,
     .next-btn {
-        padding: 6px 12px;
+        padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
     }
 
     .page-dots {
-        padding: 0 4px;
+        padding: 0 0.25rem;
         font-size: 0.875rem;
     }
 }
 
-/* 탭 스타일 */
+/* ???ㅽ???*/
 .inquiry-tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #e5e7eb;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 0.0625rem solid #e5e7eb;
 }
 
 .tab-item {
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem;
     font-weight: 600;
     color: #6b7280;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 0.125rem solid transparent;
     transition: all 0.2s ease;
 }
 
 .no-comments {
     text-align: center;
-    padding: 40px 20px;
+    padding: 2.5rem 1.25rem;
     color: #6b7280;
     background: #f9fafb;
-    border-radius: 8px;
+    border-radius: 0.5rem;
 }
 
 .comment-item {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 16px;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
 }
 
 .comment-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
 }
 
 .comment-author {
@@ -801,35 +828,36 @@
     margin: 0;
 }
 
-/* 페이징 스타일 */
+/* ?섏씠吏??ㅽ???*/
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-top: 40px;
-    padding: 24px 0;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.5rem 0;
 }
 
 .page-numbers {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .page-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 8px 12px;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.375rem;
     background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.375rem;
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -837,7 +865,7 @@
 .page-btn:hover {
     background: #f3f4f6;
     border-color: #9ca3af;
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
 }
 
 .page-btn.current {
@@ -856,7 +884,7 @@
 
 .prev-btn,
 .next-btn {
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     font-weight: 600;
     background: #dc2626;
     border-color: #dc2626;
@@ -873,14 +901,14 @@
 .page-dots {
     color: #9ca3af;
     font-weight: 500;
-    padding: 0 8px;
+    padding: 0 0.5rem;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
+/* 諛섏쓳???붿옄??*/
+@media (max-width: 48rem) {
     .inquiry-header {
         flex-direction: column;
-        gap: 16px;
+        gap: 1rem;
         text-align: center;
     }
 
@@ -893,7 +921,7 @@
     }
 
     .inquiry-form {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .form-actions {
@@ -903,56 +931,67 @@
     .inquiry-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     .inquiry-detail {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .pagination {
-        gap: 8px;
-        margin-top: 24px;
-        padding: 20px 0;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 1.25rem 0;
     }
 
     .page-numbers {
-        gap: 4px;
+        gap: 0.25rem;
     }
 
     .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.375rem;
+    background: white;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.375rem;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
     .prev-btn,
     .next-btn {
-        padding: 6px 12px;
+        padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
     }
 
     .page-dots {
-        padding: 0 4px;
+        padding: 0 0.25rem;
         font-size: 0.875rem;
     }
 }
 
-/* 탭 스타일 */
+/* ???ㅽ???*/
 .inquiry-tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #e5e7eb;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 0.0625rem solid #e5e7eb;
 }
 
 .tab-item {
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem;
     font-weight: 600;
     color: #6b7280;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 0.125rem solid transparent;
     transition: all 0.2s ease;
 }
 
@@ -965,44 +1004,44 @@
     border-bottom-color: #dc2626;
 }
 
-/* 승인 이력 스타일 */
+/* ?뱀씤 ?대젰 ?ㅽ???*/
 .history-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    margin-top: 40px;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
 }
 
 .history-item {
-    border-left: 4px solid #dc2626;
+    border-left: 0.25rem solid #dc2626;
 }
 
 .history-book-title {
     font-size: 1.1rem;
     font-weight: 600;
     color: #1f2937;
-    margin-bottom: 12px !important;
+    margin-bottom: 0.75rem !important;
 }
 
 .history-reason {
     color: #4b5563 !important;
     background: #fef2f2;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #fee2e2;
-    margin-top: 12px;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    border: 0.0625rem solid #fee2e2;
+    margin-top: 0.75rem;
     line-height: 1.6;
 }
 
 .label {
     font-weight: 600;
     color: #dc2626;
-    margin-right: 8px;
+    margin-right: 0.5rem;
 }
 
 .status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 1.25rem;
     font-size: 0.875rem;
     font-weight: 600;
 }
@@ -1010,5 +1049,5 @@
 .status-badge.reject {
     background: #fee2e2;
     color: #dc2626;
-    border: 1px solid #fecaca;
+    border: 0.0625rem solid #fecaca;
 }

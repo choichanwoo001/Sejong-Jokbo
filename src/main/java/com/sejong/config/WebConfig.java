@@ -18,4 +18,12 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(resourceLocation);
     }
+
+    @Override
+    public void addInterceptors(
+            @org.springframework.lang.NonNull org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
+        registry.addInterceptor(new AdminInterceptor())
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin/login", "/admin/logout", "/css/**", "/js/**", "/images/**", "/uploads/**");
+    }
 }
