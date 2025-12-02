@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/fragments/layout :: layout(
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: layout(
         pageTitle=${'문의 관리 - 세종족보'},
         currentPage=${'inquiries'},
         content=~{::content},
@@ -135,7 +134,8 @@
             <form class="search-form" id="searchForm">
                 <div class="search-group">
                     <label for="studentName">학생 이름(등록자)</label>
-                    <input type="text" id="studentName" name="studentName" class="search-input" placeholder="학생 이름을 입력하세요">
+                    <input type="text" id="studentName" name="studentName" class="search-input"
+                        placeholder="학생 이름을 입력하세요">
                 </div>
                 <div class="search-group">
                     <label for="creationDate">생성일</label>
@@ -148,23 +148,26 @@
 
         <div class="inquiry-list" th:if="${inquiries.size() > 0}" id="inquiryList">
             <div class="admin-card admin-card--hover inquiry-item" th:each="inquiry : ${inquiries}"
-                 th:data-student-name="${inquiry.name}"
-                 th:data-creation-date="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd')}">
+                th:data-student-name="${inquiry.name}"
+                th:data-creation-date="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd')}">
                 <div class="inquiry-header">
                     <div class="inquiry-info">
                         <h3 class="inquiry-name" th:text="${inquiry.name}">사용자명</h3>
                         <p class="inquiry-email" th:text="${inquiry.email}">이메일</p>
-                        <p class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">문의 날짜</p>
+                        <p class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">문의
+                            날짜</p>
                     </div>
                     <span class="inquiry-status"
-                          th:class="${inquiry.comments.size() > 0 ? 'inquiry-status status-answered' : 'inquiry-status status-unanswered'}"
-                          th:text="${inquiry.comments.size() > 0 ? '답변완료' : '답변대기'}">상태</span>
+                        th:class="${inquiry.comments.size() > 0 ? 'inquiry-status status-answered' : 'inquiry-status status-unanswered'}"
+                        th:text="${inquiry.comments.size() > 0 ? '답변완료' : '답변대기'}">상태</span>
                 </div>
 
                 <div class="inquiry-message" th:text="${inquiry.message}">문의 내용</div>
 
                 <div class="inquiry-actions">
                     <a th:href="'/admin/inquiry/' + ${inquiry.inquiryId}" class="admin-btn admin-btn--primary">답변하기</a>
+                    <button type="button" class="admin-btn admin-btn--danger delete-inquiry-btn"
+                        th:data-inquiry-id="${inquiry.inquiryId}">삭제</button>
                 </div>
             </div>
         </div>
@@ -175,17 +178,13 @@
         </div>
 
         <div class="pagination" th:if="${totalPages > 1}">
-            <a th:if="${hasPrevious}"
-               th:href="@{/admin/inquiries(page=${currentPage - 1})}"
-               class="page-link">이전</a>
+            <a th:if="${hasPrevious}" th:href="@{/admin/inquiries(page=${currentPage - 1})}" class="page-link">이전</a>
 
             <span class="page-info">
                 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
             </span>
 
-            <a th:if="${hasNext}"
-               th:href="@{/admin/inquiries(page=${currentPage + 1})}"
-               class="page-link">다음</a>
+            <a th:if="${hasNext}" th:href="@{/admin/inquiries(page=${currentPage + 1})}" class="page-link">다음</a>
         </div>
     </section>
 </th:block>
@@ -193,4 +192,5 @@
 <th:block th:fragment="extraScripts">
     <script th:src="@{/js/admin-inquiries.js}"></script>
 </th:block>
+
 </html>

@@ -111,4 +111,20 @@ public class InquiryService {
     public List<Comment> getCommentsByInquiryId(@org.springframework.lang.NonNull Integer inquiryId) {
         return commentRepository.findByInquiryInquiryIdOrderByCreatedAtAsc(inquiryId);
     }
+
+    /**
+     * 문의를 삭제합니다 (답변도 함께 삭제됨)
+     */
+    public void deleteInquiry(@org.springframework.lang.NonNull Integer inquiryId) {
+        Inquiry inquiry = getInquiryById(inquiryId);
+        if (inquiry == null) {
+            throw new IllegalArgumentException("문의를 찾을 수 없습니다.");
+        }
+
+        // 연관된 답변 삭제 (Cascade 설정이 되어있다면 필요없을 수 있지만 명시적으로 처리)
+        List<Comment> comments = commentRepository.findByInquiryInquiryIdOrderByCreatedAtAsc(inquiryId);
+        commentRepository.deleteAll(comments);
+
+        inquiryRepository.delete(inquiry);
+    }
 }

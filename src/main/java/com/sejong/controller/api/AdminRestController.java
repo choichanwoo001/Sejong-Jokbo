@@ -154,4 +154,22 @@ public class AdminRestController {
                 })
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    /**
+     * 문의 삭제
+     */
+    @Operation(summary = "문의 삭제", description = "문의를 삭제합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공/실패 메시지")
+    })
+    @DeleteMapping("/inquiry/{inquiryId}")
+    public String deleteInquiry(
+            @Parameter(description = "문의 ID") @PathVariable @org.springframework.lang.NonNull Integer inquiryId) {
+        try {
+            inquiryService.deleteInquiry(inquiryId);
+            return "success";
+        } catch (Exception e) {
+            return "error: 문의 삭제 중 오류가 발생했습니다. - " + e.getMessage();
+        }
+    }
 }
