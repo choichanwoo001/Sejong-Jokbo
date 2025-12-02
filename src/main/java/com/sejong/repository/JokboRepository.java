@@ -48,7 +48,7 @@ public interface JokboRepository extends JpaRepository<Jokbo, Integer> {
      * 특정 상태의 족보 목록을 페이징하여 최신순으로 가져옵니다 (Book 정보 포함)
      */
     @Query("SELECT j FROM Jokbo j JOIN FETCH j.book WHERE j.status = :status ORDER BY j.createdAt DESC")
-    List<Jokbo> findByStatusWithBookOrderByCreatedAtDesc(@Param("status") Jokbo.JokboStatus status);
+    Page<Jokbo> findByStatusWithBookOrderByCreatedAtDesc(@Param("status") Jokbo.JokboStatus status, Pageable pageable);
 
     /**
      * 특정 상태의 족보 목록을 페이징하여 최신순으로 가져옵니다 (기본 쿼리)
@@ -63,10 +63,10 @@ public interface JokboRepository extends JpaRepository<Jokbo, Integer> {
     List<Jokbo> findByStatusOrderByCreatedAtDesc(@Param("status") Jokbo.JokboStatus status);
 
     /**
-     * 모든 족보 목록을 최신순으로 가져옵니다 (Book 정보 포함, 페이징 없음)
+     * 모든 족보 목록을 최신순으로 가져옵니다 (Book 정보 포함, 페이징)
      */
     @Query("SELECT j FROM Jokbo j JOIN FETCH j.book ORDER BY j.createdAt DESC")
-    List<Jokbo> findAllWithBookOrderByCreatedAtDesc();
+    Page<Jokbo> findAllWithBookOrderByCreatedAtDesc(Pageable pageable);
 
     /**
      * 모든 족보 목록을 최신순으로 페이징하여 가져옵니다 (기본 쿼리)

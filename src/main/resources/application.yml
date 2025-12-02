@@ -39,6 +39,9 @@ spring:
   # JPA 설정
   jpa:
     open-in-view: false  # OSIV 비활성화로 SSE 관련 EntityManager 문제 해결
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100 # N+1 문제 방지를 위한 Batch Fetch 설정
   
   # DevTools 설정 (핫 리로딩 비활성화)
   devtools:

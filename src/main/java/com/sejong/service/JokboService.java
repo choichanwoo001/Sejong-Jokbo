@@ -7,7 +7,6 @@ import com.sejong.repository.JokboRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -218,16 +216,8 @@ public class JokboService {
     @Transactional(readOnly = true)
     @SuppressWarnings("null")
     public Page<Jokbo> getJokbosByStatus(Jokbo.JokboStatus status, int page, int size) {
-        // JOIN FETCH로 Book 정보까지 함께 로딩
-        List<Jokbo> allJokbos = jokboRepository.findByStatusWithBookOrderByCreatedAtDesc(status);
-
-        // 메모리에서 페이징 처리
         Pageable pageable = PageRequest.of(page, size);
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), allJokbos.size());
-
-        List<Jokbo> pageContent = start >= allJokbos.size() ? new ArrayList<>() : allJokbos.subList(start, end);
-        return new PageImpl<>(pageContent, pageable, allJokbos.size());
+        return jokboRepository.findByStatusWithBookOrderByCreatedAtDesc(status, pageable);
     }
 
     /**
@@ -236,16 +226,8 @@ public class JokboService {
     @Transactional(readOnly = true)
     @SuppressWarnings("null")
     public Page<Jokbo> getAllJokbos(int page, int size) {
-        // JOIN FETCH로 Book 정보까지 함께 로딩
-        List<Jokbo> allJokbos = jokboRepository.findAllWithBookOrderByCreatedAtDesc();
-
-        // 메모리에서 페이징 처리
         Pageable pageable = PageRequest.of(page, size);
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), allJokbos.size());
-
-        List<Jokbo> pageContent = start >= allJokbos.size() ? new ArrayList<>() : allJokbos.subList(start, end);
-        return new PageImpl<>(pageContent, pageable, allJokbos.size());
+        return jokboRepository.findAllWithBookOrderByCreatedAtDesc(pageable);
     }
 
     /**
