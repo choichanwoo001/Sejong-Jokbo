@@ -269,14 +269,14 @@ function showFileValidationMessage(message, isError = false) {
     const messageElement = document.createElement('div');
     messageElement.className = `file-validation-message ${isError ? 'error' : 'success'}`;
     messageElement.style.cssText = `
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 4px;
-        font-size: 14px;
+        padding: 0.625rem;
+        margin: 0.625rem 0;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
         white-space: pre-line;
         ${isError ?
-            'background-color: #fee; border: 1px solid #fcc; color: #c33;' :
-            'background-color: #efe; border: 1px solid #cfc; color: #3c3;'
+            'background-color: #fee; border: 0.0625rem solid #fcc; color: #c33;' :
+            'background-color: #efe; border: 0.0625rem solid #cfc; color: #3c3;'
         }
     `;
     messageElement.textContent = message;

@@ -1,13 +1,13 @@
 .notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    top: 1.25rem;
+    right: 1.25rem;
+    padding: 0.9375rem 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
     color: #ffffff;
-    max-width: 300px;
-    font-size: 14px;
+    max-width: 18.75rem;
+    font-size: 0.875rem;
     line-height: 1.4;
     z-index: 1000;
     animation: sse-slide-in 0.3s ease-out;
@@ -62,8 +62,8 @@
     50% {
         background-color: #4caf50;
         color: #ffffff;
-        border-radius: 4px;
-        padding: 2px 6px;
+        border-radius: 0.25rem;
+        padding: 0.125rem 0.375rem;
     }
     100% {
         background-color: transparent;

@@ -205,7 +205,7 @@ function renderJokboList(jokbos, container) {
                 <span>${jokbo.uploaderName}</span>
                 <span class="jokbo-status ${statusClass}">${jokbo.status}</span>
             </div>
-            <div style="font-size: 12px; color: #666;">${date} | ${jokbo.contentType}</div>
+            <div style="font-size: 0.75rem; color: #666;">${date} | ${jokbo.contentType}</div>
             <div class="jokbo-item-actions">
                 <a href="${getContentUrl(jokbo)}" target="_blank" class="jokbo-action-btn btn-view">확인</a>
                 <button class="jokbo-action-btn btn-reject" onclick="rejectJokbo(${jokbo.jokboId}, this)">반려</button>

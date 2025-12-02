@@ -13,37 +13,37 @@
     <style>
         .admin-header-section {
             background: #f8f9fa;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #dc2626;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            border-radius: 0.5rem;
+            border-left: 0.25rem solid #dc2626;
         }
 
         .admin-header-section h2 {
             color: #dc2626;
-            margin: 0 0 10px 0;
+            margin: 0 0 0.625rem 0;
             font-size: 1.2rem;
             font-weight: 600;
         }
 
         .admin-info {
             color: #666;
-            font-size: 14px;
+            font-size: 0.875rem;
         }
 
         .admin-actions-section {
             background: #fff;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            margin-top: 1.25rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
 
         .admin-actions-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.25rem;
         }
 
         .admin-actions-header h3 {
@@ -55,12 +55,12 @@
         .admin-action-btn {
             background: #dc2626;
             color: white;
-            padding: 10px 20px;
+            padding: 0.625rem 1.25rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 0.3125rem;
             text-decoration: none;
             font-weight: 500;
-            font-size: 16px;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
@@ -71,17 +71,17 @@
         }
 
         .jokbo-tabs {
-            border-bottom: 1px solid #ddd;
+            border-bottom: 0.0625rem solid #ddd;
         }
 
         .jokbo-tab {
             background: none;
             border: none;
-            padding: 12px 20px;
-            font-size: 14px;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
+            border-bottom: 0.125rem solid transparent;
             transition: all 0.3s ease;
         }
 
@@ -101,37 +101,37 @@
         .status-approved {
             background: #10b981;
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
             font-weight: 500;
         }
 
         .status-pending {
             background: #f59e0b;
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
             font-weight: 500;
         }
 
         .status-rejected {
             background: #ef4444;
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
             font-weight: 500;
         }
 
         .btn-manage {
             background: #dc2626;
             color: white;
-            padding: 4px 12px;
-            border-radius: 4px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 0.75rem;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -145,7 +145,7 @@
 </th:block>
 
 <th:block th:fragment="content">
-    <div class="container" style="padding: 20px 40px;">
+    <div class="container" style="padding: 1.25rem 2.5rem;">
         <div class="admin-header-section">
             <h2>📖 관리자 책 상세 뷰</h2>
             <p class="admin-info">이 페이지는 관리자 전용 책 상세 페이지입니다. 사용자와 동일한 정보를 보여주지만 족보 등록 기능은 제외됩니다.</p>
@@ -181,7 +181,7 @@
                             이 책의 족보 관리하기
                         </a>
                     </div>
-                    <p style="color: #666; font-size: 14px; margin: 0;">
+                    <p style="color: #666; font-size: 0.875rem; margin: 0;">
                         • 족보 관리 페이지에서 이 책에 등록된 모든 족보를 승인/반려/삭제할 수 있습니다.<br>
                         • 사용자 페이지를 보려면 <a th:href="'/book/' + ${book.bookId}" style="color: #dc2626;">여기</a>를 클릭하세요.
                     </p>
