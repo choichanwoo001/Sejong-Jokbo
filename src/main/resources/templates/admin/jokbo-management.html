@@ -87,7 +87,7 @@
                             <span th:text="${#strings.abbreviate(jokbo.comment, 20)}">코멘트</span>
                         </td>
                         <td>
-                            <button type="button" class="btn-detail" onclick="openDetailModal(this)">자세히 보기</button>
+                            <button type="button" class="btn-view" onclick="openDetailModal(this)">자세히 보기</button>
                             <button th:if="${jokbo.status.name() == '승인'}" type="button"
                                 class="btn-cancel approval-trigger" th:data-jokbo-id="${jokbo.jokboId}"
                                 data-approval-action="cancel">승인 취소</button>
