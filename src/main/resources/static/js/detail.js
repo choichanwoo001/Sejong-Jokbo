@@ -89,9 +89,9 @@ function updateSubmitButtonState() {
     submitButtons.forEach(button => {
         button.disabled = false;
         if (button.textContent.includes('텍스트')) {
-            button.textContent = '텍스트 족보 등록';
+            button.textContent = '텍스트 요약 등록';
         } else if (button.textContent.includes('파일')) {
-            button.textContent = '파일 족보 등록';
+            button.textContent = '파일 요약 등록';
         }
         button.style.backgroundColor = '#007bff';
     });
@@ -223,7 +223,7 @@ function handleTextJokboSubmit(e) {
         .then(response => response.text())
         .then(result => {
             if (result === 'success') {
-                alert('족보 등록 요청이 완료되었습니다.\n관리자가 승인하면 족보 목록에 등록됩니다.');
+                alert('요약 등록 요청이 완료되었습니다.\n관리자가 승인하면 요약 목록에 등록됩니다.');
                 this.reset();
                 updateSubmitButtonState();
             } else {
@@ -266,7 +266,7 @@ function handleFileJokboSubmit(e) {
         })
         .then(result => {
             if (result === 'success') {
-                alert('족보 등록 요청이 완료되었습니다.\n관리자가 승인하면 족보 목록에 등록됩니다.');
+                alert('요약 등록 요청이 완료되었습니다.\n관리자가 승인하면 요약 목록에 등록됩니다.');
                 this.reset();
                 removeFile();
                 updateSubmitButtonState();
