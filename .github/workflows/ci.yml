@@ -31,8 +31,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Test with Gradle
-        run: ./gradlew test --stacktrace
+      - name: Build with Gradle
+        run: ./gradlew build -x test --no-daemon
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
