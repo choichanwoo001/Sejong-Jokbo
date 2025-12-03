@@ -127,7 +127,7 @@ public class SseService {
     public void sendJokboApprovalNotification(String bookTitle, String jokboTitle) {
         if (userEmitter != null) {
             try {
-                String message = String.format("족보가 승인되었습니다: %s - %s", bookTitle, jokboTitle);
+                String message = String.format("요약이 승인되었습니다: %s - %s", bookTitle, jokboTitle);
                 userEmitter.send(SseEmitter.event()
                         .name("jokbo_approved")
                         .data(java.util.Objects.requireNonNull(message)));

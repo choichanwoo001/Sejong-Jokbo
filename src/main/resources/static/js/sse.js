@@ -27,7 +27,7 @@ class SSEManager {
 
             // 연결 상태를 페이지에 표시 (디버깅용)
             if (this.type === 'user') {
-                debugLog('사용자 SSE 연결 성공 - 족보 승인 알림을 받을 준비가 되었습니다.');
+                debugLog('사용자 SSE 연결 성공 - 요약 승인 알림을 받을 준비가 되었습니다.');
             }
         };
 
@@ -42,8 +42,8 @@ class SSEManager {
         // 사용자용 이벤트 리스너
         if (this.type === 'user') {
             this.eventSource.addEventListener('jokbo_approved', (event) => {
-                debugLog('족보 승인 알림 수신:', event.data);
-                this.showNotification('족보 승인', event.data, 'success');
+                debugLog('요약 승인 알림 수신:', event.data);
+                this.showNotification('요약 승인', event.data, 'success');
 
                 // 실시간으로 족보 목록 업데이트
                 debugLog('실시간 업데이트 시작...');
@@ -126,7 +126,7 @@ class SSEManager {
     // 알림 표시 함수
     showNotification(title, message, type) {
         // 사용자(user)인 경우 '족보 승인' 알림 외에는 표시하지 않음
-        if (this.type === 'user' && title !== '족보 승인') {
+        if (this.type === 'user' && title !== '요약 승인') {
             debugLog(`사용자 알림 차단됨: ${title} - ${message}`);
             return;
         }
@@ -181,7 +181,7 @@ class SSEManager {
     // 족보 목록 실시간 업데이트 (사용자용)
     updateJokboList() {
         if (this.type === 'user') {
-            debugLog('족보 목록 실시간 업데이트 시작');
+            debugLog('요약 목록 실시간 업데이트 시작');
 
             // 현재 페이지의 책 ID 가져오기 (여러 방법으로 시도)
             let bookId = null;
@@ -210,29 +210,29 @@ class SSEManager {
 
             debugLog('추출된 책 ID:', bookId);
 
-            // 도서 상세 페이지인 경우 족보 목록 업데이트
+            // 도서 상세 페이지인 경우 요약 목록 업데이트
             if (bookId) {
                 this.refreshJokboList(bookId);
             }
 
-            // 홈페이지의 경우 도서별 족보 수 업데이트
+            // 홈페이지의 경우 도서별 요약 수 업데이트
             this.updateHomePageJokboCounts();
         }
     }
 
     // 특정 책의 족보 목록 새로고침
     refreshJokboList(bookId) {
-        debugLog('족보 목록 새로고침 시작, 책 ID:', bookId);
+        debugLog('요약 목록 새로고침 시작, 책 ID:', bookId);
 
         // 현재 활성 탭 확인
         const activeTab = document.querySelector('.jokbo-tab.active');
         const isListTabActive = activeTab && activeTab.textContent.includes('목록');
 
-        debugLog('족보 목록 탭 활성화 상태:', isListTabActive);
+        debugLog('요약 목록 탭 활성화 상태:', isListTabActive);
 
         // 족보 목록 탭이 활성화되지 않은 경우, 탭을 자동으로 활성화
         if (!isListTabActive) {
-            debugLog('족보 목록 탭을 자동으로 활성화합니다.');
+            debugLog('요약 목록 탭을 자동으로 활성화합니다.');
             const listTab = document.querySelector('.jokbo-tab[onclick*="list"]');
             if (listTab) {
                 listTab.click(); // 탭 클릭으로 활성화
@@ -261,11 +261,11 @@ class SSEManager {
                 return response.json();
             })
             .then(data => {
-                debugLog('족보 목록 데이터 수신:', data);
+                debugLog('요약 목록 데이터 수신:', data);
                 this.renderJokboList(data);
             })
             .catch(error => {
-                debugError('족보 목록 업데이트 실패:', error);
+                debugError('요약 목록 업데이트 실패:', error);
                 // 오류 발생 시 페이지 새로고침으로 fallback
                 setTimeout(() => {
                     location.reload();
@@ -284,22 +284,22 @@ class SSEManager {
 
     // 족보 목록 렌더링
     renderJokboList(data) {
-        debugLog('족보 목록 렌더링 시작');
+        debugLog('요약 목록 렌더링 시작');
 
         // 정확한 족보 목록 컨테이너 찾기 (DOM 구조에 맞게)
         let jokboListContainer = document.querySelector('#list .jokbo-list');
 
         if (!jokboListContainer) {
-            debugError('족보 목록 컨테이너를 찾을 수 없습니다. (#list .jokbo-list)');
+            debugError('요약 목록 컨테이너를 찾을 수 없습니다. (#list .jokbo-list)');
             return;
         }
 
-        debugLog('족보 목록 컨테이너 찾음:', jokboListContainer);
+        debugLog('요약 목록 컨테이너 찾음:', jokboListContainer);
 
-        // 기존 족보 목록 제거
+        // 기존 요약 목록 제거
         jokboListContainer.innerHTML = '';
 
-        // 새로운 족보 목록 렌더링
+        // 새로운 요약 목록 렌더링
         if (data.content && data.content.length > 0) {
             data.content.forEach(jokbo => {
                 const jokboItem = this.createJokboItem(jokbo);
@@ -310,13 +310,13 @@ class SSEManager {
             this.updatePagination(data);
         } else {
             // 족보가 없는 경우 메시지 표시
-            jokboListContainer.innerHTML = '<div class="no-jokbo"><p>등록된 족보가 없습니다.</p></div>';
+            jokboListContainer.innerHTML = '<div class="no-jokbo"><p>등록된 요약이 없습니다.</p></div>';
         }
 
-        debugLog('족보 목록 렌더링 완료');
+        debugLog('요약 목록 렌더링 완료');
     }
 
-    // 족보 아이템 생성
+    // 요약 아이템 생성
     createJokboItem(jokbo) {
         const jokboItem = document.createElement('div');
         jokboItem.className = 'jokbo-item';
@@ -451,9 +451,9 @@ class SSEManager {
         }
     }
 
-    // 홈페이지 족보 수 업데이트
+    // 홈페이지 요약 수 업데이트
     updateHomePageJokboCounts() {
-        debugLog('홈페이지 족보 수 업데이트 시작');
+        debugLog('홈페이지 요약 수 업데이트 시작');
 
         // 홈페이지에서만 실행
         const bookItems = document.querySelectorAll('.book-item');
@@ -473,10 +473,10 @@ class SSEManager {
                             return response.json();
                         })
                         .then(data => {
-                            debugLog(`도서 ${bookId} 족보 수:`, data.count);
+                            debugLog(`도서 ${bookId} 요약 수:`, data.count);
                             const countElement = bookItem.querySelector('.jokbo-count');
                             if (countElement) {
-                                countElement.textContent = `족보: ${data.count}개`;
+                                countElement.textContent = `요약: ${data.count}개`;
                                 // 업데이트 효과 추가
                                 countElement.classList.remove('highlight-animation');
                                 void countElement.offsetWidth;
@@ -487,7 +487,7 @@ class SSEManager {
                             }
                         })
                         .catch(error => {
-                            debugError(`도서 ${bookId} 족보 수 업데이트 실패:`, error);
+                            debugError(`도서 ${bookId} 요약 수 업데이트 실패:`, error);
                         });
                 }
             });

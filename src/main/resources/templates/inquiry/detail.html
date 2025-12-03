@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/site-layout :: layout(
-        pageTitle=${'문의 상세 - 고전독서 족보'},
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
+        pageTitle=${'문의 상세 - 고전독서 요약'},
         content=~{::content},
         extraHead=~{::extraHead},
         extraScripts=~{::extraScripts}
@@ -23,7 +22,8 @@
             <div class="inquiry-info">
                 <div class="inquiry-meta">
                     <span class="inquiry-author" th:text="${inquiry.name}">작성자</span>
-                    <span class="inquiry-date" th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                    <span class="inquiry-date"
+                        th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
                 </div>
 
                 <div class="inquiry-content">
@@ -46,7 +46,8 @@
                 <div th:each="comment : ${inquiry.comments}" class="comment-item">
                     <div class="comment-header">
                         <span class="comment-author">관리자</span>
-                        <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">답변일</span>
+                        <span class="comment-date"
+                            th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">답변일</span>
                     </div>
                     <div class="comment-content">
                         <p th:text="${comment.content}">답변 내용</p>
@@ -59,4 +60,5 @@
 
 <th:block th:fragment="extraScripts">
 </th:block>
+
 </html>

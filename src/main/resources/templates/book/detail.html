@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
-        pageTitle=${book.title + ' - 세종족보'},
+        pageTitle=${book.title + ' - 세종요약'},
         content=~{::content},
         extraHead=~{::extraHead},
         extraScripts=~{::extraScripts}
@@ -27,13 +27,13 @@
 
             <div class="jokbo-section">
                 <div class="section-header">
-                    <h2>족보</h2>
+                    <h2>요약</h2>
                     <a href="/" class="back-link">홈으로 돌아가기</a>
                 </div>
 
                 <div class="jokbo-tabs">
-                    <button class="jokbo-tab active" type="button" data-tab-target="register">족보 등록</button>
-                    <button class="jokbo-tab" type="button" data-tab-target="list">족보 목록</button>
+                    <button class="jokbo-tab active" type="button" data-tab-target="register">요약 등록</button>
+                    <button class="jokbo-tab" type="button" data-tab-target="list">요약 목록</button>
                 </div>
 
                 <div id="register" class="jokbo-content active">
@@ -44,15 +44,15 @@
 
                     <div id="text-register" class="register-content active">
                         <div class="jokbo-form">
-                            <h3>텍스트 족보 등록</h3>
+                            <h3>텍스트 요약 등록</h3>
                             <form id="textJokboForm">
                                 <div class="form-group">
                                     <label class="form-label">등록자 이름</label>
                                     <input type="text" name="uploaderName" class="form-input" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">족보 내용</label>
-                                    <textarea name="content" class="form-textarea" placeholder="족보 내용을 입력하세요..."
+                                    <label class="form-label">요약 내용</label>
+                                    <textarea name="content" class="form-textarea" placeholder="요약 내용을 입력하세요..."
                                         required></textarea>
                                 </div>
                                 <div class="form-group">
@@ -60,21 +60,21 @@
                                     <textarea name="comment" class="form-textarea"
                                         placeholder="추가 코멘트를 입력하세요..."></textarea>
                                 </div>
-                                <button type="submit" class="form-button">텍스트 족보 등록</button>
+                                <button type="submit" class="form-button">텍스트 요약 등록</button>
                             </form>
                         </div>
                     </div>
 
                     <div id="file-register" class="register-content">
                         <div class="jokbo-form">
-                            <h3>파일 족보 등록</h3>
+                            <h3>파일 요약 등록</h3>
                             <form id="fileJokboForm" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label class="form-label">등록자 이름</label>
                                     <input type="text" name="uploaderName" class="form-input" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">족보 파일</label>
+                                    <label class="form-label">요약 파일</label>
                                     <div class="file-upload" id="fileUpload">
                                         <p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
                                         <input type="file" name="file" id="fileInput" style="display: none;"
@@ -93,7 +93,7 @@
                                     <textarea name="comment" class="form-textarea"
                                         placeholder="추가 코멘트를 입력하세요..."></textarea>
                                 </div>
-                                <button type="submit" class="form-button">파일 족보 등록</button>
+                                <button type="submit" class="form-button">파일 요약 등록</button>
                             </form>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
 
                 <div id="list" class="jokbo-content">
                     <div th:if="${#lists.isEmpty(jokbos)}" class="no-jokbo">
-                        <p>등록된 족보가 없습니다.</p>
+                        <p>등록된 요약이 없습니다.</p>
                     </div>
 
                     <div th:if="${!#lists.isEmpty(jokbos)}" class="jokbo-list">

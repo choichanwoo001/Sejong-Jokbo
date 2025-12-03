@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
-        pageTitle=${'문의 게시판 - 고전독서 족보'},
+        pageTitle=${'문의 게시판 - 고전독서 요약'},
         content=~{::content},
         extraHead=~{::extraHead},
         extraScripts=~{::extraScripts}
@@ -109,7 +109,7 @@
                 <div th:each="history : ${approvalHistories}" class="inquiry-item">
                     <div class="inquiry-header-info">
                         <h3 class="inquiry-title">
-                            <span th:text="${history.jokbo.book.title}">족보명</span>
+                            <span th:text="${history.jokbo.book.title}">요약명</span>
                             <span style="font-size: 0.9rem; color: #6b7280; font-weight: normal; margin-left: 0.5rem;"
                                 th:text="'(' + ${history.jokbo.uploaderName} + ')'">작성자</span>
                         </h3>

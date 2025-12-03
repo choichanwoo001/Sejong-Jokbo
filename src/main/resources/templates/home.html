@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
-        pageTitle=${'고전독서 족보'},
+        pageTitle=${'고전독서 요약'},
         content=~{::content},
         extraHead=~{::extraHead},
         extraScripts=~{::extraScripts}
@@ -28,7 +28,6 @@
 
         <div class="package-notice-banner">
             <div class="notice-content">
-                <span class="notice-icon">📚</span>
                 <span class="notice-text">패키지도서 정보는 <strong>페이지 하단</strong>을 참고해주세요</span>
                 <a href="#package-section" class="notice-link">바로가기</a>
             </div>
@@ -48,7 +47,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                            <p class="jokbo-count" th:text="'요약: ' + ${book.jokboCount} + '개'">요약: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -69,7 +68,7 @@
                     </div>
                     <select id="sortFilter" class="filter-dropdown">
                         <option value="name">이름순</option>
-                        <option value="jokbo">족보 많은 순</option>
+                        <option value="jokbo">요약 많은 순</option>
                     </select>
                 </div>
             </div>
@@ -84,7 +83,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                            <p class="jokbo-count" th:text="'요약: ' + ${book.jokboCount} + '개'">요약: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -102,7 +101,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                            <p class="jokbo-count" th:text="'요약: ' + ${book.jokboCount} + '개'">요약: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -120,7 +119,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                            <p class="jokbo-count" th:text="'요약: ' + ${book.jokboCount} + '개'">요약: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -138,7 +137,7 @@
                         </div>
                         <div class="book-info">
                             <h3 class="book-title" th:text="${book.title}">도서 제목</h3>
-                            <p class="jokbo-count" th:text="'족보: ' + ${book.jokboCount} + '개'">족보: 0개</p>
+                            <p class="jokbo-count" th:text="'요약: ' + ${book.jokboCount} + '개'">요약: 0개</p>
                             <p class="book-author" th:text="${book.author}">저자</p>
                             <p class="book-publisher" th:text="${book.publisher}">출판사</p>
                         </div>
@@ -149,7 +148,7 @@
 
         <div class="package-section" id="package-section">
             <div class="package-header">
-                <h2>📚 패키지도서</h2>
+                <h2>패키지도서</h2>
                 <p class="package-description">상대적으로 분량이 적은 두 권의 도서를 묶어 한 권처럼 시험을 진행하는 도서</p>
             </div>
             <div class="package-content">
@@ -158,7 +157,6 @@
                         <h3>2023-1학기 기준 패키지도서</h3>
                         <div class="package-books">
                             <div class="package-book">
-                                <span class="book-number">①</span>
                                 <span class="book-category">동서양</span>
                                 <span class="book-title">서유견문 / 파한집</span>
                             </div>
