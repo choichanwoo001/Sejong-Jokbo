@@ -2,9 +2,9 @@
 
 # Determine the docker-compose command
 if [ -x "$(command -v docker-compose)" ]; then
-  COMPOSE_CMD="docker-compose"
+  COMPOSE_CMD="sudo docker-compose"
 elif docker compose version > /dev/null 2>&1; then
-  COMPOSE_CMD="docker compose"
+  COMPOSE_CMD="sudo docker compose"
 else
   echo 'Error: docker-compose or docker compose is not installed.' >&2
   exit 1
