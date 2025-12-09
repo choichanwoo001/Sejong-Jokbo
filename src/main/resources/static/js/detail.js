@@ -14,11 +14,17 @@ let quill;
 // Quill 에디터 초기화
 function initializeQuill() {
     if (document.getElementById('editor')) {
+        // 폰트 크기를 style 속성(px)으로 사용하도록 설정
+        var Size = Quill.import('attributors/style/size');
+        Size.whitelist = ['12px', '14px', '16px', '18px', '20px', '24px', '30px', '32px'];
+        Quill.register(Size, true);
+
         quill = new Quill('#editor', {
             theme: 'snow',
             placeholder: '요약 내용을 입력하세요...',
             modules: {
                 toolbar: [
+                    [{ 'size': Size.whitelist }], // 폰트 크기 (숫자)
                     ['bold', 'italic', 'underline', 'strike'],
                     [{ 'color': [] }, { 'background': [] }],
                     [{ 'list': 'ordered' }, { 'list': 'bullet' }]
