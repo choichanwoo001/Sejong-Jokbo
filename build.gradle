@@ -64,6 +64,11 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     
 
+    // HTML 파싱 (PDF 변환 시 태그 제거용)
+    implementation 'org.jsoup:jsoup:1.17.2'
+
+    // HTML to PDF (스타일 지원)
+    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
 }
 
 // 모든 JavaExec 태스크에 UTF-8 인코딩 적용

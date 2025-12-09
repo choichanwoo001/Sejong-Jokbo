@@ -10,6 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/notifications.css}">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <!-- Quill.js CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </th:block>
 
 <th:block th:fragment="content">
@@ -52,8 +54,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">요약 내용</label>
-                                    <textarea name="content" class="form-textarea" placeholder="요약 내용을 입력하세요..."
-                                        required></textarea>
+                                    <div id="editor" style="height: 300px;"></div>
+                                    <input type="hidden" name="content" id="contentHidden">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">코멘트 (선택사항)</label>
@@ -189,6 +191,8 @@
 </th:block>
 
 <th:block th:fragment="extraScripts">
+    <!-- Quill.js JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script th:src="@{/js/utils.js}"></script>
     <script th:src="@{/js/detail.js}"></script>
     <script th:src="@{/js/sse.js}"></script>
