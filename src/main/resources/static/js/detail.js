@@ -8,6 +8,26 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeFileRemovalButtons();
 });
 
+// Quill 에디터 전역 변수
+let quill;
+
+// Quill 에디터 초기화
+function initializeQuill() {
+    if (document.getElementById('editor')) {
+        quill = new Quill('#editor', {
+            theme: 'snow',
+            placeholder: '요약 내용을 입력하세요...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }]
+                ]
+            }
+        });
+    }
+}
+
 // URL 파라미터 확인하여 탭 설정
 function checkTabParameter() {
     const tab = resolveActiveTab();
@@ -200,6 +220,9 @@ function initializeFormHandlers() {
     const textForm = document.getElementById('textJokboForm');
     const fileForm = document.getElementById('fileJokboForm');
 
+    // Quill 초기화 호출
+    initializeQuill();
+
     if (textForm) {
         textForm.addEventListener('submit', handleTextJokboSubmit);
     }
@@ -213,6 +236,16 @@ function initializeFormHandlers() {
 function handleTextJokboSubmit(e) {
     e.preventDefault();
 
+    // Quill 에디터 내용 확인
+    if (quill.getLength() <= 1) { // 빈 에디터는 길이가 1임 (\n)
+        alert('요약 내용을 입력해주세요.');
+        return;
+    }
+
+    // Quill 내용을 hidden input에 설정
+    const contentHidden = document.getElementById('contentHidden');
+    contentHidden.value = quill.root.innerHTML;
+
     const formData = new FormData(this);
     const bookId = this.closest('.book-detail').dataset.bookId;
 
@@ -225,6 +258,7 @@ function handleTextJokboSubmit(e) {
             if (result === 'success') {
                 alert('요약 등록 요청이 완료되었습니다.\n관리자가 승인하면 요약 목록에 등록됩니다.');
                 this.reset();
+                quill.setContents([]); // 에디터 초기화
                 updateSubmitButtonState();
             } else {
                 alert('족보 등록에 실패했습니다: ' + result);
@@ -275,7 +309,8 @@ function handleFileJokboSubmit(e) {
             }
         })
         .catch(error => {
-            debugError('Upload error:', error);
+            // debugError 함수가 정의되어 있지 않을 수 있으므로 console.error 사용
+            console.error('Upload error:', error);
             alert('파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
         })
         .finally(() => {
