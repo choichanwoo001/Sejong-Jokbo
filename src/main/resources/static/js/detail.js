@@ -25,7 +25,7 @@ function initializeQuill() {
             modules: {
                 toolbar: [
                     [{ 'size': Size.whitelist }], // 폰트 크기 (숫자)
-                    ['bold', 'italic', 'underline', 'strike'],
+                    ['bold', 'underline', 'strike'],
                     [{ 'color': [] }, { 'background': [] }],
                     [{ 'list': 'ordered' }, { 'list': 'bullet' }]
                 ]
