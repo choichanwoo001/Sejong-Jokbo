@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${'공지사항 관리 - 세종족보'},
+        currentPage=${'notices'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <style>
+        .admin-notices {
+            padding: 1.25rem 2.5rem;
+        }
+
+        .admin-notices .notice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .admin-notices .notice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.9375rem;
+        }
+
+        .admin-notices .notice-info {
+            flex: 1;
+        }
+
+        .admin-notices .notice-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 0.3125rem 0;
+        }
+
+        .admin-notices .notice-date {
+            color: #999;
+            font-size: 0.75rem;
+        }
+
+        .admin-notices .notice-content-preview {
+            margin: 0.9375rem 0;
+            padding: 0.9375rem;
+            background: #f8f9fa;
+            border-radius: 0.3125rem;
+            border-left: 0.25rem solid #dc2626;
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .admin-notices .notice-actions {
+            display: flex;
+            gap: 0.625rem;
+            margin-top: 1.25rem;
+        }
+
+        .admin-notices .no-notices {
+            text-align: center;
+            padding: 3.75rem 1.25rem;
+            color: #666;
+        }
+
+        .admin-notices .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1.875rem;
+            gap: 0.9375rem;
+        }
+
+        .admin-notices .page-link {
+            padding: 0.625rem 1.25rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.3125rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-notices .page-link:hover {
+            background: #5a6fd8;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-0.0625rem);
+        }
+
+        .admin-notices .page-info {
+            color: #666;
+            font-weight: 500;
+            padding: 0 0.625rem;
+        }
+
+        .create-btn-container {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .admin-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .admin-btn--primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .admin-btn--primary:hover {
+            background: #b91c1c;
+            color: white;
+        }
+
+        .admin-btn--secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .admin-btn--secondary:hover {
+            background: #4b5563;
+        }
+
+        .admin-btn--danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .admin-btn--danger:hover {
+            background: #dc2626;
+        }
+    </style>
+</th:block>
+
+<th:block th:fragment="content">
+    <section class="admin-notices">
+        <h1 class="page-title">공지사항 관리</h1>
+
+        <div th:if="${message}" class="alert alert-success"
+            style="padding: 1rem; background: #d4edda; color: #155724; border-radius: 0.5rem; margin-bottom: 1rem;">
+            <span th:text="${message}"></span>
+        </div>
+
+        <div class="create-btn-container">
+            <a href="/admin/notice/create" class="admin-btn admin-btn--primary">새 공지사항 등록</a>
+        </div>
+
+        <div class="notice-list" th:if="${notices.size() > 0}">
+            <div class="admin-card admin-card--hover notice-item" th:each="notice : ${notices}"
+                style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <div class="notice-header">
+                    <div class="notice-info">
+                        <h3 class="notice-title" th:text="${notice.title}">공지 제목</h3>
+                        <p class="notice-date">
+                            작성: <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
+                            <span th:if="${notice.updatedAt != null}"
+                                th:text="'(수정: ' + ${#temporals.format(notice.updatedAt, 'yyyy-MM-dd HH:mm')} + ')'"></span>
+                            | 조회수: <span th:text="${notice.viewCount}">0</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="notice-content-preview" th:text="${notice.content}">내용 미리보기</div>
+
+                <div class="notice-actions">
+                    <a th:href="'/admin/notice/edit/' + ${notice.noticeId}"
+                        class="admin-btn admin-btn--secondary">수정</a>
+                    <form th:action="'/admin/notice/delete/' + ${notice.noticeId}" method="post" style="display:inline;"
+                        onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <button type="submit" class="admin-btn admin-btn--danger">삭제</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="no-notices" th:if="${notices.size() == 0}">
+            <h3>등록된 공지사항이 없습니다</h3>
+            <p>새로운 공지사항을 등록해보세요.</p>
+        </div>
+
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${hasPrevious}" th:href="@{/admin/notice(page=${currentPage - 1})}" class="page-link">이전</a>
+
+            <span class="page-info">
+                <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            </span>
+
+            <a th:if="${hasNext}" th:href="@{/admin/notice(page=${currentPage + 1})}" class="page-link">다음</a>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+</th:block>
+
+</html>

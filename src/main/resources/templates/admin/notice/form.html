@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: layout(
+        pageTitle=${notice != null ? '공지사항 수정' : '공지사항 등록'} + ' - 세종족보',
+        currentPage=${'notices'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <style>
+        .notice-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-textarea {
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+    </style>
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="notice-form-container">
+        <h1 th:text="${notice != null ? '공지사항 수정' : '새 공지사항 등록'}" style="margin-bottom: 2rem; color: #1f2937;">공지사항 등록
+        </h1>
+
+        <form th:action="${notice != null ? '/admin/notice/edit/' + notice.noticeId : '/admin/notice/create'}"
+            method="post">
+            <div class="form-group">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" id="title" name="title" class="form-input" required
+                    th:value="${notice != null ? notice.title : ''}" placeholder="공지사항 제목을 입력하세요">
+            </div>
+
+            <div class="form-group">
+                <label for="content" class="form-label">내용</label>
+                <textarea id="content" name="content" class="form-textarea" required
+                    th:text="${notice != null ? notice.content : ''}" placeholder="공지사항 내용을 입력하세요"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="/admin/notice" class="btn btn-secondary">취소</a>
+                <button type="submit" class="btn btn-primary"
+                    th:text="${notice != null ? '수정하기' : '등록하기'}">등록하기</button>
+            </div>
+        </form>
+    </div>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+</th:block>
+
+</html>
