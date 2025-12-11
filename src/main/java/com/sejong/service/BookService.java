@@ -4,6 +4,8 @@ import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
 import com.sejong.repository.BookRepository;
 import com.sejong.repository.JokboRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class BookService {
      * @param category 카테고리
      * @return 해당 카테고리의 도서 목록
      */
+    @Cacheable(value = "booksByCategory", key = "#category")
     public List<Book> getBooksByCategory(String category) {
         return bookRepository.findByCategoryOrderByTitleAsc(category);
     }
@@ -108,6 +111,7 @@ public class BookService {
     /**
      * 특정 책의 jokboCount를 업데이트합니다
      */
+    @CacheEvict(value = "booksByCategory", allEntries = true)
     public void updateJokboCount(@org.springframework.lang.NonNull Integer bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다"));

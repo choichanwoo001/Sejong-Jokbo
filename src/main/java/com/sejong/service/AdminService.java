@@ -5,7 +5,6 @@ import com.sejong.entity.Book;
 import com.sejong.entity.Jokbo;
 import com.sejong.entity.JokboApprovalHistory;
 import com.sejong.repository.AdminRepository;
-import com.sejong.repository.BookRepository;
 import com.sejong.repository.JokboApprovalHistoryRepository;
 import com.sejong.repository.JokboRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final JokboRepository jokboRepository;
     private final JokboApprovalHistoryRepository jokboApprovalHistoryRepository;
-    private final BookRepository bookRepository;
+    private final BookService bookService;
     private final SseService sseService;
     private final JokboService jokboService;
     private static final String DEFAULT_ADMIN_NAME = "기본 관리자";
@@ -60,7 +59,7 @@ public class AdminService {
 
         // 승인된 경우 해당 책의 jokboCount 업데이트
         if (previousStatus != Jokbo.JokboStatus.승인) {
-            updateBookJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
+            bookService.updateJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
         }
 
         // 승인 이력 저장
@@ -92,7 +91,7 @@ public class AdminService {
 
         // 이전에 승인되었던 족보를 반려하는 경우 jokboCount 업데이트
         if (previousStatus == Jokbo.JokboStatus.승인) {
-            updateBookJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
+            bookService.updateJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
         }
 
         // 반려 이력 저장
@@ -117,7 +116,7 @@ public class AdminService {
         jokboRepository.save(jokbo);
 
         // 승인 취소 시 jokboCount 업데이트
-        updateBookJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
+        bookService.updateJokboCount(java.util.Objects.requireNonNull(jokbo.getBook().getBookId()));
 
         // 승인 취소 이력 저장
         saveApprovalHistory(jokbo, JokboApprovalHistory.ApprovalAction.승인취소, previousStatus, Jokbo.JokboStatus.대기,
@@ -239,19 +238,6 @@ public class AdminService {
     public Page<JokboApprovalHistory> getAdminApprovalHistory(Integer adminId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jokboApprovalHistoryRepository.findByAdminAdminIdOrderByCreatedAtDesc(adminId, pageable);
-    }
-
-    /**
-     * 책의 승인된 족보 수를 업데이트합니다
-     */
-    private void updateBookJokboCount(@org.springframework.lang.NonNull Integer bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
-
-        // 해당 책의 승인된 족보 수를 실시간으로 계산
-        long approvedCount = jokboRepository.countByBookIdAndStatus(bookId, Jokbo.JokboStatus.승인);
-        book.setJokboCount((int) approvedCount);
-        bookRepository.save(book);
     }
 
     /**
