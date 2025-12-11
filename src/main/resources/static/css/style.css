@@ -59,6 +59,29 @@ body {
     background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
+.notice-btn {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    box-shadow: 0 0.25rem 0.75rem rgba(75, 85, 99, 0.3);
+    position: relative;
+}
+
+.notice-btn:hover {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.375rem 1.25rem rgba(75, 85, 99, 0.4);
+}
+
+.approval-btn {
+    background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+    box-shadow: 0 0.25rem 0.75rem rgba(153, 27, 27, 0.3);
+}
+
+.approval-btn:hover {
+    background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.375rem 1.25rem rgba(153, 27, 27, 0.4);
+}
+
 .header {
     background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
     padding: 0;

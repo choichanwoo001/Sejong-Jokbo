@@ -59,7 +59,18 @@
         <div th:unless="${isSearch}">
             <div class="category-section">
                 <div class="category-header">
-                    <a href="/inquiry" class="inquiry-button">문의 게시판</a>
+                    <div class="header-buttons" style="display: flex; gap: 10px;">
+                        <a href="/notice" class="inquiry-button notice-btn">
+                            공지사항
+                            <span th:if="${noticeCount > 0}" th:text="${noticeCount}"
+                                style="position: absolute; top: -8px; right: -8px; background-color: #ef4444; color: white; border-radius: 9999px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; border: 2px solid white; min-width: 14px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            </span>
+                        </a>
+                        <a href="/inquiry" class="inquiry-button">문의 게시판</a>
+                        <a href="/approval/history" class="inquiry-button approval-btn">
+                            승인 이력
+                        </a>
+                    </div>
                     <div class="category-tabs subtle-shadow">
                         <button class="category-tab active">서양</button>
                         <button class="category-tab">동서양</button>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
+        pageTitle=${'공지사항 - ' + notice.title},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/notice.css}">
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="notice-container fade-in">
+        <div class="notice-header">
+            <h1>공지사항</h1>
+            <a href="/notice" class="home-button">목록으로</a>
+        </div>
+
+        <div class="notice-detail">
+            <div class="notice-info">
+                <div class="notice-detail-title" th:text="${notice.title}">공지 제목</div>
+                <div class="notice-detail-meta">
+                    <span th:text="'작성일: ' + ${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                    <span th:text="'조회수: ' + ${notice.viewCount}">조회수: 0</span>
+                </div>
+                <div class="notice-content">
+                    <p th:text="${notice.content}">공지 내용...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/utils.js}"></script>
+</th:block>
+
+</html>

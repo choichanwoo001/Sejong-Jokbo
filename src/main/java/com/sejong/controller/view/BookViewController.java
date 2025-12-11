@@ -33,6 +33,7 @@ public class BookViewController {
 
     private final BookService bookService;
     private final JokboService jokboService;
+    private final com.sejong.service.NoticeService noticeService;
 
     /**
      * 통합 검색을 수행합니다
@@ -45,6 +46,7 @@ public class BookViewController {
         model.addAttribute("books", searchResults);
         model.addAttribute("keyword", keyword);
         model.addAttribute("isSearch", true);
+        model.addAttribute("noticeCount", noticeService.countAllNotices());
         return "home";
     }
 
@@ -60,6 +62,7 @@ public class BookViewController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("category", category);
         model.addAttribute("isSearch", true);
+        model.addAttribute("noticeCount", noticeService.countAllNotices());
         return "home";
     }
 
