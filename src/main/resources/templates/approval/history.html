@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/site-layout :: layout(
+        pageTitle=${'승인 이력 - 고전독서 요약'},
+        content=~{::content},
+        extraHead=~{::extraHead},
+        extraScripts=~{::extraScripts}
+      )}">
+
+<th:block th:fragment="extraHead">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+    <style>
+        .approval-container {
+            max-width: 62.5rem;
+            margin: 3.75rem auto;
+            padding: 0 1.25rem;
+        }
+
+        .approval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 0.125rem solid #e5e7eb;
+        }
+
+        .approval-header h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .home-button {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 0.25rem 0.75rem rgba(220, 38, 38, 0.3);
+        }
+
+        .home-button:hover {
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.375rem 1.25rem rgba(220, 38, 38, 0.4);
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            color: white;
+        }
+    </style>
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="approval-container fade-in">
+        <div class="approval-header">
+            <h1>승인 이력</h1>
+            <a href="/" class="home-button">홈으로</a>
+        </div>
+
+        <div class="inquiry-list">
+            <div th:if="${#lists.isEmpty(approvalHistories)}" class="no-inquiries">
+                <p>승인 이력이 없습니다.</p>
+            </div>
+
+            <div th:each="history : ${approvalHistories}" class="inquiry-item">
+                <div class="inquiry-header-info">
+                    <h3 class="inquiry-title">
+                        <span th:text="${history.jokbo.book.title}">요약명</span>
+                        <span style="font-size: 0.9rem; color: #6b7280; font-weight: normal; margin-left: 0.5rem;"
+                            th:text="'(' + ${history.jokbo.uploaderName} + ')'">작성자</span>
+                    </h3>
+                    <span class="inquiry-date"
+                        th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm')}">처리일</span>
+                </div>
+                <div class="inquiry-content">
+                    <div class="history-status-row">
+                        <span th:if="${history.action.name() == '승인'}" class="status-badge approved">승인됨</span>
+                        <span th:if="${history.action.name() == '반려'}" class="status-badge rejected">반려됨</span>
+                        <span th:if="${history.action.name() == '승인취소'}" class="status-badge canceled">승인취소</span>
+                        <span th:if="${history.action.name() == '재심사요청'}" class="status-badge recheck">재심사</span>
+                    </div>
+                    <p th:if="${history.comment}" class="history-comment" th:text="${history.comment}">사유</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination" th:if="${!#lists.isEmpty(approvalHistories)}">
+            <a th:if="${hasPrev}" th:href="@{/approval/history(page=${currentPage - 1})}"
+                class="page-btn prev-btn">이전</a>
+
+            <div class="page-numbers">
+                <a th:if="${currentPage > 3}" th:href="@{/approval/history(page=0)}" class="page-btn">1</a>
+
+                <span th:if="${currentPage > 4}" class="page-dots">...</span>
+
+                <a th:if="${currentPage >= 3}" th:href="@{/approval/history(page=${currentPage - 3})}"
+                    th:text="${currentPage - 2}" class="page-btn"></a>
+                <a th:if="${currentPage >= 2}" th:href="@{/approval/history(page=${currentPage - 2})}"
+                    th:text="${currentPage - 1}" class="page-btn"></a>
+                <a th:if="${currentPage >= 1}" th:href="@{/approval/history(page=${currentPage - 1})}"
+                    th:text="${currentPage}" class="page-btn"></a>
+
+                <span th:text="${currentPage + 1}" class="page-btn current"></span>
+
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/approval/history(page=${currentPage + 1})}"
+                    th:text="${currentPage + 2}" class="page-btn"></a>
+                <a th:if="${currentPage < totalPages - 2}" th:href="@{/approval/history(page=${currentPage + 2})}"
+                    th:text="${currentPage + 3}" class="page-btn"></a>
+                <a th:if="${currentPage < totalPages - 3}" th:href="@{/approval/history(page=${currentPage + 3})}"
+                    th:text="${currentPage + 4}" class="page-btn"></a>
+
+                <span th:if="${currentPage < totalPages - 5}" class="page-dots">...</span>
+
+                <a th:if="${currentPage < totalPages - 4}" th:href="@{/approval/history(page=${totalPages - 1})}"
+                    th:text="${totalPages}" class="page-btn"></a>
+            </div>
+
+            <a th:if="${hasNext}" th:href="@{/approval/history(page=${currentPage + 1})}"
+                class="page-btn next-btn">다음</a>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="extraScripts">
+    <script th:src="@{/js/utils.js}"></script>
+    <script th:src="@{/js/inquiry.js}"></script>
+</th:block>
+
+</html>

@@ -74,4 +74,12 @@ public class NoticeService {
     public void deleteNotice(@org.springframework.lang.NonNull Integer noticeId) {
         noticeRepository.deleteById(noticeId);
     }
+
+    /**
+     * 전체 공지사항 수를 반환합니다.
+     */
+    @Transactional(readOnly = true)
+    public long countAllNotices() {
+        return noticeRepository.count();
+    }
 }
